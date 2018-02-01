@@ -1,0 +1,32 @@
+{
+    "name": "hk-r/lib-plum",
+    "description": "",
+    "keywords": ["plum"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kyota Hiyoshi",
+            "email": "hiyoshi-kyota@imjp.co.jp"
+        }
+    ],
+    "scripts":{
+        "test": [
+
+        ]
+    },
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+
+    },
+    "extra": {
+        "px2package": {
+            "name": "lib-plum",
+            "type": "plugin"
+        }
+    }
+}
