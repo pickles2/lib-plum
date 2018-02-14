@@ -21,7 +21,10 @@
 
     },
     "autoload": {
-
+        "files": [
+            "php/main.php",
+            "php/plum_deploy.php"
+        ]
     },
     "extra": {
         "px2package": {
