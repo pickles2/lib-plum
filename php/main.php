@@ -10,13 +10,16 @@ class main
 		_COOKIE,
 		_SESSION,
 		preview_server = array(
-			string 'name':
-				- プレビューサーバ名(任意)
-			string 'path':
-				- プレビューサーバ(デプロイ先)のパス
-			string 'url':
-				- プレビューサーバのURL
-				  Webサーバのvirtual host等で設定したURL
+			// プレビューサーバの数だけ用意する
+			array(
+				string 'name':
+					- プレビューサーバ名(任意)
+				string 'path':
+					- プレビューサーバ(デプロイ先)のパス
+				string 'url':
+					- プレビューサーバのURL
+					  Webサーバのvirtual host等で設定したURL
+			)
 		),
 		git = array(
 			string 'repository':
@@ -39,7 +42,7 @@ class main
 				  例) fuga
 		)
 	*/
-	private $options;
+	public $options;
 
 	/** hk\plum\plum_deployのインスタンス */
 	private $deploy;
@@ -51,7 +54,7 @@ class main
 	 * @param $options = オプション
 	 */
 	public function __construct($options) {
-		$this->options = $options;
+		$this->options = json_decode(json_encode($options));
 		$this->deploy = new plum_deploy($this);
 	}
 
@@ -66,25 +69,25 @@ class main
 		$result = array('status' => true,
 						'message' => '');
 
-		$server_list = $this->options["preview_server"];
-		array_push($server_list, array(
+		$server_list = $this->options->preview_server;
+		array_push($server_list, json_decode(json_encode(array(
 			'name'=>'master',
-			'path'=>$this->options["git"]["repository"],
-		));
+			'path'=>$this->options->git->repository,
+		))));
 
 		foreach ( $server_list as $preview_server ) {
 			chdir($current_dir);
 
 			try {
 
-				if ( strlen($preview_server["path"]) ) {
+				if ( strlen($preview_server->path) ) {
 
 					// デプロイ先のディレクトリが無い場合は作成
-					if ( !file_exists( $preview_server["path"]) ) {
+					if ( !file_exists( $preview_server->path) ) {
 						// 存在しない場合
 
 						// ディレクトリ作成
-						if ( !mkdir( $preview_server["path"], 0777) ) {
+						if ( !mkdir( $preview_server->path, 0777) ) {
 							// ディレクトリが作成できない場合
 
 							// エラー処理
@@ -93,17 +96,17 @@ class main
 					}
 
 					// 「.git」フォルダが存在すれば初期化済みと判定
-					if ( !file_exists( $preview_server["path"] . "/.git") ) {
+					if ( !file_exists( $preview_server->path . "/.git") ) {
 						// 存在しない場合
 
 						// ディレクトリ移動
-						if ( chdir( $preview_server["path"] ) ) {
+						if ( chdir( $preview_server->path ) ) {
 
 							// git セットアップ
 							exec('git init', $output);
 
 							// git urlのセット
-							$url = $this->options["git"]["protocol"] . "://" . urlencode($this->options["git"]["username"]) . ":" . urlencode($this->options["git"]["password"]) . "@" . $this->options["git"]["url"];
+							$url = $this->options->git->protocol . "://" . urlencode($this->options->git->username) . ":" . urlencode($this->options->git->password) . "@" . $this->options->git->url;
 							exec('git remote add origin ' . $url, $output);
 
 							// git fetch
@@ -147,20 +150,20 @@ class main
 		$result = array('status' => false,
 						'message' => '');
 
-		$server_list = $this->options["preview_server"];
+		$server_list = $this->options->preview_server;
 		
 		foreach ( $server_list as $preview_server ) {
 
 			try {
 
-				if ( strlen($preview_server["path"]) ) {
+				if ( strlen($preview_server->path) ) {
 
 					// デプロイ先のディレクトリが存在するかチェック
-					if ( file_exists( $preview_server["path"]) ) {
+					if ( file_exists( $preview_server->path) ) {
 						// 存在する場合
 
 						// 「.git」フォルダが存在すれば初期化済みと判定
-						if ( file_exists( $preview_server["path"] . "/.git") ) {
+						if ( file_exists( $preview_server->path . "/.git") ) {
 							// 存在する場合
 
 							$result['status'] = true;
@@ -199,7 +202,7 @@ class main
 
 		try {
 
-			if ( chdir( $this->options["git"]["repository"] )) {
+			if ( chdir( $this->options->git->repository )) {
 
 				// fetch
 				exec( 'git fetch', $output );
@@ -248,10 +251,10 @@ class main
 	 */
 	private function compare_to_current_branch($path, $branch) {
 
-		$current = $this->get_child_current_branch($path);
-
+		$current = json_decode($this->get_child_current_branch($path));
+		
 		if(str_replace("origin/", "", $branch) == $current->current_branch) {
-			return "checked";
+			return "selected";
 		} else {
 			return "";
 		}
@@ -329,6 +332,7 @@ class main
 
 	private function disp_after_initialize() {
 		$ret;
+		$row = "";
 
 		// 初期化後の画面表示
 		// Gitリポジトリ取得
@@ -344,20 +348,20 @@ class main
 				. '</thead>'
 				. '<tbody>';
 
-		foreach ($this->options["preview_server"] as $key => $prev_row) {
+		foreach ($this->options->preview_server as $key => $prev_row) {
 			$row .= '<tr>'
-					. '<td scope="row">' . htmlspecialchars($prev_row["name"]) . '</td>'
-					. '<td class="p-center"><button type="button" id="state_' . htmlspecialchars($prev_row["name"]) . '" class="btn btn-default btn-block" value="状態" name="state">状態</button></td>'
-					. '<td><select id="branch_list_' . htmlspecialchars($prev_row["name"]) . '" class="form-control" name="branch_form_list">';
+					. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
+					. '<td class="p-center"><button type="button" id="state_' . htmlspecialchars($prev_row->name) . '" class="btn btn-default btn-block" value="状態" name="state">状態</button></td>'
+					. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 			foreach ($branch_list as $branch) {
-				$row .= '<option value="' . htmlspecialchars($branch) . '" ' . $this->compare_to_current_branch($prev_row["path"], $branch) . '>' . htmlspecialchars($branch) . '</option>';
+				$row .= '<option value="' . htmlspecialchars($branch) . '" ' . $this->compare_to_current_branch($prev_row->path, $branch) . '>' . htmlspecialchars($branch) . '</option>';
 			}
 
 			$row .= '</select>'
 					. '</td>'
-					. '<td class="p-center"><button type="button" id="reflect_' . htmlspecialchars($prev_row["name"]) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect">反映</button></td>'
-					. '<td class="p-center"><a href="' . htmlspecialchars($prev_row["url"]) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
+					. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+					. '<td class="p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
 					. '</tr>';
 		}
 
@@ -368,59 +372,62 @@ class main
 	}
 
 	/**
-	 * deploy実行
-	 */
-	public function deploy() {
-
-	}
-
-	/**
 	 * 
 	 */
 	public function run() {
 
-		$already_init_ret = $this->get_initialize_status();
-		$already_init_ret = json_decode($already_init_ret);
+		if( isset($this->options->_POST->reflect) ) {
 
-		// 既に初期化済みかのチェック
-		if ($already_init_ret->already_init) {
-
+			// deploy処理
+			$ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
+			
 			// 初期化済みの表示
 			return $this->disp_after_initialize();
 
 		} else {
 
-			if (isset($this->options["_POST"]["init"])) {
-				// initialize処理
-				
-				// プレビューサーバの初期化処理
-				$init_ret = $this->init();
-				$init_ret = json_decode($init_ret);
+			$already_init_ret = $this->get_initialize_status();
+			$already_init_ret = json_decode($already_init_ret);
 
-				if ( $init_ret->status ) {
-					
-					// 初期化済みの表示
-					return $this->disp_after_initialize();
+			// 既に初期化済みかのチェック
+			if ($already_init_ret->already_init) {
 
-				} else {
-					// エラー処理
-					$ret = '
-						<script type="text/javascript">
-							console.error("' . $init_ret->message . '");
-							alert("initialize faild");
-						</script>';
+				// 初期化済みの表示
+				return $this->disp_after_initialize();
 
-					// 初期化前の表示
-					return $this->disp_before_initialize() . $ret;
-				}
-				
 			} else {
-				// 初期化前の表示
-				return $this->disp_before_initialize();
-			}
-			
+
+				if (isset($this->options->_POST->init)) {
+					// initialize処理
+					
+					// プレビューサーバの初期化処理
+					$init_ret = $this->init();
+					$init_ret = json_decode($init_ret);
+
+					if ( $init_ret->status ) {
+						
+						// 初期化済みの表示
+						return $this->disp_after_initialize();
+
+					} else {
+						// エラー処理
+						$ret = '
+							<script type="text/javascript">
+								console.error("' . $init_ret->message . '");
+								alert("initialize faild");
+							</script>';
+
+						// 初期化前の表示
+						return $this->disp_before_initialize() . $ret;
+					}
+					
+				} else {
+					// 初期化前の表示
+					return $this->disp_before_initialize();
+				}
+			}	
 		}
-		
+
 	}
 	
 }
