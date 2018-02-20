@@ -75,6 +75,8 @@ class main
 			'path'=>$this->options->git->repository,
 		))));
 
+		set_time_limit(0);
+
 		foreach ( $server_list as $preview_server ) {
 			chdir($current_dir);
 
@@ -126,6 +128,7 @@ class main
 				}
 
 			} catch (Exception $e) {
+				set_time_limit(30);
 
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
@@ -135,6 +138,7 @@ class main
 			}
 
 		}
+		set_time_limit(30);
 
 		$result['status'] = true;
 

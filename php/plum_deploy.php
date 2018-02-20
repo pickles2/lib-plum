@@ -32,6 +32,8 @@ class plum_deploy
 			'path'=>$this->main->options->git->repository,
 		))));
 
+		set_time_limit(0);
+		
 		foreach ( $server_list as $preview_server ) {
 			chdir($current_dir);
 
@@ -100,6 +102,7 @@ class plum_deploy
 				}
 
 			} catch (Exception $e) {
+				set_time_limit(30);
 
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
@@ -109,6 +112,7 @@ class plum_deploy
 			}
 
 		}
+		set_time_limit(30);
 
 		$result['status'] = true;
 
