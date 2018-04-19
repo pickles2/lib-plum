@@ -14,15 +14,32 @@ Argument error (argument exceeded).
 The specified path does not exist.
 <?php
 	} else {
-		$res_directory = "vendor\\hk-r\\lib-plum\\res\\";
-		if ($handle = opendir($res_directory)) {
-			while(false !== ($entry = readdir($handle))) {
-				if ($entry != "." && $entry != "..") {
-					rename($res_directory . $entry, $argv[1] . $entry);
+		$res_directory = "vendor/hk-r/lib-plum/res/";
+		dir_copy($res_directory, $argv[1]);
+	}
+}
+
+function dir_copy($src_dir, $dist_dir) {
+	if (!is_dir($dist_dir)) {
+		mkdir($dist_dir);
+	}
+
+	if (is_dir($src_dir)) {
+		if ($dh = opendir($src_dir)) {
+			while (($file = readdir($dh)) !== false) {
+				if ($file == "." || $file == "..") {
+					continue;
+				}
+				if (is_dir($src_dir . "/" . $file)) {
+					dir_copy($src_dir . "/" . $file, $dist_dir . "/" . $file);
+				} else {
+					copy($src_dir . "/" . $file, $dist_dir . "/" . $file);
 				}
 			}
-			closedir($handle);
+			closedir($dh);
 		}
 	}
+	return true;
+
 }
 ?>
