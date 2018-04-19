@@ -326,7 +326,7 @@ class main
 				. '<div class="panel-heading">'
 				. '<p class="panel-title">Initializeを実行してください</p>'
 				. '</div>'
-				. '<form action="" method="post">'
+				. '<form method="post">'
 				. '<input type="submit" name="init" value="initialize" />'
 				. '</form>'
 				. '</div>';
