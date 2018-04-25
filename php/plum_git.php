@@ -24,7 +24,7 @@ class plum_git
 	/**
 	 * status
 	 */
-	public function get_status($preview_server_name) {
+	public function status($preview_server_name) {
 
 		foreach ( $server_list as $preview_server ) {
 
