@@ -56,6 +56,7 @@ class main
 	public function __construct($options) {
 		$this->options = json_decode(json_encode($options));
 		$this->deploy = new plum_deploy($this);
+		$this->git = new plum_git($this);
 	}
 
 	/**
@@ -322,13 +323,13 @@ class main
 		$ret;
 
 		// 初期化前の画面表示
-		$ret = '<div class="panel panel-warning">'
+		$ret = '<div class="panel panel-warning" style="margin-top:20px;">'
 				. '<div class="panel-heading">'
 				. '<p class="panel-title">Initializeを実行してください</p>'
-				. '</div>'
-				. '<form method="post">'
-				. '<input type="submit" name="init" value="initialize" />'
+				. '<form method="post" style="margin-top:20px;">'
+				. '<input type="submit" name="init" class="btn btn-default btn-block" value="Initialize" />'
 				. '</form>'
+				. '</div>'
 				. '</div>';
 
 		return $ret;
@@ -355,7 +356,7 @@ class main
 		foreach ($this->options->preview_server as $key => $prev_row) {
 			$row .= '<tr>'
 					. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-					. '<td class="p-center"><button type="button" id="state_' . htmlspecialchars($prev_row->name) . '" class="btn btn-default btn-block" value="状態" name="state">状態</button></td>'
+					. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 					. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 			foreach ($branch_list as $branch) {
@@ -396,8 +397,33 @@ class main
 			// 既に初期化済みかのチェック
 			if ($already_init_ret->already_init) {
 
+				$state = '';
+
+				// 状態の表示
+				if( isset($this->options->_POST->state) ) {
+
+					// git status取得
+					$ret = $this->git->status($this->options->_POST->preview_server_name);
+
+					$state = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
+							. '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
+							. '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
+							. '<div class="dialog_box">'
+							. '<h1>状態</h1>'
+							. '<div>'
+							. '<div class="px2dt-git-commit">aaa'
+							. '</div>'
+							. '</div>'
+							. '<div class="dialog-buttons">'
+							. '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary btn btn-secondary">閉じる</button>'
+							. '</div>'
+							. '</div>'
+							. '</div>'
+							. '</div></div>';
+				}
+
 				// 初期化済みの表示
-				return $this->disp_after_initialize();
+				return $this->disp_after_initialize() . $state;
 
 			} else {
 

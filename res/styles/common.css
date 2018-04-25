@@ -38,3 +38,17 @@ table th {
 	text-align: center;
 	margin-top: 20%;
 }
+
+.dialog_box {
+	width: 80%;
+    margin: 3em auto;
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-buttons {
+	text-align: center;
+}
