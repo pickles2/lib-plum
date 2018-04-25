@@ -24,7 +24,8 @@
     "autoload": {
         "files": [
             "php/main.php",
-            "php/plum_deploy.php"
+            "php/plum_deploy.php",
+            "php/plum_git.php"
         ]
     },
     "extra": {

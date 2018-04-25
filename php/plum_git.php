@@ -26,6 +26,8 @@ class plum_git
 	 */
 	public function status($preview_server_name) {
 
+		$server_list = $this->main->options->preview_server;
+
 		foreach ( $server_list as $preview_server ) {
 
 			try {
