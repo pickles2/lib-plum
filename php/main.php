@@ -320,7 +320,7 @@ class main
 	}
 
 	private function disp_before_initialize() {
-		$ret;
+		$ret = "";
 
 		// 初期化前の画面表示
 		$ret = '<div class="panel panel-warning" style="margin-top:20px;">'
@@ -336,7 +336,7 @@ class main
 	}
 
 	private function disp_after_initialize() {
-		$ret;
+		$ret = "";
 		$row = "";
 
 		// 初期化後の画面表示
@@ -376,6 +376,54 @@ class main
 		return $ret;
 	}
 
+	private function disp_status($status) {
+		$ret = "";
+		$list = "";
+		$list_group = "";
+
+		if ( $status->changes ) {
+			foreach ( $status->changes as $change ) {
+				$list .= '<li class="list-group-item">[' . $this->file_status_constants($change) . '] '. $change->file . '</li>';
+			}
+
+			$list_group = '<ul class="list-group">'.$list.'</ul>';
+		}
+		
+		$ret = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
+			 . '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
+			 . '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
+			 . '<div class="dialog_box">'
+			 . '<h1>状態</h1>'
+			 . '<div>'
+			 . $list_group
+			 . '</div>'
+			 . '<div class="dialog-buttons">'
+			 . '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary btn btn-secondary">閉じる</button>'
+			 . '</div>'
+			 . '</div>'
+			 . '</div>'
+			 . '</div></div>';
+
+		return $ret;
+	}
+
+	private function file_status_constants($status) {
+
+		if($status->work_tree == '?' && $status->index == '?'){
+			return 'untracked';
+		}else if($status->work_tree == 'A' || $status->index == 'A'){
+			return 'added';
+		}else if($status->work_tree == 'M' || $status->index == 'M'){
+			return 'modified';
+		}else if($status->work_tree == 'D' || $status->index == 'D'){
+			return 'deleted';
+		}else if($status->work_tree == 'R' || $status->index == 'R'){
+			return 'renamed';
+		}
+		return 'unknown';
+
+	}
+
 	/**
 	 * 
 	 */
@@ -403,9 +451,13 @@ class main
 				if( isset($this->options->_POST->state) ) {
 
 					// git status取得
-					$ret = $this->git->status($this->options->_POST->preview_server_name);
+					$status = $this->git->status($this->options->_POST->preview_server_name);
+					$status = json_decode(json_encode($status));
+					
+					// 画面出力用html生成
+					$ret = $this->disp_status($status);
 
-					$state = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
+					$status = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
 							. '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
 							. '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
 							. '<div class="dialog_box">'
@@ -423,7 +475,7 @@ class main
 				}
 
 				// 初期化済みの表示
-				return $this->disp_after_initialize() . $state;
+				return $this->disp_after_initialize() . $ret;
 
 			} else {
 

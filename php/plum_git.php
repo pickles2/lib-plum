@@ -1,8 +1,7 @@
 <?php
-
-require_once(__DIR__.'/../vendor/autoload.php');
-
 namespace hk\plum;
+
+require_once(__DIR__.'/../../../../vendor/autoload.php');
 
 class plum_git
 {
@@ -18,7 +17,7 @@ class plum_git
 	 */
 	public function __construct($main) {
 		$this->main = $main;
-		$this->git = new PHPGit\Git();
+		$this->git = new \PHPGit\Git();
 	}
 
 	/**
@@ -30,21 +29,18 @@ class plum_git
 
 		foreach ( $server_list as $preview_server ) {
 
-			try {
+			if ( trim($preview_server->name) == trim($preview_server_name) ) {
 
-				if ( trim($preview_server->name) == trim($preview_server_name) ) {
-
-					$ret = $this->git->status($preview_server->path);
-					return $ret;
-
-				}
-
-			} catch (Exception $e) {
+				$this->git->setRepository(realpath($preview_server->path));
+				$this->git->fetch('origin');
+				$ret = $this->git->remote();
 				
+				return $ret;
+
 			}
 		}
 
-		return 0;
+		return "";
 		
 	}
 }
