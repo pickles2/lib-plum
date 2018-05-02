@@ -4,7 +4,8 @@ hk-r/lib-plum
 ウェブプロジェクトをプレビュー環境へデプロイする機能を提供するライブラリです。
 
 ## 導入方法 - Setup
-### 1. `composer.json` に `hk-r/lib-plum` を設定する
+### 1. composerの設定
+#### 1-1. `composer.json` に `hk-r/lib-plum` を設定する
 
 `require` の項目に、`hk-r/lib-plum` を追加します。
 
@@ -19,7 +20,7 @@ hk-r/lib-plum
 }
 ```
 
-### 2. composer update を実行する
+#### 1-2. composer update を実行する
 
 追加したら、`composer update` を実行して変更を反映することを忘れずに。
 
@@ -27,7 +28,29 @@ hk-r/lib-plum
 $ composer update
 ```
 
-### 3． plumを初期化する
+### 2. Resourceファイルの取込
+plumを動作させる上で必要となるResrouceファイルをプロジェクトに取込みます。
+#### 2-1. Resourceファイル取込用スクリプトをプロジェクトへコピーする
+```
+$ cp yourProject\vendor\hk-r\lib-plum\res_install_script.php yourProject\
+```
+
+#### 2-2. スクリプトをコマンドラインで実行する
+```
+$ php res_install_script.php [resourceInstallPath(ex. ./res)]
+```
+
+#### 2-3. Resourceを読込む
+```
+<link rel="stylesheet" href="/[resourceInstallPath]/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/[resourceInstallPath]/styles/common.css">
+
+<script src="/[resourceInstallPath]/bootstrap/js/bootstrap.min.js"></script>
+<script src="/[resourceInstallPath]/scripts/common.js"></script>
+```
+
+### 3. plumの実行
+#### 3-1. 初期化する
 
 各種パラメータを設定し、lib-plumのmainクラスを呼び出し初期化を行います。
 
@@ -93,7 +116,7 @@ $plum = new hk\plum\main(
 );
 ```
 
-### 4． plumを実行する
+#### 3-2. plumを実行する
 
 `run()` を実行します。
 
