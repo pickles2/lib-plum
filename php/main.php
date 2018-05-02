@@ -446,6 +446,7 @@ class main
 			if ($already_init_ret->already_init) {
 
 				$state = '';
+				$state_ret = '';
 
 				// 状態の表示
 				if( isset($this->options->_POST->state) ) {
@@ -455,27 +456,11 @@ class main
 					$status = json_decode(json_encode($status));
 					
 					// 画面出力用html生成
-					$ret = $this->disp_status($status);
-
-					$status = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
-							. '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
-							. '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
-							. '<div class="dialog_box">'
-							. '<h1>状態</h1>'
-							. '<div>'
-							. '<div class="px2dt-git-commit">aaa'
-							. '</div>'
-							. '</div>'
-							. '<div class="dialog-buttons">'
-							. '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary btn btn-secondary">閉じる</button>'
-							. '</div>'
-							. '</div>'
-							. '</div>'
-							. '</div></div>';
+					$state_ret = $this->disp_status($status);
 				}
 
 				// 初期化済みの表示
-				return $this->disp_after_initialize() . $ret;
+				return $this->disp_after_initialize() . $state_ret;
 
 			} else {
 
