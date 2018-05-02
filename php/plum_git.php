@@ -33,7 +33,7 @@ class plum_git
 
 				$this->git->setRepository(realpath($preview_server->path));
 				$this->git->fetch('origin');
-				$ret = $this->git->remote();
+				$ret = $this->git->status();
 				
 				return $ret;
 
