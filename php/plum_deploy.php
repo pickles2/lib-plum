@@ -71,6 +71,9 @@ class plum_deploy
 							}
 						}
 
+						// git fetch
+						exec( 'git fetch origin', $output );
+
 						// 現在のブランチと選択されたブランチが異なる場合は、ブランチを切り替える
 						if ( $now_branch !== $to_branch_rep ) {
 
@@ -85,9 +88,6 @@ class plum_deploy
 								exec( 'git checkout -b ' . $to_branch_rep . ' ' . $to_branch, $output);
 							}
 						}
-
-						// git fetch
-						exec( 'git fetch origin', $output );
 
 						// git pull
 						exec( 'git pull origin ' . $to_branch_rep, $output );
