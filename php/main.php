@@ -157,30 +157,29 @@ class main
 
 		$server_list = $this->options->preview_server;
 		
+		// 初期値設定
+		$result['status'] = true;
+		$result['already_init'] = true;
+
 		foreach ( $server_list as $preview_server ) {
 
 			try {
 
 				if ( strlen($preview_server->path) ) {
 
-					// デプロイ先のディレクトリが存在するかチェック
-					if ( file_exists( $preview_server->path) ) {
-						// 存在する場合
-
-						// 「.git」フォルダが存在すれば初期化済みと判定
-						if ( file_exists( $preview_server->path . "/.git") ) {
-							// 存在する場合
-
-							$result['status'] = true;
-							$result['already_init'] = true;
-							return json_encode($result);
-						}
+					// デプロイ先のディレクトリが存在しない、または「.git」フォルダが存在しない場合
+					if ( !file_exists( $preview_server->path) ||
+						 !file_exists( $preview_server->path . "/.git")) {
+						
+						$result['already_init'] = false;
+						break;
 					}
 				}
 
 			} catch (Exception $e) {
 
 				$result['status'] = false;
+				$result['already_init'] = false;
 				$result['message'] = $e->getMessage();
 
 				return json_encode($result);
@@ -188,8 +187,6 @@ class main
 
 		}
 
-		$result['status'] = true;
-		$result['already_init'] = false;
 		return json_encode($result);
 
 	}
@@ -325,7 +322,7 @@ class main
 		// 初期化前の画面表示
 		$ret = '<div class="panel panel-warning" style="margin-top:20px;">'
 				. '<div class="panel-heading">'
-				. '<p class="panel-title">Initializeを実行してください</p>'
+				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
 				. '<form method="post" style="margin-top:20px;">'
 				. '<input type="submit" name="init" class="btn btn-default btn-block" value="Initialize" />'
 				. '</form>'
@@ -354,20 +351,25 @@ class main
 				. '<tbody>';
 
 		foreach ($this->options->preview_server as $key => $prev_row) {
-			$row .= '<tr>'
-					. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-					. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-					. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
+		
+			// デプロイ先のディレクトリが存在する場合
+			if ( file_exists( $prev_row->path)) {
 
-			foreach ($branch_list as $branch) {
-				$row .= '<option value="' . htmlspecialchars($branch) . '" ' . $this->compare_to_current_branch($prev_row->path, $branch) . '>' . htmlspecialchars($branch) . '</option>';
+				$row .= '<tr>'
+						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
+						. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
+
+				foreach ($branch_list as $branch) {
+					$row .= '<option value="' . htmlspecialchars($branch) . '" ' . $this->compare_to_current_branch($prev_row->path, $branch) . '>' . htmlspecialchars($branch) . '</option>';
+				}
+
+				$row .= '</select>'
+						. '</td>'
+						. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
+						. '</tr>';
 			}
-
-			$row .= '</select>'
-					. '</td>'
-					. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-					. '<td class="p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
-					. '</tr>';
 		}
 
 		$ret .= $row;
@@ -425,76 +427,99 @@ class main
 	}
 
 	/**
+	 * マスタブランチの存在チェック
+	 *	 
+	 * @return 
+	 *  存在する場合：true
+	 *  存在しない場合：false
+	 */
+	private function exists_master_branch() {
+
+		$ret = true;
+		
+		// デプロイ先のマスタブランチが無い場合はfalseを返す
+		if ( !file_exists( $this->options->git->repository ) ) {
+			$ret = false;
+		}
+
+		return $ret;
+
+	}
+
+
+	/**
 	 * 
 	 */
 	public function run() {
 
-		if( isset($this->options->_POST->reflect) ) {
+		// initialize処理のエラーメッセージ
+		$init_error_msg = '';  
 
-			// deploy処理
-			$ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
-			
-			// 初期化済みの表示
-			return $this->disp_after_initialize();
+		// 初期化ボタンが押下された場合
+		if (isset($this->options->_POST->init)) {
+
+			// initialize処理
+			$init_ret = $this->init();
+			$init_ret = json_decode($init_ret);
+
+			if ( !$init_ret->status ) {
+				// 初期化失敗
+
+				// エラーメッセージ
+				$init_error_msg = '
+				<script type="text/javascript">
+					console.error("' . $init_ret->message . '");
+					alert("initialize faild");
+				</script>';
+			}
+		} 
+
+		// マスタブランチの存在チェック
+		$exist_master_flg = $this->exists_master_branch();
+
+		// 画面表示
+		$disp = '';
+		
+		if (!$exist_master_flg) {
+
+			$disp = $this->disp_before_initialize();
 
 		} else {
 
 			$already_init_ret = $this->get_initialize_status();
 			$already_init_ret = json_decode($already_init_ret);
+			
+			// 状態の表示
+			$state_ret = '';
 
-			// 既に初期化済みかのチェック
-			if ($already_init_ret->already_init) {
+			// initializaされていないプレビューが存在する場合
+			if (!$already_init_ret->already_init) {
 
-				$state = '';
-				$state_ret = '';
+				$disp = $this->disp_before_initialize();
+			}
 
-				// 状態の表示
-				if( isset($this->options->_POST->state) ) {
+			// 反映ボタンの押下
+			if (isset($this->options->_POST->reflect)) {
 
-					// git status取得
-					$status = $this->git->status($this->options->_POST->preview_server_name);
-					$status = json_decode(json_encode($status));
-					
-					// 画面出力用html生成
-					$state_ret = $this->disp_status($status);
-				}
+				// deploy処理
+				$ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
+				
+			// 状態ボタンの押下
+			} else if (isset($this->options->_POST->state)) {
 
-				// 初期化済みの表示
-				return $this->disp_after_initialize() . $state_ret;
+				// git status取得
+				$status = $this->git->status($this->options->_POST->preview_server_name);
+				$status = json_decode(json_encode($status));
+				
+				$state_ret = $this->disp_status($status);
+			}
 
-			} else {
+			$disp .= $this->disp_after_initialize() . $state_ret;
 
-				if (isset($this->options->_POST->init)) {
-					// initialize処理
-					
-					// プレビューサーバの初期化処理
-					$init_ret = $this->init();
-					$init_ret = json_decode($init_ret);
-
-					if ( $init_ret->status ) {
-						
-						// 初期化済みの表示
-						return $this->disp_after_initialize();
-
-					} else {
-						// エラー処理
-						$ret = '
-							<script type="text/javascript">
-								console.error("' . $init_ret->message . '");
-								alert("initialize faild");
-							</script>';
-
-						// 初期化前の表示
-						return $this->disp_before_initialize() . $ret;
-					}
-					
-				} else {
-					// 初期化前の表示
-					return $this->disp_before_initialize();
-				}
-			}	
 		}
-
+		
+		// 画面表示
+		return $disp . $init_error_msg;
 	}
 	
 }
