@@ -1,23 +1,17 @@
 <?php
 namespace hk\plum;
 
-require_once(__DIR__.'/../../../../vendor/autoload.php');
-
 class plum_git
 {
 	/** hk\plum\mainのインスタンス */
 	private $main;
 
-	/** PHPGit\Gitのインスタンス */
-	private $git;
-	
 	/**
 	 * コンストラクタ
 	 * @param $main = mainのインスタンス
 	 */
 	public function __construct($main) {
 		$this->main = $main;
-		$this->git = new \PHPGit\Git();
 	}
 
 	/**
@@ -25,22 +19,40 @@ class plum_git
 	 */
 	public function status($preview_server_name) {
 
+		$current_dir = realpath('.');
+
 		$server_list = $this->main->options->preview_server;
 
 		foreach ( $server_list as $preview_server ) {
+			chdir($current_dir);
 
 			if ( trim($preview_server->name) == trim($preview_server_name) ) {
 
-				$this->git->setRepository(realpath($preview_server->path));
-				$this->git->fetch('origin');
-				$ret = $this->git->status();
-				
-				return $ret;
+				// ディレクトリ移動
+				if ( chdir($preview_server->path) ) {
 
+					$result = array('changes' => array());
+
+					// git 状態取得
+					exec('git status --porcelain -s', $output);
+
+					if ( is_array($output) ) {
+						foreach ($output as $line) {
+							$result['changes'][] = array(
+								'file'      => substr($line, 3),
+								'index'     => substr($line, 0, 1),
+								'work_tree' => substr($line, 1, 1)
+							);
+						}
+					}
+
+					chdir($current_dir);
+					
+					return $result;
+				}
 			}
 		}
 
-		return "";
-		
+		return $result;
 	}
 }
