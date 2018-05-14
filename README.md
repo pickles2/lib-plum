@@ -5,7 +5,7 @@ pickles2/lib-plum
 
 ## 導入方法 - Setup
 ### 1. composerの設定
-#### 1-1. `composer.json` に `hk-r/lib-plum` を設定する
+#### 1-1. `composer.json` に `pickles2/lib-plum` を設定する
 
 `require` の項目に、`hk-r/lib-plum` を追加します。
 
@@ -14,7 +14,7 @@ pickles2/lib-plum
 	〜 中略 〜
     "require": {
         "php": ">=5.3.0" ,
-        "hk-r/lib-plum": "dev-develop"
+        "pickles2/lib-plum": "dev-develop"
     },
 	〜 中略 〜
 }
@@ -32,7 +32,7 @@ $ composer update
 plumを動作させる上で必要となるResrouceファイルをプロジェクトに取込みます。
 #### 2-1. Resourceファイル取込用スクリプトをプロジェクトへコピーする
 ```
-$ cp yourProject\vendor\hk-r\lib-plum\res_install_script.php yourProject\
+$ cp yourProject\vendor\pickles2\lib-plum\res_install_script.php yourProject\
 ```
 
 #### 2-2. スクリプトをコマンドラインで実行する
