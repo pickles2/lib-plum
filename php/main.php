@@ -324,7 +324,7 @@ class main
 				. '<div class="panel-heading">'
 				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
 				. '<form method="post" style="margin-top:20px;">'
-				. '<input type="submit" name="init" class="btn btn-default btn-block" value="Initialize" />'
+				. '<input type="submit" id="init_btn" name="init" class="btn btn-default btn-block" value="Initialize" />'
 				. '</form>'
 				. '</div>'
 				. '</div>';
@@ -391,7 +391,7 @@ class main
 			$list_group = '<ul class="list-group">'.$list.'</ul>';
 		}
 		
-		$ret = '<div class="dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
+		$ret = '<div class="dialog" id="status_dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
 			 . '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
 			 . '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
 			 . '<div class="dialog_box">'
@@ -517,9 +517,12 @@ class main
 			$disp .= $this->disp_after_initialize() . $state_ret;
 
 		}
+
+		// 画面ロック用
+		$disp_lock = '<div id="loader-bg"><div id="loading"></div></div>';
 		
 		// 画面表示
-		return $disp . $init_error_msg;
+		return $disp . $disp_lock . $init_error_msg;
 	}
 	
 }

@@ -32,7 +32,7 @@ $ composer update
 plumを動作させる上で必要となるResrouceファイルをプロジェクトに取込みます。
 #### 2-1. Resourceファイル取込用スクリプトをプロジェクトへコピーする
 ```
-$ cp yourProject\vendor\pickles2\lib-plum\res_install_script.php yourProject\
+$ cp yourProject/vendor/pickles2/lib-plum/res_install_script.php yourProject/
 ```
 
 #### 2-2. スクリプトをコマンドラインで実行する
@@ -56,6 +56,8 @@ $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 
 ```
 <?php
+// 実行環境に合わせてパスを設定
+require_once('./vendor/autoload.php');
 
 $plum = new hk\plum\main(
 	array(
