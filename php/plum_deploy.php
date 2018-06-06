@@ -96,12 +96,12 @@ class plum_deploy
 						// プレビューサーバのディレクトリが存在しない場合
 
 						// エラー処理
-						throw new Exception('Preview server directory not found.');
+						throw new \Exception('Preview server directory not found.');
 					}
 
 				}
 
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				set_time_limit(30);
 
 				$result['status'] = false;

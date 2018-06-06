@@ -94,7 +94,7 @@ class main
 							// ディレクトリが作成できない場合
 
 							// エラー処理
-							throw new Exception('Creation of preview server directory failed.');
+							throw new \Exception('Creation of preview server directory failed.');
 						}
 					}
 
@@ -123,12 +123,12 @@ class main
 							// プレビューサーバのディレクトリが存在しない場合
 
 							// エラー処理
-							throw new Exception('Preview server directory not found.');
+							throw new \Exception('Preview server directory not found.');
 						}
 					}
 				}
 
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				set_time_limit(30);
 
 				$result['status'] = false;
@@ -176,7 +176,7 @@ class main
 					}
 				}
 
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$result['status'] = false;
 				$result['already_init'] = false;
@@ -225,10 +225,10 @@ class main
 				// プレビューサーバのディレクトリが存在しない場合
 
 				// エラー処理
-				throw new Exception('Preview server directory not found.');
+				throw new \Exception('Preview server directory not found.');
 			}
 
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
@@ -298,10 +298,10 @@ class main
 				// プレビューサーバのディレクトリが存在しない場合
 
 				// エラー処理
-				throw new Exception('Preview server directory not found.');
+				throw new \Exception('Preview server directory not found.');
 			}
 
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
@@ -452,8 +452,8 @@ class main
 	 */
 	public function run() {
 
-		// initialize処理のエラーメッセージ
-		$init_error_msg = '';  
+		// エラーメッセージ
+		$error_msg = '';  
 
 		// 初期化ボタンが押下された場合
 		if (isset($this->options->_POST->init)) {
@@ -466,7 +466,7 @@ class main
 				// 初期化失敗
 
 				// エラーメッセージ
-				$init_error_msg = '
+				$error_msg = '
 				<script type="text/javascript">
 					console.error("' . $init_ret->message . '");
 					alert("initialize faild");
@@ -502,8 +502,21 @@ class main
 			if (isset($this->options->_POST->reflect)) {
 
 				// deploy処理
-				$ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
+				$deploy_ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
 				
+				$deploy_ret = json_decode($deploy_ret);
+
+				if ( !$deploy_ret->status ) {
+					// デプロイ失敗
+
+					// エラーメッセージ
+					$error_msg = '
+					<script type="text/javascript">
+						console.error("' . $deploy_ret->message . '");
+						alert("deploy faild");
+					</script>';
+				}
+
 			// 状態ボタンの押下
 			} else if (isset($this->options->_POST->state)) {
 
@@ -522,7 +535,7 @@ class main
 		$disp_lock = '<div id="loader-bg"><div id="loading"></div></div>';
 		
 		// 画面表示
-		return $disp . $disp_lock . $init_error_msg;
+		return $disp . $disp_lock . $error_msg;
 	}
 	
 }

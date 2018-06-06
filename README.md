@@ -7,14 +7,14 @@ pickles2/lib-plum
 ### 1. composerの設定
 #### 1-1. `composer.json` に `pickles2/lib-plum` を設定する
 
-`require` の項目に、`hk-r/lib-plum` を追加します。
+`require` の項目に、`pickles2/lib-plum` を追加します。
 
 ```
 {
 	〜 中略 〜
     "require": {
         "php": ">=5.3.0" ,
-        "pickles2/lib-plum": "dev-develop"
+        "pickles2/lib-plum": "^1.0"
     },
 	〜 中略 〜
 }
@@ -128,7 +128,7 @@ echo $plum->run();
 ```
 
 ## 更新履歴 - Change log
-### lib-plum x.x (yyyy年mm月dd日)
+### lib-plum 1.0.0-beta.1 (2018年6月7日)
 - Initial Release.
 
 ## ライセンス - License
