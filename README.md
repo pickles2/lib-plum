@@ -14,7 +14,7 @@ pickles2/lib-plum
 	〜 中略 〜
     "require": {
         "php": ">=5.3.0" ,
-        "pickles2/lib-plum": "^1.0"
+        "pickles2/lib-plum": "^0.1"
     },
 	〜 中略 〜
 }
