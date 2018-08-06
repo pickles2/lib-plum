@@ -4,12 +4,14 @@ pickles2/lib-plum
 ウェブプロジェクトをプレビュー環境へデプロイする機能を提供するライブラリです。
 
 ## 導入方法 - Setup
+
 ### 1. composerの設定
+
 #### 1-1. `composer.json` に `pickles2/lib-plum` を設定する
 
 `require` の項目に、`pickles2/lib-plum` を追加します。
 
-```
+```json
 {
 	〜 中略 〜
     "require": {
@@ -29,19 +31,25 @@ $ composer update
 ```
 
 ### 2. Resourceファイルの取込
+
 plumを動作させる上で必要となるResrouceファイルをプロジェクトに取込みます。
+
+
 #### 2-1. Resourceファイル取込用スクリプトをプロジェクトへコピーする
+
 ```
 $ cp yourProject/vendor/pickles2/lib-plum/res_install_script.php yourProject/
 ```
 
 #### 2-2. スクリプトをコマンドラインで実行する
+
 ```
 $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 ```
 
 #### 2-3. Resourceを読込む
-```
+
+```html
 <link rel="stylesheet" href="/[resourceInstallPath]/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/[resourceInstallPath]/styles/common.css">
 
@@ -50,11 +58,12 @@ $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 ```
 
 ### 3. plumの実行
+
 #### 3-1. 初期化する
 
 各種パラメータを設定し、lib-plumのmainクラスを呼び出し初期化を行います。
 
-```
+```php
 <?php
 // 実行環境に合わせてパスを設定
 require_once('./vendor/autoload.php');
@@ -136,6 +145,10 @@ echo $plum->run();
 ```
 
 ## 更新履歴 - Change log
+
+### lib-plum 0.1.1 (2018年6月7日)
+- git リモートリポジトリ のIDとパスワードが設定されていない場合に、認証情報なしでアクセスするようになった。
+
 ### lib-plum 0.1.0 (2018年6月7日)
 - Initial Release.
 

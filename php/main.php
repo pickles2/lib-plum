@@ -111,7 +111,12 @@ class main
 							exec('git init', $output);
 
 							// git urlのセット
-							$url = $this->options->git->protocol . "://" . urlencode($this->options->git->username) . ":" . urlencode($this->options->git->password) . "@" . $this->options->git->url;
+							$url = $this->options->git->protocol . "://";
+							if( strlen(@$this->options->git->username) ){
+								// ID/PW が設定されていない場合は、認証情報なしでアクセスする。
+								$url .= urlencode($this->options->git->username) . ":" . urlencode($this->options->git->password) . "@";
+							}
+							$url .= $this->options->git->url;
 							exec('git remote add origin ' . $url, $output);
 
 							// git fetch
