@@ -1,5 +1,6 @@
 .DS_Store
 Thumbs.db
 /config/default.json
+/tests/testdata/repos/
 /vendor/
 composer.lock
