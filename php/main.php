@@ -4,44 +4,46 @@ namespace hk\plum;
 
 class main
 {
-	/** オプション 
-		_GET,
-		_POST,
-		_COOKIE,
-		_SESSION,
-		preview_server = array(
-			// プレビューサーバの数だけ用意する
-			array(
-				string 'name':
-					- プレビューサーバ名(任意)
-				string 'path':
-					- プレビューサーバ(デプロイ先)のパス
-				string 'url':
-					- プレビューサーバのURL
-					  Webサーバのvirtual host等で設定したURL
-			)
-		),
-		git = array(
-			string 'repository':
-				- ウェブプロジェクトのリポジトリパス
-				  例) ./../repos/master/
-			string 'protocol':
-				- https
-				  ※現状はhttpsのみ対応
-			string 'host':
-				- Gitリポジトリのhost
-				  例) github.com
-			string 'url':
-				- Gitリポジトリのurl
-				  例) github.com/hk-r/px2-sample-project.git
-			string 'username':
-				- Gitリポジトリのユーザ名
-				  例) hoge
-			string 'password':
-				- Gitリポジトリのパスワード
-				  例) fuga
-		)
-	*/
+	/**
+	 * オプション
+	 * 
+	 * _GET,
+	 * _POST,
+	 * _COOKIE,
+	 * _SESSION,
+	 * preview_server = array(
+	 * 	// プレビューサーバの数だけ用意する
+	 * 	array(
+	 * 		string 'name':
+	 * 			- プレビューサーバ名(任意)
+	 * 		string 'path':
+	 * 			- プレビューサーバ(デプロイ先)のパス
+	 * 		string 'url':
+	 * 			- プレビューサーバのURL
+	 * 			  Webサーバのvirtual host等で設定したURL
+	 * 	)
+	 * ),
+	 * git = array(
+	 * 	string 'repository':
+	 * 		- ウェブプロジェクトのリポジトリパス
+	 * 		  例) ./../repos/master/
+	 * 	string 'protocol':
+	 * 		- https
+	 * 		  ※現状はhttpsのみ対応
+	 * 	string 'host':
+	 * 		- Gitリポジトリのhost
+	 * 		  例) github.com
+	 * 	string 'url':
+	 * 		- Gitリポジトリのurl
+	 * 		  例) github.com/hk-r/px2-sample-project.git
+	 * 	string 'username':
+	 * 		- Gitリポジトリのユーザ名
+	 * 		  例) hoge
+	 * 	string 'password':
+	 * 		- Gitリポジトリのパスワード
+	 * 		  例) fuga
+	 * )
+	 */
 	public $options;
 
 	/** hk\plum\plum_deployのインスタンス */
@@ -246,8 +248,8 @@ class main
 
 	/**
 	 * 現在のブランチと比較する
-	 * @param $branch=比較対象のブランチ
-	 * @return 
+	 * @param string $branch 比較対象のブランチ
+	 * @return string
 	 *  一致する場合：checked(文字列)
 	 *  一致しない場合：空白
 	 */
@@ -429,7 +431,7 @@ class main
 	/**
 	 * マスタブランチの存在チェック
 	 *	 
-	 * @return 
+	 * @return boolean
 	 *  存在する場合：true
 	 *  存在しない場合：false
 	 */
@@ -448,7 +450,7 @@ class main
 
 
 	/**
-	 * 
+	 * 実行する
 	 */
 	public function run() {
 
