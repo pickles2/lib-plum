@@ -1,9 +1,5 @@
 {
     "git":{
-        "protocol": "",
-        "host": "",
-        "url": "",
-        "username": "",
-        "password": ""
+        "url": "https://github.com/hk-r/px2-sample-project.git"
     }
 }

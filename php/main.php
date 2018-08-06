@@ -53,7 +53,7 @@ class main
 
 	/**
 	 * コンストラクタ
-	 * @param $options = オプション
+	 * @param array $options オプション
 	 */
 	public function __construct($options) {
 		$this->options = json_decode(json_encode($options));
@@ -82,6 +82,14 @@ class main
 
 	/**
 	 * initialize GIT Repository
+	 * 
+	 * Gitリポジトリをクローンし、ローカル環境を整えます。
+	 * ツールのセットアップ時に1回実行してください。
+	 * GUIから、 "Initialize" ボタンを実行すると呼び出されます。
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean 初期化に成功した場合に true
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
 	private function init() {
 
@@ -161,7 +169,7 @@ class main
 				$result['message'] = $e->getMessage();
 
 				chdir($current_dir);
-				return json_encode($result);
+				return $result;
 			}
 
 		}
@@ -169,11 +177,16 @@ class main
 
 		$result['status'] = true;
 
-		return json_encode($result);
+		return $result;
 	}
 
 	/**
 	 * initalizeの状態取得
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean 状態確認に成功した場合に true
+	 * - $result['already_init'] boolean 初期化済みのとき true
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
 	private function get_initialize_status() {
 
@@ -208,17 +221,22 @@ class main
 				$result['already_init'] = false;
 				$result['message'] = $e->getMessage();
 
-				return json_encode($result);
+				return $result;
 			}
 
 		}
 
-		return json_encode($result);
+		return $result;
 
 	}
 
 	/**
 	 * ブランチリストを取得
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean リスト取得に成功した場合に true
+	 * - $result['branch_list'] array 取得された一覧を格納
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
 	private function get_parent_branch_list() {
 
@@ -260,13 +278,13 @@ class main
 			$result['message'] = $e->getMessage();
 
 			chdir($current_dir);
-			return json_encode($result);
+			return $result;
 		}
 
 		$result['status'] = true;
 
 		chdir($current_dir);
-		return json_encode($result);
+		return $result;
 
 	}
 
@@ -279,9 +297,9 @@ class main
 	 */
 	private function compare_to_current_branch($path, $branch) {
 
-		$current = json_decode($this->get_child_current_branch($path));
+		$current = $this->get_child_current_branch($path);
 		
-		if(str_replace("origin/", "", $branch) == $current->current_branch) {
+		if(str_replace("origin/", "", $branch) == $current['current_branch']) {
 			return "selected";
 		} else {
 			return "";
@@ -292,6 +310,11 @@ class main
 
 	/**
 	 * 現在のブランチを取得する
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean 取得に成功した場合に true
+	 * - $result['current_branch'] string ブランチ名を格納
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
 	private function get_child_current_branch($path) {
 
@@ -333,15 +356,18 @@ class main
 			$result['message'] = $e->getMessage();
 
 			chdir($current_dir);
-			return json_encode($result);
+			return $result;
 		}
 
 		$result['status'] = true;
 
 		chdir($current_dir);
-		return json_encode($result);
+		return $result;
 	}
 
+	/**
+	 * 初期化前の画面を表示する
+	 */
 	private function disp_before_initialize() {
 		$ret = "";
 
@@ -358,15 +384,18 @@ class main
 		return $ret;
 	}
 
+	/**
+	 * 初期化後の画面を表示する
+	 */
 	private function disp_after_initialize() {
 		$ret = "";
 		$row = "";
 
 		// 初期化後の画面表示
 		// Gitリポジトリ取得
-		$get_branch_ret = json_decode($this->get_parent_branch_list());
+		$get_branch_ret = $this->get_parent_branch_list();
 		$branch_list = array();
-		$branch_list = $get_branch_ret->branch_list;
+		$branch_list = $get_branch_ret['branch_list'];
 
 		$ret = '<table class="table table-bordered">'
 				. '<thead>'
@@ -404,6 +433,9 @@ class main
 		return $ret;
 	}
 
+	/**
+	 * 状態画面を表示する
+	 */
 	private function disp_status($status) {
 		$ret = "";
 		$list = "";
@@ -435,6 +467,9 @@ class main
 		return $ret;
 	}
 
+	/**
+	 * ファイルごとの状態の名称を得る
+	 */
 	private function file_status_constants($status) {
 
 		if($status->work_tree == '?' && $status->index == '?'){
@@ -475,6 +510,7 @@ class main
 
 	/**
 	 * 実行する
+	 * @return string HTMLソースコード
 	 */
 	public function run() {
 
@@ -486,15 +522,14 @@ class main
 
 			// initialize処理
 			$init_ret = $this->init();
-			$init_ret = json_decode($init_ret);
 
-			if ( !$init_ret->status ) {
+			if ( !@$init_ret['status'] ) {
 				// 初期化失敗
 
 				// エラーメッセージ
 				$error_msg = '
 				<script type="text/javascript">
-					console.error("' . $init_ret->message . '");
+					console.error("' . $init_ret['message'] . '");
 					alert("initialize faild");
 				</script>';
 			}
@@ -513,13 +548,12 @@ class main
 		} else {
 
 			$already_init_ret = $this->get_initialize_status();
-			$already_init_ret = json_decode($already_init_ret);
 			
 			// 状態の表示
 			$state_ret = '';
 
 			// initializaされていないプレビューが存在する場合
-			if (!$already_init_ret->already_init) {
+			if (!$already_init_ret['already_init']) {
 
 				$disp = $this->disp_before_initialize();
 			}

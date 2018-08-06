@@ -42,7 +42,7 @@ $plum = new hk\plum\main(
 			array(
 				'name' => 'preview1',
 				'path' => __DIR__.'/../repos/preview1/',
-				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/preview1/',
+				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview1/',
 			)
 		),
 
