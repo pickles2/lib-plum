@@ -144,7 +144,7 @@ class main
 								$url .= urlencode($this->options->git->username) . ":" . urlencode($this->options->git->password) . "@";
 							}
 							$url .= $this->options->git->url;
-							exec('git remote add origin ' . $url, $output);
+							exec('git remote add origin ' . escapeshellarg($url), $output);
 
 							// git fetch
 							exec( 'git fetch origin', $output);

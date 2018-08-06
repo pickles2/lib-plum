@@ -171,4 +171,24 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 	}
 
+
+	/**
+	 * OS Command Injection Countermeasure
+	 */
+	public function testOsCommandInjectionCountermeasure(){
+
+		// 外部の攻撃者が任意のコマンドを実行してみるテスト
+		$options = $this->options;
+		$options['_POST'] = array(
+			'reflect' => 1,
+			'preview_server_name' => 'preview3',
+			'branch_form_list' => 'origin/tests/branch_001; touch OsCommandInjectionCountermeasure.txt;',
+		);
+		$plum = new hk\plum\main( $options );
+		$stdout = $plum->run();
+		// var_dump($stdout);
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/OsCommandInjectionCountermeasure.txt' ) );
+
+	}
+
 }

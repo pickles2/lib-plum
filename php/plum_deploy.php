@@ -85,17 +85,17 @@ class plum_deploy
 							if ($already_local_branch_exists) {
 								// 選択された(切り替える)ブランチが既にチェックアウト済みの場合
 
-								exec( 'git checkout ' . $to_branch_rep, $output);
+								exec( 'git checkout ' . escapeshellarg($to_branch_rep), $output);
 
 							} else {
 								// 選択された(切り替える)ブランチがまだチェックアウトされてない場合
 
-								exec( 'git checkout -b ' . $to_branch_rep . ' ' . $to_branch, $output);
+								exec( 'git checkout -b ' . escapeshellarg($to_branch_rep) . ' ' . escapeshellarg($to_branch), $output);
 							}
 						}
 
 						// git pull
-						exec( 'git pull origin ' . $to_branch_rep, $output );
+						exec( 'git pull origin ' . escapeshellarg($to_branch_rep), $output );
 
 					} else {
 						// プレビューサーバのディレクトリが存在しない場合
