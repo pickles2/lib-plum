@@ -61,7 +61,7 @@ $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 
 #### 3-1. 初期化する
 
-各種パラメータを設定し、lib-plumのmainクラスを呼び出し初期化を行います。
+各種パラメータを設定し、`lib-plum` の `main` クラスを呼び出し初期化を行います。
 
 ```php
 <?php
@@ -109,23 +109,41 @@ $plum = new hk\plum\main(
 
 			// ホスト
 			// Gitリポジトリのhostを設定。
-			'host' => 'github.com',
+			'host' => 'host.com',
 
-			// url
-			// Gitリポジトリのhostを設定。
-			'url' => 'github.com/hk-r/px2-sample-project.git',
+			// GitリポジトリのURL
+			// Gitリポジトリのhost以下のパスを設定。
+			'url' => 'host.com/path/to.git',
 
 			// ユーザ名
 			// Gitリポジトリのユーザ名を設定。
-			'username' => 'hoge',
+			'username' => 'user',
 
 			// パスワード
 			// Gitリポジトリのパスワードを設定。
-			'password' => 'fuga'
+			'password' => 'pass'
 		)
 	)
 );
 ```
+
+gitリポジトリの情報は、次のように1つの完全なURLの形式で設定することもできます。
+このとき、 `protocol`、 `host`、 `username`、 `password` が設定されているとき、これらが優先されます。それぞれ空白に設定するようにしてください。
+
+```php
+// Git情報定義
+'git' => array(
+	
+	// リポジトリのパス
+	// ウェブプロジェクトのリポジトリパスを設定。
+	'repository' => './../repos/master/',
+
+	// Gitリポジトリの完全なURL
+	'url' => 'https://user:pass@host.com/path/to.git',
+)
+```
+
+
 
 #### 3-2. デプロイ先のディレクトリに書き込み権限の付与
 
@@ -148,6 +166,7 @@ echo $plum->run();
 
 ### lib-plum 0.1.1 (2018年6月7日)
 - git リモートリポジトリ のIDとパスワードが設定されていない場合に、認証情報なしでアクセスするようになった。
+- git repository のURLを解析してコンフィグを補完するようになった。 `https://user:pass@host.com/path/to.git` のような1つの完全な URL の形で設定できる。
 
 ### lib-plum 0.1.0 (2018年6月7日)
 - Initial Release.

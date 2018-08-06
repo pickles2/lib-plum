@@ -59,10 +59,29 @@ class main
 		$this->options = json_decode(json_encode($options));
 		$this->deploy = new plum_deploy($this);
 		$this->git = new plum_git($this);
+
+		// git repository のURLを解析してコンフィグを補完する
+		$parsed_url = parse_url($this->options->git->url);
+		if( strlen(@$parsed_url['scheme']) && !strlen(@$this->options->git->protocol) ){
+			$this->options->git->protocol = $parsed_url['scheme'];
+		}
+		if( strlen(@$parsed_url['host']) && !strlen(@$this->options->git->host) ){
+			$this->options->git->host = $parsed_url['host'];
+		}
+		if( strlen(@$parsed_url['user']) && !strlen(@$this->options->git->username) ){
+			$this->options->git->username = $parsed_url['user'];
+		}
+		if( strlen(@$parsed_url['pass']) && !strlen(@$this->options->git->password) ){
+			$this->options->git->password = $parsed_url['pass'];
+		}
+		if( strlen(@$parsed_url['host']) && strlen(@$parsed_url['path']) ){
+			$this->options->git->url = $parsed_url['host'].$parsed_url['path'];
+		}
+
 	}
 
 	/**
-	 * initialize
+	 * initialize GIT Repository
 	 */
 	private function init() {
 
