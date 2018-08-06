@@ -83,9 +83,36 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/php/main.php' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/php/main.php' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/php/main.php' ) );
-		// $this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
-		// $this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
-		// $this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+
+	}
+
+	/**
+	 * Change Branch
+	 */
+	public function testChangeBranch(){
+		$options = $this->options;
+		$options['_POST'] = array(
+			'reflect' => 1,
+			'preview_server_name' => 'preview1',
+			'branch_form_list' => 'origin/tests/branch_001',
+		);
+		$plum = new hk\plum\main( $options );
+		$stdout = $plum->run();
+		// var_dump($stdout);
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/php/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/php/main.php' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/php/main.php' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/php/main.php' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/branch_001.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_001.html' ) );
 
 	}
 
