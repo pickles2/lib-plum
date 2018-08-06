@@ -17,6 +17,11 @@ class plum_deploy
 
 	/**
 	 * deploy
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean deployに成功した場合に true
+	 * - $result['current_branch'] string ブランチ名を格納
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
 	public function set_deploy($preview_server_name, $to_branch) {
 
@@ -108,7 +113,7 @@ class plum_deploy
 				$result['message'] = $e->getMessage();
 
 				chdir($current_dir);
-				return json_encode($result);
+				return $result;
 			}
 
 		}
@@ -117,7 +122,7 @@ class plum_deploy
 		$result['status'] = true;
 
 		chdir($current_dir);
-		return json_encode($result);
+		return $result;
 		
 	}
 }

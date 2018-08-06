@@ -563,16 +563,14 @@ class main
 
 				// deploy処理
 				$deploy_ret = $this->deploy->set_deploy($this->options->_POST->preview_server_name, $this->options->_POST->branch_form_list);
-				
-				$deploy_ret = json_decode($deploy_ret);
 
-				if ( !$deploy_ret->status ) {
+				if ( !$deploy_ret['status'] ) {
 					// デプロイ失敗
 
 					// エラーメッセージ
 					$error_msg = '
 					<script type="text/javascript">
-						console.error("' . $deploy_ret->message . '");
+						console.error("' . $deploy_ret['message'] . '");
 						alert("deploy faild");
 					</script>';
 				}
