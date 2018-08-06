@@ -93,6 +93,8 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Change Branch
 	 */
 	public function testChangeBranch(){
+
+		// preview1 を tests/branch_001 に。
 		$options = $this->options;
 		$options['_POST'] = array(
 			'reflect' => 1,
@@ -111,8 +113,61 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/branch_001.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_001.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+
+
+		// preview2 を tests/branch_002 に。
+		$options = $this->options;
+		$options['_POST'] = array(
+			'reflect' => 1,
+			'preview_server_name' => 'preview2',
+			'branch_form_list' => 'origin/tests/branch_002',
+		);
+		$plum = new hk\plum\main( $options );
+		$stdout = $plum->run();
+		// var_dump($stdout);
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+
+
+		// preview3 を tests/branch_003 に。
+		$options = $this->options;
+		$options['_POST'] = array(
+			'reflect' => 1,
+			'preview_server_name' => 'preview3',
+			'branch_form_list' => 'origin/tests/branch_003',
+		);
+		$plum = new hk\plum\main( $options );
+		$stdout = $plum->run();
+		// var_dump($stdout);
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+
+
+		// preview2 を tests/branch_001 に。
+		$options = $this->options;
+		$options['_POST'] = array(
+			'reflect' => 1,
+			'preview_server_name' => 'preview2',
+			'branch_form_list' => 'origin/tests/branch_001',
+		);
+		$plum = new hk\plum\main( $options );
+		$stdout = $plum->run();
+		// var_dump($stdout);
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/branch_001.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
+		$this->assertFalse( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/' ) );
+		$this->assertFalse( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/' ) );
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/' ) );
 
 	}
 

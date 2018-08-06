@@ -55,7 +55,7 @@ class plum_deploy
 						exec( 'git branch', $output);
 
 						$now_branch;
-						$already_branch_checkout = false;
+						$already_local_branch_exists = false;
 						foreach ( $output as $value ) {
 
 							// 「*」の付いてるブランチを現在のブランチと判定
@@ -72,7 +72,7 @@ class plum_deploy
 
 							// 選択された(切り替える)ブランチがブランチの一覧に含まれているか判定
 							if ( $value == $to_branch_rep ) {
-								$already_branch_checkout = true;
+								$already_local_branch_exists = true;
 							}
 						}
 
@@ -82,7 +82,7 @@ class plum_deploy
 						// 現在のブランチと選択されたブランチが異なる場合は、ブランチを切り替える
 						if ( $now_branch !== $to_branch_rep ) {
 
-							if ($already_branch_checkout) {
+							if ($already_local_branch_exists) {
 								// 選択された(切り替える)ブランチが既にチェックアウト済みの場合
 
 								exec( 'git checkout ' . $to_branch_rep, $output);
