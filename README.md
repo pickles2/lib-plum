@@ -164,7 +164,7 @@ echo $plum->run();
 
 ## 更新履歴 - Change log
 
-### lib-plum 0.1.1 (2018年6月7日)
+### lib-plum 0.1.1 (2018年9月6日)
 - git リモートリポジトリ のIDとパスワードが設定されていない場合に、認証情報なしでアクセスするようになった。
 - git repository のURLを解析してコンフィグを補完するようになった。 `https://user:pass@host.com/path/to.git` のような1つの完全な URL の形で設定できる。
 - OSコマンドインジェクションの脆弱性に関する修正。
