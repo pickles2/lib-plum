@@ -25,6 +25,12 @@ class main
 	 * 	)
 	 * ),
 	 * 
+	 * additional_params = array(
+	 * 	// フォーム送信時に付加する追加のパラメータ (省略可)
+	 * 	'hoge' => 'fuga', // (キーと値のセット)
+	 * 	)
+	 * ),
+	 * 
 	 * git = array(
 	 * 	string 'repository':
 	 * 		- ウェブプロジェクトのリポジトリパス
@@ -362,6 +368,7 @@ class main
 				. '<div class="panel-heading">'
 				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
 				. '<form method="post" style="margin-top:20px;">'
+				. $this->get_additional_params()
 				. '<input type="submit" id="init_btn" name="init" class="btn btn-default btn-block" value="Initialize" />'
 				. '</form>'
 				. '</div>'
@@ -398,7 +405,7 @@ class main
 
 				$row .= '<tr>'
 						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-						. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 				foreach ($branch_list as $branch) {
@@ -407,7 +414,7 @@ class main
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td class="p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}
@@ -541,6 +548,21 @@ class main
 		}
 		return $url;
 
+	}
+
+	/**
+	 * 追加のパラメータを取得する
+	 */
+	public function get_additional_params($type = 'form'){
+		if( !property_exists($this->options, 'additional_params') ){
+			return '';
+		}
+		$params = json_decode(json_encode($this->options->additional_params), true);
+		$rtn = '';
+		foreach($params as $key=>$value){
+			$rtn .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
+		}
+		return $rtn;
 	}
 
 	/**

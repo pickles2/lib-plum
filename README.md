@@ -76,6 +76,11 @@ $plum = new hk\plum\main(
 		// GETパラメータ (省略時、`$_GET` を直接参照します)
 		'_GET' => $_GET,
 
+		// フォーム送信時に付加する追加のパラメータ (省略可)
+		'additional_params' => array(
+			'hoge' => 'fuga',
+		),
+
 		// プレビューサーバ定義
 		'preview_server' => array(
 
@@ -166,6 +171,7 @@ echo $plum->run();
 
 ### pickles2/lib-plum 0.1.2 (リリース日未定)
 
+- オプション `additional_params` を追加。
 - オプション `_GET`, `_POST` を省略可能とした。
 
 ### pickles2/lib-plum 0.1.1 (2018年10月19日)
