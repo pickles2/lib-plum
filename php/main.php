@@ -9,8 +9,9 @@ class main
 	 * 
 	 * _GET,
 	 * _POST,
-	 * _COOKIE,
-	 * _SESSION,
+	 * 		パラメータ。
+	 * 		省略時は、それぞれ `$_GET`, `$_POST` をデフォルトとして参照します。
+	 * 
 	 * preview_server = array(
 	 * 	// プレビューサーバの数だけ用意する
 	 * 	array(
@@ -23,6 +24,7 @@ class main
 	 * 			  Webサーバのvirtual host等で設定したURL
 	 * 	)
 	 * ),
+	 * 
 	 * git = array(
 	 * 	string 'repository':
 	 * 		- ウェブプロジェクトのリポジトリパス
@@ -36,6 +38,8 @@ class main
 	 * 	string 'url':
 	 * 		- Gitリポジトリのurl
 	 * 		  例) github.com/hk-r/px2-sample-project.git
+	 * 		- または、完全なURLとしてまとめて設定ができます
+	 * 		  例) https://user:passwd@github.com/hk-r/px2-sample-project.git
 	 * 	string 'username':
 	 * 		- Gitリポジトリのユーザ名
 	 * 		  例) hoge
@@ -57,6 +61,12 @@ class main
 	 */
 	public function __construct($options) {
 		$this->options = json_decode(json_encode($options));
+		if( !property_exists($this->options, '_POST') ){
+			$this->options->_POST = json_decode(json_encode($_POST));
+		}
+		if( !property_exists($this->options, '_GET') ){
+			$this->options->_GET = json_decode(json_encode($_GET));
+		}
 		$this->deploy = new plum_deploy($this);
 		$this->git = new plum_git($this);
 	}

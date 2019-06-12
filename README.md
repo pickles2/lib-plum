@@ -70,10 +70,10 @@ require_once('./vendor/autoload.php');
 
 $plum = new hk\plum\main(
 	array(
-		// POST
+		// POSTパラメータ (省略時、`$_POST` を直接参照します)
 		'_POST' => $_POST,
 
-		// GET
+		// GETパラメータ (省略時、`$_GET` を直接参照します)
 		'_GET' => $_GET,
 
 		// プレビューサーバ定義
@@ -113,7 +113,7 @@ $plum = new hk\plum\main(
 
 			// GitリポジトリのURL
 			// Gitリポジトリのhost以下のパスを設定。
-			'url' => 'host.com/path/to.git',
+			'url' => 'https://host.com/path/to.git',
 
 			// ユーザ名
 			// Gitリポジトリのユーザ名を設定。
@@ -163,6 +163,10 @@ echo $plum->run();
 ```
 
 ## 更新履歴 - Change log
+
+### pickles2/lib-plum 0.1.2 (リリース日未定)
+
+- オプション `_GET`, `_POST` を省略可能とした。
 
 ### pickles2/lib-plum 0.1.1 (2018年10月19日)
 
