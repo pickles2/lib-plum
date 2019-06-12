@@ -59,25 +59,6 @@ class main
 		$this->options = json_decode(json_encode($options));
 		$this->deploy = new plum_deploy($this);
 		$this->git = new plum_git($this);
-
-		// git repository のURLを解析してコンフィグを補完する
-		$parsed_url = parse_url($this->options->git->url);
-		if( strlen(@$parsed_url['scheme']) && !strlen(@$this->options->git->protocol) ){
-			$this->options->git->protocol = $parsed_url['scheme'];
-		}
-		if( strlen(@$parsed_url['host']) && !strlen(@$this->options->git->host) ){
-			$this->options->git->host = $parsed_url['host'];
-		}
-		if( strlen(@$parsed_url['user']) && !strlen(@$this->options->git->username) ){
-			$this->options->git->username = $parsed_url['user'];
-		}
-		if( strlen(@$parsed_url['pass']) && !strlen(@$this->options->git->password) ){
-			$this->options->git->password = $parsed_url['pass'];
-		}
-		if( strlen(@$parsed_url['host']) && strlen(@$parsed_url['path']) ){
-			$this->options->git->url = $parsed_url['host'].$parsed_url['path'];
-		}
-
 	}
 
 	/**
@@ -138,13 +119,8 @@ class main
 							exec('git init', $output);
 
 							// git urlのセット
-							$url = $this->options->git->protocol . "://";
-							if( strlen(@$this->options->git->username) ){
-								// ID/PW が設定されていない場合は、認証情報なしでアクセスする。
-								$url .= urlencode($this->options->git->username) . ":" . urlencode($this->options->git->password) . "@";
-							}
-							$url .= $this->options->git->url;
-							exec('git remote add origin ' . escapeshellarg($url), $output);
+							$url = $this->get_url_git_remote(true);
+							exec('git remote add origin '.escapeshellarg($url), $output);
 
 							// git fetch
 							exec( 'git fetch origin', $output);
@@ -507,6 +483,55 @@ class main
 
 	}
 
+	/**
+	 * git remote のURLを得る
+	 *	 
+	 * @return string Gitリモートサーバーの完全なURL
+	 */
+	public function get_url_git_remote( $include_credentials = false ) {
+		$parsed_url = parse_url( $this->options->git->url );
+
+		if( property_exists( $this->options->git, 'protocol' ) ){
+			$parsed_url['scheme'] = $this->options->git->protocol;
+		}
+		if( property_exists( $this->options->git, 'username' ) ){
+			$parsed_url['user'] = $this->options->git->username;
+		}
+		if( property_exists( $this->options->git, 'password' ) ){
+			$parsed_url['pass'] = $this->options->git->password;
+		}
+
+		// git urlのセット
+		$url = '';
+		if( array_key_exists('scheme', $parsed_url) && strlen($parsed_url['scheme']) ){
+			$url .= $parsed_url['scheme'];
+		}else{
+			$url .= 'https';
+		}
+		$url .= "://";
+		if( $include_credentials ){
+			if( array_key_exists('user', $parsed_url) && strlen($parsed_url['user']) ){
+				// ID/PW が設定されていない場合は、認証情報なしでアクセスする。
+				$url .= urlencode($parsed_url['user']);
+				if( array_key_exists('pass', $parsed_url) && strlen($parsed_url['pass']) ){
+					$url .= ":" . urlencode($this->options->git->password);
+				}
+				$url .= "@";
+			}
+		}
+		if( array_key_exists('host', $parsed_url) && strlen($parsed_url['host']) ){
+			$url .= $parsed_url['host'];
+		}
+		if( array_key_exists('port', $parsed_url) && strlen($parsed_url['port']) ){
+			$url .= ':'.$parsed_url['port'];
+		}
+		$url .= $parsed_url['path'];
+		if( array_key_exists('query', $parsed_url) && strlen($parsed_url['query']) ){
+			$url .= '?'.$parsed_url['query'];
+		}
+		return $url;
+
+	}
 
 	/**
 	 * 実行する
