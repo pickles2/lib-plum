@@ -169,18 +169,18 @@ echo $plum->run();
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-plum 0.1.2 (リリース日未定)
+### pickles2/lib-plum v0.1.2 (2019年6月12日)
 
 - オプション `additional_params` を追加。
 - オプション `_GET`, `_POST` を省略可能とした。
 
-### pickles2/lib-plum 0.1.1 (2018年10月19日)
+### pickles2/lib-plum v0.1.1 (2018年10月19日)
 
 - git リモートリポジトリ のIDとパスワードが設定されていない場合に、認証情報なしでアクセスするようになった。
 - git repository のURLを解析してコンフィグを補完するようになった。 `https://user:pass@host.com/path/to.git` のような1つの完全な URL の形で設定できる。
 - OSコマンドインジェクションの脆弱性に関する修正。
 
-### pickles2/lib-plum 0.1.0 (2018年6月7日)
+### pickles2/lib-plum v0.1.0 (2018年6月7日)
 
 - Initial Release.
 
