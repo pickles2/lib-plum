@@ -26,6 +26,11 @@ $plum = new hk\plum\main(
 		// GET
 		'_GET' => $_GET,
 
+		// 追加パラメータ
+		'additional_params' => array(
+			'hoge' => 'fuga',
+		),
+
 		// プレビューサーバ定義
 		'preview_server' => array(
 
