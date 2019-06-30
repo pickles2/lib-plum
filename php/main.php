@@ -28,7 +28,6 @@ class main
 	 * additional_params = array(
 	 * 	// フォーム送信時に付加する追加のパラメータ (省略可)
 	 * 	'hoge' => 'fuga', // (キーと値のセット)
-	 * 	)
 	 * ),
 	 * 
 	 * git = array(
