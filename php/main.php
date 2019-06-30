@@ -552,7 +552,7 @@ class main
 	/**
 	 * 追加のパラメータを取得する
 	 */
-	public function get_additional_params($type = 'form'){
+	public function get_additional_params(){
 		if( !property_exists($this->options, 'additional_params') ){
 			return '';
 		}
