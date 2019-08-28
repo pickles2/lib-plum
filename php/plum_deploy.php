@@ -28,8 +28,10 @@ class plum_deploy
 		$current_dir = realpath('.');
 
 		$output = "";
-		$result = array('status' => true,
-						'message' => '');
+		$result = array(
+			'status' => true,
+			'message' => ''
+		);
 
 		$server_list = $this->main->options->preview_server;
 		array_push($server_list, json_decode(json_encode(array(
@@ -54,7 +56,7 @@ class plum_deploy
 						// 現在のブランチ取得
 						exec( 'git branch', $output);
 
-						$now_branch;
+						$now_branch = null;
 						$already_local_branch_exists = false;
 						foreach ( $output as $value ) {
 

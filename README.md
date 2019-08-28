@@ -169,6 +169,10 @@ echo $plum->run();
 
 ## 更新履歴 - Change log
 
+### pickles2/lib-plum v0.1.3 (リリース日未定)
+
+- 細かい不具合の修正。
+
 ### pickles2/lib-plum v0.1.2 (2019年6月12日)
 
 - オプション `additional_params` を追加。

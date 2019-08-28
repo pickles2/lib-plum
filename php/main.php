@@ -322,7 +322,7 @@ class main
 				// ブランチ一覧取得
 				exec( 'git branch', $output );
 
-				$now_branch;
+				$now_branch = null;
 				foreach ( $output as $value ) {
 					// 「*」の付いてるブランチを現在のブランチと判定
 					if ( strpos($value, '*') !== false ) {
