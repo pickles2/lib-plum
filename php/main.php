@@ -140,10 +140,10 @@ class main
 							exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
 
 							// git fetch
-							exec( 'git fetch '.escapeshellarg($url_git_remote), $output );
+							exec( 'git fetch', $output );
 
 							// git pull
-							exec( 'git pull '.escapeshellarg($url_git_remote).' master', $output );
+							exec( 'git pull origin master', $output );
 
 							chdir($current_dir);
 						} else {
@@ -298,8 +298,6 @@ class main
 
 		$current = $this->get_child_current_branch($path);
 		
-ob_start();var_dump($current);error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
-ob_start();var_dump($branch);error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
 		if(str_replace("origin/", "", $branch) == $current['current_branch']) {
 			return "selected";
 		} else {
