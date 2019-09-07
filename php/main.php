@@ -551,15 +551,24 @@ class main
 
 	/**
 	 * 追加のパラメータを取得する
+	 * @param string $type `form` or `query_string`
 	 */
-	public function get_additional_params(){
+	public function get_additional_params($type = 'form'){
 		if( !property_exists($this->options, 'additional_params') ){
 			return '';
 		}
 		$params = json_decode(json_encode($this->options->additional_params), true);
 		$rtn = '';
-		foreach($params as $key=>$value){
-			$rtn .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
+		if( $type == 'query_string' ){
+			$tmp_params = array();
+			foreach($params as $key=>$value){
+				array_push($tmp_params, urlencode($key).'='.urlencode($value));
+			}
+			$rtn = implode('&', $tmp_params);
+		}else{
+			foreach($params as $key=>$value){
+				$rtn .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
+			}
 		}
 		return $rtn;
 	}

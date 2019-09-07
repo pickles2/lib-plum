@@ -33,6 +33,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 				'url' => 'https://github.com/pickles2/lib-plum.git',
 				'repository' => __DIR__.'/testdata/repos/master/',
 			),
+			'additional_params' => array(
+				'test1' => 'test1val',
+				'test2' => 'test2val',
+			),
 		);
 	}
 
@@ -76,8 +80,13 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$options = $this->options;
 		$options['_POST'] = array('init' => 1);
 		$plum = new hk\plum\main( $options );
+
+		$this->assertEquals( $plum->get_additional_params(), '<input type="hidden" name="test1" value="test1val" /><input type="hidden" name="test2" value="test2val" />' );
+		$this->assertEquals( $plum->get_additional_params('query_string'), 'test1=test1val&test2=test2val' );
+
 		$stdout = $plum->run();
 		// var_dump($stdout);
+
 		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
 		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/php/' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/php/main.php' ) );
