@@ -78,8 +78,13 @@ class plum_deploy
 							}
 						}
 
+						$url_git_remote = $this->main->get_url_git_remote(true);
+
+						// set remote as origin
+						exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
+
 						// git fetch
-						exec( 'git fetch origin', $output );
+						exec( 'git fetch '.escapeshellarg($url_git_remote), $output );
 
 						// 現在のブランチと選択されたブランチが異なる場合は、ブランチを切り替える
 						if ( $now_branch !== $to_branch_rep ) {
@@ -97,7 +102,7 @@ class plum_deploy
 						}
 
 						// git pull
-						exec( 'git pull origin ' . escapeshellarg($to_branch_rep), $output );
+						exec( 'git pull '.escapeshellarg($url_git_remote).' ' . escapeshellarg($to_branch_rep), $output );
 
 					} else {
 						// プレビューサーバのディレクトリが存在しない場合

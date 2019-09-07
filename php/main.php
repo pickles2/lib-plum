@@ -134,14 +134,16 @@ class main
 							exec('git init', $output);
 
 							// git urlのセット
-							$url = $this->get_url_git_remote(true);
-							exec('git remote add origin '.escapeshellarg($url), $output);
+							$url_git_remote = $this->get_url_git_remote(true);
+
+							// set remote as origin
+							exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
 
 							// git fetch
-							exec( 'git fetch origin', $output);
+							exec( 'git fetch '.escapeshellarg($url_git_remote), $output );
 
 							// git pull
-							exec( 'git pull origin master', $output);
+							exec( 'git pull '.escapeshellarg($url_git_remote).' master', $output );
 
 							chdir($current_dir);
 						} else {
@@ -241,6 +243,12 @@ class main
 
 			if ( chdir( $this->options->git->repository )) {
 
+				// git urlのセット
+				$url_git_remote = $this->get_url_git_remote(true);
+
+				// set remote as origin
+				exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
+
 				// fetch
 				exec( 'git fetch', $output );
 
@@ -290,6 +298,8 @@ class main
 
 		$current = $this->get_child_current_branch($path);
 		
+ob_start();var_dump($current);error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
+ob_start();var_dump($branch);error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
 		if(str_replace("origin/", "", $branch) == $current['current_branch']) {
 			return "selected";
 		} else {
