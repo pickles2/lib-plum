@@ -82,6 +82,7 @@ class plum_deploy
 
 						// set remote as origin
 						exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
+						exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
 
 						// git fetch
 						exec( 'git fetch', $output );
@@ -119,6 +120,9 @@ class plum_deploy
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
 
+				$url_git_remote = $this->main->get_url_git_remote(false);
+				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+
 				chdir($current_dir);
 				return $result;
 			}
@@ -127,6 +131,9 @@ class plum_deploy
 		set_time_limit(30);
 
 		$result['status'] = true;
+
+		$url_git_remote = $this->main->get_url_git_remote(false);
+		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
 
 		chdir($current_dir);
 		return $result;

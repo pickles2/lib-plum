@@ -138,6 +138,7 @@ class main
 
 							// set remote as origin
 							exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
+							exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
 
 							// git fetch
 							exec( 'git fetch', $output );
@@ -145,7 +146,6 @@ class main
 							// git pull
 							exec( 'git pull origin master', $output );
 
-							chdir($current_dir);
 						} else {
 							// プレビューサーバのディレクトリが存在しない場合
 
@@ -161,6 +161,9 @@ class main
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
 
+				$url_git_remote = $this->get_url_git_remote(false);
+				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+
 				chdir($current_dir);
 				return $result;
 			}
@@ -170,6 +173,10 @@ class main
 
 		$result['status'] = true;
 
+		$url_git_remote = $this->get_url_git_remote(false);
+		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+
+		chdir($current_dir);
 		return $result;
 	}
 
@@ -248,6 +255,7 @@ class main
 
 				// set remote as origin
 				exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
+				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
 
 				// fetch
 				exec( 'git fetch', $output );
@@ -276,11 +284,17 @@ class main
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
 
+			$url_git_remote = $this->get_url_git_remote(false);
+			exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+
 			chdir($current_dir);
 			return $result;
 		}
 
 		$result['status'] = true;
+
+		$url_git_remote = $this->get_url_git_remote(false);
+		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
 
 		chdir($current_dir);
 		return $result;
