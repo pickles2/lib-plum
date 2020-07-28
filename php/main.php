@@ -335,7 +335,8 @@ class main
 
 		$output = "";
 		$result = array('status' => true,
-						'message' => '');
+			'message' => '',
+			'current_branch' => null);
 
 		try {
 
