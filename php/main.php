@@ -52,6 +52,7 @@ class main
 	private $deploy;
 
 	/** tomk79/filesystem */
+	private $fs;
 
 	/**
 	 * コンストラクタ
@@ -80,6 +81,21 @@ class main
 	}
 
 	/**
+	 * $fs
+	 */
+	public function fs(){
+		return $this->fs;
+	}
+
+	/**
+	 * $git
+	 */
+	public function git($realpath_git_root){
+		$git = new git($this, $realpath_git_root);
+		return $git;
+	}
+
+	/**
 	 * initialize GIT Repository
 	 * 
 	 * Gitリポジトリをクローンし、ローカル環境を整えます。
@@ -92,11 +108,10 @@ class main
 	 */
 	private function init() {
 
-		$current_dir = realpath('.');
-
-		$output = "";
-		$result = array('status' => true,
-						'message' => '');
+		$result = array(
+			'status' => true,
+			'message' => '',
+		);
 
 		$server_list = $this->options->preview_server;
 		array_push($server_list, json_decode(json_encode(array(
@@ -107,7 +122,6 @@ class main
 		set_time_limit(0);
 
 		foreach ( $server_list as $preview_server ) {
-			chdir($current_dir);
 
 			try {
 
@@ -130,24 +144,42 @@ class main
 					if ( !file_exists( $preview_server->path . "/.git") ) {
 						// 存在しない場合
 
-						// ディレクトリ移動
-						if ( chdir( $preview_server->path ) ) {
+						// .git はないがディレクトリは存在する。
+						if ( is_dir( $preview_server->path ) ) {
+
+							$git = $this->git($preview_server->path);
 
 							// git セットアップ
-							exec('git init', $output);
+							$result = $git->git(array('init'));
 
 							// git urlのセット
 							$url_git_remote = $this->get_url_git_remote(true);
 
 							// set remote as origin
-							exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
-							exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+							$result = $git->git(array(
+								'remote',
+								'add',
+								'origin',
+								$url_git_remote
+							));
+							$result = $git->git(array(
+								'remote',
+								'set-url',
+								'origin',
+								$url_git_remote
+							));
 
 							// git fetch
-							exec( 'git fetch', $output );
+							$result = $git->git(array(
+								'fetch',
+							));
 
 							// git pull
-							exec( 'git pull origin master', $output );
+							$result = $git->git(array(
+								'pull',
+								'origin',
+								'master',
+							));
 
 						} else {
 							// プレビューサーバのディレクトリが存在しない場合
@@ -163,11 +195,6 @@ class main
 
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
-
-				$url_git_remote = $this->get_url_git_remote(false);
-				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-				chdir($current_dir);
 				return $result;
 			}
 
@@ -175,11 +202,6 @@ class main
 		set_time_limit(30);
 
 		$result['status'] = true;
-
-		$url_git_remote = $this->get_url_git_remote(false);
-		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-		chdir($current_dir);
 		return $result;
 	}
 
@@ -243,28 +265,46 @@ class main
 	 */
 	private function get_parent_branch_list() {
 
-		$current_dir = realpath('.');
-
 		$output_array = array();
-		$result = array('status' => true,
-						'message' => '');
+		$result = array(
+			'status' => true,
+			'message' => '',
+		);
 
 		try {
 
-			if ( chdir( $this->options->temporary_data_dir.'/local_master/' )) {
+			if ( is_dir( $this->options->temporary_data_dir.'/local_master/' )) {
+
+				$git = $this->git($this->options->temporary_data_dir.'/local_master/');
 
 				// git urlのセット
 				$url_git_remote = $this->get_url_git_remote(true);
 
 				// set remote as origin
-				exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
-				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+				$git->git(array(
+					'remote',
+					'add',
+					'origin',
+					$url_git_remote,
+				));
+				$git->git(array(
+					'remote',
+					'set-url',
+					'origin',
+					$url_git_remote,
+				));
 
 				// fetch
-				exec( 'git fetch', $output );
+				$git->git(array(
+					'fetch',
+				));
 
 				// ブランチの一覧取得
-				exec( 'git branch -r', $output );
+				$cmdresult = $git->git(array(
+					'branch',
+					'-r',
+				));
+				$output = preg_split( '/\r\n|\r|\n/', trim($cmdresult['stdout']) );
 
 				foreach ($output as $key => $value) {
 					if( strpos($value, '/HEAD') !== false ){
@@ -286,20 +326,10 @@ class main
 
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
-
-			$url_git_remote = $this->get_url_git_remote(false);
-			exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-			chdir($current_dir);
 			return $result;
 		}
 
 		$result['status'] = true;
-
-		$url_git_remote = $this->get_url_git_remote(false);
-		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-		chdir($current_dir);
 		return $result;
 
 	}
@@ -314,19 +344,22 @@ class main
 	 */
 	private function get_child_current_branch($path) {
 
-		$current_dir = realpath('.');
-
 		$output = "";
-		$result = array('status' => true,
+		$result = array(
+			'status' => true,
 			'message' => '',
-			'current_branch' => null);
+			'current_branch' => null,
+		);
 
 		try {
 
-			if ( chdir( $path ) ) {
+			if ( is_dir( $path ) ) {
+
+				$git = $this->git($path);
 
 				// ブランチ一覧取得
-				exec( 'git branch', $output );
+				$cmdresult = $git->git(array('branch'));
+				$output = preg_split( '/\r\n|\r|\n/', trim($cmdresult['stdout']) );
 
 				$now_branch = null;
 				foreach ( $output as $value ) {
@@ -351,14 +384,10 @@ class main
 
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
-
-			chdir($current_dir);
 			return $result;
 		}
 
 		$result['status'] = true;
-
-		chdir($current_dir);
 		return $result;
 	}
 

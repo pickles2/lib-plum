@@ -25,8 +25,6 @@ class plum_deploy
 	 */
 	public function set_deploy($preview_server_name, $to_branch) {
 
-		$current_dir = realpath('.');
-
 		$output = "";
 		$result = array(
 			'status' => true,
@@ -42,7 +40,6 @@ class plum_deploy
 		set_time_limit(0);
 		
 		foreach ( $server_list as $preview_server ) {
-			chdir($current_dir);
 
 			try {
 
@@ -51,10 +48,15 @@ class plum_deploy
 					$to_branch_rep = trim(str_replace("origin/", "", $to_branch));
 
 					// ディレクトリ移動
-					if ( chdir( $preview_server->path ) ) {
+					if ( is_dir( $preview_server->path ) ) {
+
+						$git = $this->main->git($preview_server->path);
 
 						// 現在のブランチ取得
-						exec( 'git branch', $output);
+						$cmdresult = $git->git(array(
+							'branch',
+						));
+						$output = preg_split( '/\r\n|\r|\n/', trim($cmdresult['stdout']) );
 
 						$now_branch = null;
 						$already_local_branch_exists = false;
@@ -81,11 +83,23 @@ class plum_deploy
 						$url_git_remote = $this->main->get_url_git_remote(true);
 
 						// set remote as origin
-						exec( 'git remote add origin '.escapeshellarg($url_git_remote), $output );
-						exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
+						$git->git(array(
+							'remote',
+							'add',
+							'origin',
+							$url_git_remote,
+						));
+						$git->git(array(
+							'remote',
+							'set-url',
+							'origin',
+							$url_git_remote,
+						));
 
 						// git fetch
-						exec( 'git fetch', $output );
+						$git->git(array(
+							'fetch',
+						));
 
 						// 現在のブランチと選択されたブランチが異なる場合は、ブランチを切り替える
 						if ( $now_branch !== $to_branch_rep ) {
@@ -93,17 +107,31 @@ class plum_deploy
 							if ($already_local_branch_exists) {
 								// 選択された(切り替える)ブランチが既にチェックアウト済みの場合
 
-								exec( 'git checkout ' . escapeshellarg($to_branch_rep), $output);
+								$git->git(array(
+									'checkout',
+									$to_branch_rep,
+								));
 
 							} else {
 								// 選択された(切り替える)ブランチがまだチェックアウトされてない場合
 
-								exec( 'git checkout -b ' . escapeshellarg($to_branch_rep) . ' ' . escapeshellarg($to_branch), $output);
+								$git->git(array(
+									'checkout',
+									'-b',
+									$to_branch_rep,
+									$to_branch,
+								));
+
 							}
 						}
 
 						// git pull
-						exec( 'git pull origin ' . escapeshellarg($to_branch_rep), $output );
+						$git->git(array(
+							'pull',
+							'origin',
+							$to_branch_rep,
+						));
+
 
 					} else {
 						// プレビューサーバのディレクトリが存在しない場合
@@ -119,11 +147,6 @@ class plum_deploy
 
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
-
-				$url_git_remote = $this->main->get_url_git_remote(false);
-				exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-				chdir($current_dir);
 				return $result;
 			}
 
@@ -131,11 +154,6 @@ class plum_deploy
 		set_time_limit(30);
 
 		$result['status'] = true;
-
-		$url_git_remote = $this->main->get_url_git_remote(false);
-		exec( 'git remote set-url origin '.escapeshellarg($url_git_remote), $output );
-
-		chdir($current_dir);
 		return $result;
 		
 	}
