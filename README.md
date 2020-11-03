@@ -5,29 +5,10 @@ pickles2/lib-plum
 
 ## 導入方法 - Setup
 
-### 1. composerの設定
-
-#### 1-1. `composer.json` に `pickles2/lib-plum` を設定する
-
-`require` の項目に、`pickles2/lib-plum` を追加します。
-
-```json
-{
-	〜 中略 〜
-    "require": {
-        "php": ">=5.3.0" ,
-        "pickles2/lib-plum": "^0.1"
-    },
-	〜 中略 〜
-}
-```
-
-#### 1-2. composer update を実行する
-
-追加したら、`composer update` を実行して変更を反映することを忘れずに。
+### 1. composer の設定
 
 ```
-$ composer update
+$ composer require pickles2/lib-plum
 ```
 
 ### 2. Resourceファイルの取込
@@ -108,16 +89,7 @@ $plum = new hk\plum\main(
 			// ウェブプロジェクトのリポジトリパスを設定。
 			'repository' => './../repos/master/',
 
-			// プロトコル
-			// ※現在はhttpsのみ対応
-			'protocol' => 'https',
-
-			// ホスト
-			// Gitリポジトリのhostを設定。
-			'host' => 'host.com',
-
-			// GitリポジトリのURL
-			// Gitリポジトリのhost以下のパスを設定。
+			// リモートのURL
 			'url' => 'https://host.com/path/to.git',
 
 			// ユーザ名
@@ -133,7 +105,7 @@ $plum = new hk\plum\main(
 ```
 
 gitリポジトリの情報は、次のように1つの完全なURLの形式で設定することもできます。
-このとき、 `protocol`、 `host`、 `username`、 `password` が設定されているとき、これらが優先されます。それぞれ空白に設定するようにしてください。
+このとき、 `username`、 `password` が設定されているとき、これらが優先されます。それぞれ空白に設定するようにしてください。
 
 ```php
 // Git情報定義
@@ -172,6 +144,7 @@ echo $plum->run();
 ### pickles2/lib-plum v0.2.0 (リリース日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
+- オプション `git->protocol`、 `git->host` を廃止した。
 
 ### pickles2/lib-plum v0.1.3 (2020年11月3日)
 

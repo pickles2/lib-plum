@@ -302,26 +302,6 @@ class main
 	}
 
 	/**
-	 * 現在のブランチと比較する
-	 * @param string $branch 比較対象のブランチ
-	 * @return string
-	 *  一致する場合：checked(文字列)
-	 *  一致しない場合：空白
-	 */
-	private function compare_to_current_branch($path, $branch) {
-
-		$current = $this->get_child_current_branch($path);
-		
-		if(str_replace("origin/", "", $branch) == $current['current_branch']) {
-			return "selected";
-		} else {
-			return "";
-		}
-
-		return "";
-	}
-
-	/**
 	 * 現在のブランチを取得する
 	 * 
 	 * @return array result
@@ -431,7 +411,8 @@ class main
 						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 				foreach ($branch_list as $branch) {
-					$row .= '<option value="' . htmlspecialchars($branch) . '" ' . $this->compare_to_current_branch($prev_row->path, $branch) . '>' . htmlspecialchars($branch) . '</option>';
+					$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
+					$row .= '<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>';
 				}
 
 				$row .= '</select>'
@@ -536,7 +517,10 @@ class main
 		$parsed_url = parse_url( $this->options->git->url );
 
 		if( property_exists( $this->options->git, 'protocol' ) ){
-			$parsed_url['scheme'] = $this->options->git->protocol;
+			trigger_error('Option git->protocol is deprecated.');
+		}
+		if( property_exists( $this->options->git, 'host' ) ){
+			trigger_error('Option git->host is deprecated.');
 		}
 		if( property_exists( $this->options->git, 'username' ) ){
 			$parsed_url['user'] = $this->options->git->username;
