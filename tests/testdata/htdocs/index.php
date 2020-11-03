@@ -2,7 +2,7 @@
 require_once('../../../vendor/autoload.php');
 $conf = array();
 $conf['git'] = array();
-$conf['git']['url'] = 'https://github.com/pickles2/lib-plum.git';
+$conf['git']['url'] = __DIR__.'/../remote/';
 ?>
 <!doctype html>
 <html>

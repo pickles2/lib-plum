@@ -284,9 +284,15 @@ class main
 		);
 		$base_dir = $this->fs()->get_realpath( $this->options->temporary_data_dir.'/local_master/' );
 
+		if ( !is_dir( $base_dir ) || !is_dir( $base_dir.'.git/' ) ) {
+			$result['status'] = false;
+			$result['message'] = 'Preview server directory not found.';
+			return $result;
+		}
+
 		try {
 
-			if ( is_dir( $base_dir )) {
+			if ( is_dir( $base_dir ) && is_dir( $base_dir.'.git/' ) ) {
 
 				$git = $this->git($base_dir);
 
@@ -300,13 +306,12 @@ class main
 					'origin',
 					$url_git_remote,
 				));
-				// ↓親リポジトリに設定されてしまうため削除
-				// $git->git(array(
-				// 	'remote',
-				// 	'set-url',
-				// 	'origin',
-				// 	$url_git_remote,
-				// ));
+				$git->git(array(
+					'remote',
+					'set-url',
+					'origin',
+					$url_git_remote,
+				));
 
 				// fetch
 				$git->git(array(
@@ -338,24 +343,22 @@ class main
 
 		} catch (\Exception $e) {
 
-			// ↓親リポジトリに設定されてしまうため削除
-			// $git->git(array(
-			// 	'remote',
-			// 	'rm',
-			// 	'origin',
-			// ));
+			$git->git(array(
+				'remote',
+				'rm',
+				'origin',
+			));
 
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
 			return $result;
 		}
 
-		// ↓親リポジトリに設定されてしまうため削除
-		// $git->git(array(
-		// 	'remote',
-		// 	'rm',
-		// 	'origin',
-		// ));
+		$git->git(array(
+			'remote',
+			'rm',
+			'origin',
+		));
 
 		$result['status'] = true;
 		return $result;
@@ -451,8 +454,10 @@ class main
 		// 初期化後の画面表示
 		// Gitリポジトリ取得
 		$get_branch_ret = $this->get_parent_branch_list();
-		$branch_list = array();
-		$branch_list = $get_branch_ret['branch_list'];
+		$branch_list = null;
+		if( array_key_exists( 'branch_list', $get_branch_ret ) && is_array($get_branch_ret['branch_list']) ){
+			$branch_list = $get_branch_ret['branch_list'];
+		}
 
 		$ret = '<table class="table table-bordered">'
 				. '<thead>'
@@ -471,9 +476,11 @@ class main
 						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
 						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
-				foreach ($branch_list as $branch) {
-					$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
-					$row .= '<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>';
+				if( is_array($branch_list) ){
+					foreach ($branch_list as $branch) {
+						$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
+						$row .= '<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>';
+					}
 				}
 
 				$row .= '</select>'
@@ -668,7 +675,7 @@ class main
 			// initialize処理
 			$init_ret = $this->init();
 
-			if ( !@$init_ret['status'] ) {
+			if ( !$init_ret['status'] ) {
 				// 初期化失敗
 
 				// エラーメッセージ

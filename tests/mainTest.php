@@ -257,8 +257,6 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		touch(__DIR__.'/testdata/temporary_data_dir/.gitkeep');
 		$this->assertTrue( is_file(__DIR__.'/testdata/temporary_data_dir/.gitkeep') );
 
-
-
 	}
 
 }
