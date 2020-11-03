@@ -30,7 +30,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 				)
 			),
 			'git' => array(
-				'url' => 'https://github.com/pickles2/lib-plum.git',
+				'url' => __DIR__.'/testdata/remote',
 				'repository' => __DIR__.'/testdata/repos/master/',
 			),
 			'additional_params' => array(
@@ -40,8 +40,55 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		);
 	}
 
-	private function clear_repos(){
-		$this->chmod_r();//パーミッションを変えないと削除できない
+
+	/**
+	 * テストデータを初期化する
+	 */
+	private function reset_git_repos(){
+		// --------------------------------------
+		// リモートリポジトリを初期化
+		$this->fs->chmod_r(__DIR__.'/testdata/remote' , 0777);
+		if( !$this->fs->rm(__DIR__.'/testdata/remote/') ){
+			var_dump('Failed to cleaning test remote directory.');
+		}
+		clearstatcache();
+		$this->fs->mkdir_r(__DIR__.'/testdata/remote/');
+		touch(__DIR__.'/testdata/remote/.gitkeep');
+
+		$current_dir = realpath('.');
+		chdir(__DIR__.'/testdata/remote/');
+		exec('git init');
+
+		// master
+		$this->fs->copy_r(
+			__DIR__.'/testdata/remote_data/main',
+			__DIR__.'/testdata/remote'
+		);
+
+		exec('git add ./');
+		exec('git commit -m "initial commit";');
+		exec('git checkout -b "master";');
+
+		// main
+		exec('git checkout -b "main";');
+
+		// branches
+		for( $i = 1; $i <= 3; $i ++ ){
+			exec('git checkout "main";');
+			exec('git checkout -b "tests/branch_00'.$i.'";');
+			$this->fs->copy_r(
+				__DIR__.'/testdata/remote_data/branch_00'.$i.'',
+				__DIR__.'/testdata/remote'
+			);
+			exec('git add ./');
+			exec('git commit -m "commit to branch_00'.$i.'";');
+		}
+
+		chdir($current_dir);
+
+		// --------------------------------------
+		// ローカルリポジトリを削除
+		$this->fs->chmod_r(__DIR__.'/testdata/repos' , 0777);
 		if( !$this->fs->rm(__DIR__.'/testdata/repos/') ){
 			var_dump('Failed to cleaning test data directory.');
 		}
@@ -49,17 +96,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->fs->mkdir_r(__DIR__.'/testdata/repos/');
 		touch(__DIR__.'/testdata/repos/.gitkeep');
 		clearstatcache();
-	}
-	private function chmod_r($path = null){
-		$base = __DIR__.'/testdata/repos';
-		// var_dump($base.'/'.$path);
-		$this->fs->chmod($base.'/'.$path , 0777);
-		if(is_dir($base.'/'.$path)){
-			$ls = $this->fs->ls($base.'/'.$path);
-			foreach($ls as $basename){
-				$this->chmod_r($path.'/'.$basename);
-			}
-		}
+
 	}
 
 
@@ -67,7 +104,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Initialize
 	 */
 	public function testInitialize(){
-		$this->clear_repos();
+		$this->reset_git_repos();
 
 		// Plum
 		$options = $this->options;
@@ -88,13 +125,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		// var_dump($stdout);
 
 		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/php/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/master/branchname.txt' )), 'main' );
 
 	}
 
@@ -114,16 +147,25 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$stdout = $plum->run();
 		// var_dump($stdout);
 		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/php/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/php/main.php' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/master/branchname.txt' )), 'main' );
+
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview1/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
+
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview2/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'main' );
+
+		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview3/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'main' );
+
 
 
 		// preview2 を tests/branch_002 に。
@@ -136,12 +178,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$plum = new hk\plum\main( $options );
 		$stdout = $plum->run();
 		// var_dump($stdout);
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_002' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'main' );
 
 
 		// preview3 を tests/branch_003 に。
@@ -154,12 +193,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$plum = new hk\plum\main( $options );
 		$stdout = $plum->run();
 		// var_dump($stdout);
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/index.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/tests/testdata/contents/branch_001.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/tests/testdata/contents/branch_003.html' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_002' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'branch_003' );
 
 
 		// preview2 を tests/branch_001 に。
@@ -172,11 +208,9 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$plum = new hk\plum\main( $options );
 		$stdout = $plum->run();
 		// var_dump($stdout);
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/branch_001.html' ) );
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/test.html' ) );
-		$this->assertFalse( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/anyfiles/' ) );
-		$this->assertFalse( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/deepdir/' ) );
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview2/tests/testdata/contents/' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_001' );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'branch_003' );
 
 	}
 
@@ -197,6 +231,22 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$stdout = $plum->run();
 		// var_dump($stdout);
 		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/OsCommandInjectionCountermeasure.txt' ) );
+
+	}
+
+	/**
+	 * Cleaning
+	 */
+	public function testCleaning(){
+		$this->fs->chmod_r(__DIR__.'/testdata/remote' , 0777);
+		if( !$this->fs->rm(__DIR__.'/testdata/remote/') ){
+			var_dump('Failed to cleaning test remote directory.');
+		}
+		clearstatcache();
+		$this->fs->mkdir_r(__DIR__.'/testdata/remote/');
+		touch(__DIR__.'/testdata/remote/.gitkeep');
+
+		$this->assertTrue( true );
 
 	}
 

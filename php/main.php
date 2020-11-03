@@ -528,6 +528,11 @@ class main
 	 * @return string Gitリモートサーバーの完全なURL
 	 */
 	public function get_url_git_remote( $include_credentials = false ) {
+		if( is_dir( $this->options->git->url.'/.git/' ) ){
+			// リモートがローカルディスクにある場合
+			return $this->options->git->url;
+		}
+
 		$parsed_url = parse_url( $this->options->git->url );
 
 		if( property_exists( $this->options->git, 'protocol' ) ){
