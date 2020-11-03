@@ -128,6 +128,7 @@ class plum_deploy
 						// git pull
 						$git->git(array(
 							'pull',
+							'-f',
 							'origin',
 							$to_branch_rep,
 						));
@@ -145,6 +146,12 @@ class plum_deploy
 			} catch (\Exception $e) {
 				set_time_limit(30);
 
+				$git->git(array(
+					'remote',
+					'rm',
+					'origin',
+				));
+
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
 				return $result;
@@ -152,6 +159,12 @@ class plum_deploy
 
 		}
 		set_time_limit(30);
+
+		$git->git(array(
+			'remote',
+			'rm',
+			'origin',
+		));
 
 		$result['status'] = true;
 		return $result;

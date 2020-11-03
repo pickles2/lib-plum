@@ -150,19 +150,19 @@ class main
 							$git = $this->git($preview_server->path);
 
 							// git セットアップ
-							$result = $git->git(array('init'));
+							$git->git(array('init'));
 
 							// git urlのセット
 							$url_git_remote = $this->get_url_git_remote(true);
 
 							// set remote as origin
-							$result = $git->git(array(
+							$git->git(array(
 								'remote',
 								'add',
 								'origin',
 								$url_git_remote
 							));
-							$result = $git->git(array(
+							$git->git(array(
 								'remote',
 								'set-url',
 								'origin',
@@ -170,12 +170,12 @@ class main
 							));
 
 							// git fetch
-							$result = $git->git(array(
+							$git->git(array(
 								'fetch',
 							));
 
 							// git pull
-							$result = $git->git(array(
+							$git->git(array(
 								'pull',
 								'origin',
 								'master',
@@ -193,6 +193,12 @@ class main
 			} catch (\Exception $e) {
 				set_time_limit(30);
 
+				$git->git(array(
+					'remote',
+					'rm',
+					'origin',
+				));
+
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
 				return $result;
@@ -200,6 +206,12 @@ class main
 
 		}
 		set_time_limit(30);
+
+		$git->git(array(
+			'remote',
+			'rm',
+			'origin',
+		));
 
 		$result['status'] = true;
 		return $result;
@@ -270,12 +282,13 @@ class main
 			'status' => true,
 			'message' => '',
 		);
+		$base_dir = $this->fs()->get_realpath( $this->options->temporary_data_dir.'/local_master/' );
 
 		try {
 
-			if ( is_dir( $this->options->temporary_data_dir.'/local_master/' )) {
+			if ( is_dir( $base_dir )) {
 
-				$git = $this->git($this->options->temporary_data_dir.'/local_master/');
+				$git = $this->git($base_dir);
 
 				// git urlのセット
 				$url_git_remote = $this->get_url_git_remote(true);
@@ -287,12 +300,13 @@ class main
 					'origin',
 					$url_git_remote,
 				));
-				$git->git(array(
-					'remote',
-					'set-url',
-					'origin',
-					$url_git_remote,
-				));
+				// ↓親リポジトリに設定されてしまうため削除
+				// $git->git(array(
+				// 	'remote',
+				// 	'set-url',
+				// 	'origin',
+				// 	$url_git_remote,
+				// ));
 
 				// fetch
 				$git->git(array(
@@ -324,10 +338,24 @@ class main
 
 		} catch (\Exception $e) {
 
+			// ↓親リポジトリに設定されてしまうため削除
+			// $git->git(array(
+			// 	'remote',
+			// 	'rm',
+			// 	'origin',
+			// ));
+
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
 			return $result;
 		}
+
+		// ↓親リポジトリに設定されてしまうため削除
+		// $git->git(array(
+		// 	'remote',
+		// 	'rm',
+		// 	'origin',
+		// ));
 
 		$result['status'] = true;
 		return $result;
@@ -358,7 +386,9 @@ class main
 				$git = $this->git($path);
 
 				// ブランチ一覧取得
-				$cmdresult = $git->git(array('branch'));
+				$cmdresult = $git->git(array(
+					'branch',
+				));
 				$output = preg_split( '/\r\n|\r|\n/', trim($cmdresult['stdout']) );
 
 				$now_branch = null;

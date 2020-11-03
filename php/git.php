@@ -26,7 +26,6 @@ class git {
 	 * @return array 実行結果
 	 */
 	public function git( $git_sub_command ){
-ob_start();var_dump('=-=-=-=-=-=-=-=-=-=');error_log(ob_get_clean(),3,__DIR__.'/__dump.txt');
 
 		if( !is_array($git_sub_command) ){
 			return array(
@@ -51,9 +50,8 @@ ob_start();var_dump('=-=-=-=-=-=-=-=-=-=');error_log(ob_get_clean(),3,__DIR__.'/
 
 		$realpath_git_root = $this->realpath_git_root;
 
-		$cd = realpath('.');
+		$current_dir = realpath('.');
 		chdir($realpath_git_root);
-
 
 		ob_start();
 		$proc = proc_open('git '.$cmd, array(
@@ -72,7 +70,7 @@ ob_start();var_dump('=-=-=-=-=-=-=-=-=-=');error_log(ob_get_clean(),3,__DIR__.'/
 		$return_var = proc_close($proc);
 		ob_get_clean();
 
-		chdir($cd);
+		chdir($current_dir);
 
 		$rtn = array(
 			'stdout' => $this->conceal_confidentials($io[1]),
