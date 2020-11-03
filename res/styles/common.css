@@ -1,23 +1,18 @@
-body {
-  background-color: #fff;
-  cursor: default;
-  color: #333; }
-
-table th {
+.plum table th {
   text-align: center;
   background-color: #666;
   color: #fff; }
 
-.p-center {
+.plum .p-center {
   text-align: center; }
 
-#loading {
+.plum #loading {
   position: absolute;
   left: 50%;
   top: 50%;
   margin-left: -110px; }
 
-#loader-bg {
+.plum #loader-bg {
   display: none;
   position: absolute;
   top: 0px;
@@ -32,11 +27,11 @@ table th {
   background-attachment: fixed;
   background-position: center; }
 
-#main-contents {
+.plum #main-contents {
   text-align: center;
   margin-top: 20%; }
 
-.dialog_box {
+.plum .dialog_box {
   width: 80%;
   margin: 3em auto;
   background-color: #fff;
@@ -45,5 +40,5 @@ table th {
   border-radius: 5px;
   box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.2); }
 
-.dialog-buttons {
+.plum .dialog-buttons {
   text-align: center; }

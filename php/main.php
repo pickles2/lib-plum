@@ -362,7 +362,7 @@ class main
 	/**
 	 * 初期化前の画面を表示する
 	 */
-	private function disp_before_initialize() {
+	private function mk_html_before_initialize() {
 		$ret = "";
 
 		// 初期化前の画面表示
@@ -382,7 +382,7 @@ class main
 	/**
 	 * 初期化後の画面を表示する
 	 */
-	private function disp_after_initialize() {
+	private function mk_html_after_initialize() {
 		$ret = "";
 		$row = "";
 
@@ -432,7 +432,7 @@ class main
 	/**
 	 * 状態画面を表示する
 	 */
-	private function disp_status($status) {
+	private function mk_html_status($status) {
 		$ret = "";
 		$list = "";
 		$list_group = "";
@@ -509,10 +509,6 @@ class main
 	 * @return string Gitリモートサーバーの完全なURL
 	 */
 	public function get_url_git_remote( $include_credentials = false ) {
-		if( is_dir( $this->options->git->url.'/.git/' ) ){
-			// リモートがローカルディスクにある場合
-			return $this->options->git->url;
-		}
 
 		$parsed_url = parse_url( $this->options->git->url );
 
@@ -527,6 +523,13 @@ class main
 		}
 		if( property_exists( $this->options->git, 'password' ) ){
 			$parsed_url['pass'] = $this->options->git->password;
+		}
+
+		// リモートがローカルディスクにある場合
+		if( array_key_exists('scheme', $parsed_url) && strlen($parsed_url['scheme']) ){
+		}elseif( array_key_exists('host', $parsed_url) && strlen($parsed_url['host']) ){
+		}elseif( is_dir( $this->options->git->url.'/.git/' ) ){
+			return $this->options->git->url;
 		}
 
 		// git urlのセット
@@ -591,8 +594,12 @@ class main
 	 */
 	public function run() {
 
+		// 画面表示
+		$html_fin = '';
+
 		// エラーメッセージ
-		$error_msg = '';  
+		$html_error_msg = '';
+
 
 		// 初期化ボタンが押下された場合
 		if (isset($this->options->_POST->init)) {
@@ -604,7 +611,7 @@ class main
 				// 初期化失敗
 
 				// エラーメッセージ
-				$error_msg = '
+				$html_error_msg .= '
 				<script type="text/javascript">
 					console.error("' . $init_ret['message'] . '");
 					alert("initialize faild");
@@ -615,12 +622,9 @@ class main
 		// マスタブランチの存在チェック
 		$exist_master_flg = $this->exists_master_branch();
 
-		// 画面表示
-		$disp = '';
-		
 		if (!$exist_master_flg) {
 
-			$disp = $this->disp_before_initialize();
+			$html_fin .= $this->mk_html_before_initialize();
 
 		} else {
 
@@ -632,7 +636,7 @@ class main
 			// initializaされていないプレビューが存在する場合
 			if (!$already_init_ret['already_init']) {
 
-				$disp = $this->disp_before_initialize();
+				$html_fin .= $this->mk_html_before_initialize();
 			}
 
 			// 反映ボタンの押下
@@ -645,7 +649,7 @@ class main
 					// デプロイ失敗
 
 					// エラーメッセージ
-					$error_msg = '
+					$html_error_msg = '
 					<script type="text/javascript">
 						console.error("' . $deploy_ret['message'] . '");
 						alert("deploy faild");
@@ -659,18 +663,22 @@ class main
 				$status = $this->git->status($this->options->_POST->preview_server_name);
 				$status = json_decode(json_encode($status));
 				
-				$state_ret = $this->disp_status($status);
+				$state_ret = $this->mk_html_status($status);
 			}
 
-			$disp .= $this->disp_after_initialize() . $state_ret;
+			$html_fin .= $this->mk_html_after_initialize() . $state_ret;
 
 		}
 
+
 		// 画面ロック用
-		$disp_lock = '<div id="loader-bg"><div id="loading"></div></div>';
-		
+		$html_fin .= '<div id="loader-bg"><div id="loading"></div></div>';
+
+		// エラーメッセージ
+		$html_fin .= $html_error_msg;
+
 		// 画面表示
-		return $disp . $disp_lock . $error_msg;
+		return '<div class="plum">'.$html_fin.'</div>';
 	}
 	
 }

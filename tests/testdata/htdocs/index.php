@@ -12,6 +12,14 @@ $conf['git']['repository'] = __DIR__.'/../repos/master/';
 
 <script src="../../../res/bootstrap/js/bootstrap.min.js"></script>
 <script src="../../../res/scripts/common.js"></script>
+
+<style>
+body {
+	background-color: #fff;
+	cursor: default;
+	color: #333;
+}
+</style>
 </head>
 <body>
 <h1>plum</h1>
@@ -68,5 +76,12 @@ $plum = new hk\plum\main(
 // return: 結果表示用HTML
 echo $plum->run();
 ?>
+
+<script>
+window.onload = function(){
+	const plum = new window.Plum();
+	plum.init();
+};
+</script>
 </body>
 </html>
