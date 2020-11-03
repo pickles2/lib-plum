@@ -158,7 +158,9 @@ window.onload = function(){
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
 - オプション `git->protocol`、 `git->host` を廃止した。
+- CSS、JSの影響が外部に及ばないように隠蔽させた。
 - JavaScript環境を明示的に呼び出すように変更した。
+- その他の細かい修正。
 
 ### pickles2/lib-plum v0.1.3 (2020年11月3日)
 

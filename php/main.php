@@ -371,7 +371,7 @@ class main
 				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
 				. '<form method="post" style="margin-top:20px;">'
 				. $this->get_additional_params()
-				. '<input type="submit" id="init_btn" name="init" class="btn btn-default btn-block" value="Initialize" />'
+				. '<input type="submit" id="init_btn" name="init" class="px2-btn px2-btn--primary px2-btn--block" value="Initialize" />'
 				. '</form>'
 				. '</div>'
 				. '</div>';
@@ -395,7 +395,7 @@ class main
 		$ret = '<table class="table table-bordered">'
 				. '<thead>'
 				. '<tr>'
-				. '<th>server</th><th>状態</th><th>branch</th><th>反映</th><th>プレビュー</th>'
+				. '<th>server</th><th>branch</th><th>反映</th><th>プレビュー</th>'
 				. '</tr>'
 				. '</thead>'
 				. '<tbody>';
@@ -407,7 +407,6 @@ class main
 
 				$row .= '<tr>'
 						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-						. '<td class="plum__p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 				foreach ($branch_list as $branch) {
@@ -417,8 +416,8 @@ class main
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="plum__p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-						. '<td class="plum__p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
+						. '<td class="plum__p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="plum__p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}
 		}
@@ -629,13 +628,9 @@ class main
 		} else {
 
 			$already_init_ret = $this->get_initialize_status();
-			
-			// 状態の表示
-			$state_ret = '';
 
 			// initializaされていないプレビューが存在する場合
 			if (!$already_init_ret['already_init']) {
-
 				$html_fin .= $this->mk_html_before_initialize();
 			}
 
@@ -656,17 +651,9 @@ class main
 					</script>';
 				}
 
-			// 状態ボタンの押下
-			} else if (isset($this->options->_POST->state)) {
-
-				// git status取得
-				$status = $this->git->status($this->options->_POST->preview_server_name);
-				$status = json_decode(json_encode($status));
-				
-				$state_ret = $this->mk_html_status($status);
 			}
 
-			$html_fin .= $this->mk_html_after_initialize() . $state_ret;
+			$html_fin .= $this->mk_html_after_initialize();
 
 		}
 

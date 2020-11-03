@@ -47,20 +47,6 @@ window.Plum = function () {
 
 
 		/**
-		* 状態ボタン
-		*/
-		var el_state_btn = document.getElementsByClassName("state");
-		if (el_state_btn != null) {
-			for (var i = 0; i < el_state_btn.length; i++) {
-				el_state_btn[i].addEventListener("click", function() {
-					// 画面ロック
-					display_lock();
-				} , false);	
-			}
-		}
-
-
-		/**
 		* 反映ボタン
 		*/
 		var el_reflect_btn = document.getElementsByClassName("reflect");
