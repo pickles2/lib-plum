@@ -36,7 +36,7 @@ $plum = new hk\plum\main(
 		'_GET' => $_GET,
 
 		// 一時データ保存ディレクトリ
-		'temporary_data_dir' => __DIR__.'/../repos/master/',
+		'temporary_data_dir' => __DIR__.'/../temporary_data_dir/',
 
 		// 追加パラメータ
 		'additional_params' => array(

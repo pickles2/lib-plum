@@ -77,7 +77,6 @@ class main
 			$this->fs->mkdir($this->options->temporary_data_dir.'/local_master/');
 		}
 		$this->deploy = new plum_deploy($this);
-		$this->git = new plum_git($this);
 	}
 
 	/**
