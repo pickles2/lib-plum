@@ -1,7 +1,8 @@
 <?php
 require_once('../../../vendor/autoload.php');
-$conf = json_decode(file_get_contents(__DIR__.'/../../../config/default.json'), true);
-$conf['git']['repository'] = __DIR__.'/../repos/master/';
+$conf = array();
+$conf['git'] = array();
+$conf['git']['url'] = 'https://github.com/pickles2/lib-plum.git';
 ?>
 <!doctype html>
 <html>
@@ -33,6 +34,9 @@ $plum = new hk\plum\main(
 
 		// GET
 		'_GET' => $_GET,
+
+		// 一時データ保存ディレクトリ
+		'temporary_data_dir' => __DIR__.'/../repos/master/',
 
 		// 追加パラメータ
 		'additional_params' => array(

@@ -12,6 +12,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->options = array(
 			'_POST' => array(),
 			'_GET' => array(),
+			'temporary_data_dir' => __DIR__.'/testdata/temporary_data_dir/',
 			'preview_server' => array(
 				array(
 					'name' => 'preview1',
@@ -31,7 +32,6 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			),
 			'git' => array(
 				'url' => __DIR__.'/testdata/remote',
-				'repository' => __DIR__.'/testdata/repos/master/',
 			),
 			'additional_params' => array(
 				'test1' => 'test1val',
@@ -124,10 +124,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$stdout = $plum->run();
 		// var_dump($stdout);
 
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/master/branchname.txt' )), 'main' );
+		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
 
 	}
 
@@ -146,10 +146,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$plum = new hk\plum\main( $options );
 		$stdout = $plum->run();
 		// var_dump($stdout);
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/master/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/master/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/master/branchname.txt' )), 'main' );
+		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
 
 		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview1/.git/' ) );
 		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/test_data.html' ) );
@@ -245,8 +245,19 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		clearstatcache();
 		$this->fs->mkdir_r(__DIR__.'/testdata/remote/');
 		touch(__DIR__.'/testdata/remote/.gitkeep');
+		$this->assertTrue( is_file(__DIR__.'/testdata/remote/.gitkeep') );
 
-		$this->assertTrue( true );
+
+		$this->fs->chmod_r(__DIR__.'/testdata/temporary_data_dir' , 0777);
+		if( !$this->fs->rm(__DIR__.'/testdata/temporary_data_dir/') ){
+			var_dump('Failed to cleaning test remote directory.');
+		}
+		clearstatcache();
+		$this->fs->mkdir_r(__DIR__.'/testdata/temporary_data_dir/');
+		touch(__DIR__.'/testdata/temporary_data_dir/.gitkeep');
+		$this->assertTrue( is_file(__DIR__.'/testdata/temporary_data_dir/.gitkeep') );
+
+
 
 	}
 

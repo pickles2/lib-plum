@@ -25,21 +25,14 @@ class main
 	 * 	)
 	 * ),
 	 * 
+	 * temporary_data_dir = '/path/to/temporary_data_dir/'
+	 * 
 	 * additional_params = array(
 	 * 	// フォーム送信時に付加する追加のパラメータ (省略可)
 	 * 	'hoge' => 'fuga', // (キーと値のセット)
 	 * ),
 	 * 
 	 * git = array(
-	 * 	string 'repository':
-	 * 		- ウェブプロジェクトのリポジトリパス
-	 * 		  例) ./../repos/master/
-	 * 	string 'protocol':
-	 * 		- https
-	 * 		  ※現状はhttpsのみ対応
-	 * 	string 'host':
-	 * 		- Gitリポジトリのhost
-	 * 		  例) github.com
 	 * 	string 'url':
 	 * 		- Gitリポジトリのurl
 	 * 		  例) github.com/hk-r/px2-sample-project.git
@@ -58,19 +51,30 @@ class main
 	/** hk\plum\plum_deployのインスタンス */
 	private $deploy;
 
-
+	/** tomk79/filesystem */
 
 	/**
 	 * コンストラクタ
 	 * @param array $options オプション
 	 */
 	public function __construct($options) {
+		$this->fs = new \tomk79\filesystem();
 		$this->options = json_decode(json_encode($options));
 		if( !property_exists($this->options, '_POST') ){
 			$this->options->_POST = json_decode(json_encode($_POST));
 		}
 		if( !property_exists($this->options, '_GET') ){
 			$this->options->_GET = json_decode(json_encode($_GET));
+		}
+		if( !property_exists($this->options, 'temporary_data_dir') || !strlen($this->options->temporary_data_dir) ){
+			trigger_error('Option `temporary_data_dir` is required.');
+			return;
+		}elseif( !is_dir($this->options->temporary_data_dir) || !is_writable($this->options->temporary_data_dir) ){
+			trigger_error('Option `temporary_data_dir` has to be a writable directory path.');
+			return;
+		}
+		if( !is_dir($this->options->temporary_data_dir.'/local_master/') ){
+			$this->fs->mkdir($this->options->temporary_data_dir.'/local_master/');
 		}
 		$this->deploy = new plum_deploy($this);
 		$this->git = new plum_git($this);
@@ -98,7 +102,7 @@ class main
 		$server_list = $this->options->preview_server;
 		array_push($server_list, json_decode(json_encode(array(
 			'name'=>'master',
-			'path'=>$this->options->git->repository,
+			'path'=>$this->options->temporary_data_dir.'/local_master/',
 		))));
 
 		set_time_limit(0);
@@ -248,7 +252,7 @@ class main
 
 		try {
 
-			if ( chdir( $this->options->git->repository )) {
+			if ( chdir( $this->options->temporary_data_dir.'/local_master/' )) {
 
 				// git urlのセット
 				$url_git_remote = $this->get_url_git_remote(true);
@@ -494,7 +498,7 @@ class main
 		$ret = true;
 		
 		// デプロイ先のマスタブランチが無い場合はfalseを返す
-		if ( !file_exists( $this->options->git->repository ) ) {
+		if ( !file_exists( $this->options->temporary_data_dir.'/local_master/' ) ) {
 			$ret = false;
 		}
 

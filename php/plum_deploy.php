@@ -36,7 +36,7 @@ class plum_deploy
 		$server_list = $this->main->options->preview_server;
 		array_push($server_list, json_decode(json_encode(array(
 			'name'=>'master',
-			'path'=>$this->main->options->git->repository,
+			'path'=>$this->main->options->temporary_data_dir.'/local_master/',
 		))));
 
 		set_time_limit(0);

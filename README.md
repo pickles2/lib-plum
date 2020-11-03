@@ -57,6 +57,9 @@ $plum = new hk\plum\main(
 		// GETパラメータ (省略時、`$_GET` を直接参照します)
 		'_GET' => $_GET,
 
+		// Plumが内部で使用する一時データの保管用ディレクトリ (書き込みが許可されたディレクトリを指定)
+		'temporary_data_dir' => '/path/to/temporary_data_dir/',
+
 		// フォーム送信時に付加する追加のパラメータ (省略可)
 		'additional_params' => array(
 			'hoge' => 'fuga',
@@ -84,11 +87,6 @@ $plum = new hk\plum\main(
 
 		// Git情報定義
 		'git' => array(
-			
-			// リポジトリのパス
-			// ウェブプロジェクトのリポジトリパスを設定。
-			'repository' => './../repos/master/',
-
 			// リモートのURL
 			'url' => 'https://host.com/path/to.git',
 
@@ -110,11 +108,6 @@ gitリポジトリの情報は、次のように1つの完全なURLの形式で�
 ```php
 // Git情報定義
 'git' => array(
-	
-	// リポジトリのパス
-	// ウェブプロジェクトのリポジトリパスを設定。
-	'repository' => './../repos/master/',
-
 	// Gitリポジトリの完全なURL
 	'url' => 'https://user:pass@host.com/path/to.git',
 )
@@ -125,9 +118,10 @@ gitリポジトリの情報は、次のように1つの完全なURLの形式で�
 #### 3-2. デプロイ先のディレクトリに書き込み権限の付与
 
 3-1.の手順で設定した以下のディレクトリに実行ユーザの書き込み権限が無い場合は、権限を付与します。
+
 ```
-preview_server -> path        ・・・ プレビューサーバ(デプロイ先)のパス
-git            -> repository  ・・・ ウェブプロジェクトのリポジトリパス
+preview_server -> path ・・・ プレビューサーバ(デプロイ先)のパス
+temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
 ```
 
 #### 3-3. plumを実行する
@@ -157,7 +151,8 @@ window.onload = function(){
 ### pickles2/lib-plum v0.2.0 (リリース日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
-- オプション `git->protocol`、 `git->host` を廃止した。
+- オプション `git->protocol`、 `git->host`、 `git->repository` を廃止した。
+- オプション `temporary_data_dir` を追加した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。
 - JavaScript環境を明示的に呼び出すように変更した。
 - その他の細かい修正。
