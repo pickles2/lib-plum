@@ -3,16 +3,10 @@
   background-color: #666;
   color: #fff; }
 
-.plum .p-center {
+.plum__p-center {
   text-align: center; }
 
-.plum #loading {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -110px; }
-
-.plum #loader-bg {
+.plum__loader {
   display: none;
   position: absolute;
   top: 0px;
@@ -27,9 +21,11 @@
   background-attachment: fixed;
   background-position: center; }
 
-.plum #main-contents {
-  text-align: center;
-  margin-top: 20%; }
+.plum__loader-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -110px; }
 
 .plum .dialog_box {
   width: 80%;

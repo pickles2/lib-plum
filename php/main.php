@@ -407,7 +407,7 @@ class main
 
 				$row .= '<tr>'
 						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-						. '<td class="p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="plum__p-center"><form id="state_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="state_' . htmlspecialchars($prev_row->name) . '" class="state btn btn-default btn-block" value="状態" name="state"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 				foreach ($branch_list as $branch) {
@@ -417,8 +417,8 @@ class main
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-						. '<td class="p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
+						. '<td class="plum__p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect btn btn-default btn-block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="plum__p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="btn btn-default btn-block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}
 		}
@@ -454,7 +454,7 @@ class main
 			 . $list_group
 			 . '</div>'
 			 . '<div class="dialog-buttons">'
-			 . '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary btn btn-secondary">閉じる</button>'
+			 . '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary">閉じる</button>'
 			 . '</div>'
 			 . '</div>'
 			 . '</div>'
@@ -672,7 +672,7 @@ class main
 
 
 		// 画面ロック用
-		$html_fin .= '<div id="loader-bg"><div id="loading"></div></div>';
+		$html_fin .= '<div class="plum__loader"><div class="plum__loader-inner"></div></div>';
 
 		// エラーメッセージ
 		$html_fin .= $html_error_msg;

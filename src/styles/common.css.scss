@@ -8,18 +8,12 @@
 		color: #fff;
 	}
 
-	.p-center {
+	&__p-center {
 		text-align: center;
 	}
 
-	#loading{
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		margin-left: -110px;
-	}
 
-	#loader-bg {
+	&__loader {
 		display: none;
 		position: absolute;
 		top: 0px;
@@ -34,12 +28,15 @@
 		background-attachment: fixed;
 		background-position: center;
 	}
-
-	#main-contents{
-		text-align: center;
-		margin-top: 20%;
+	&__loader-inner{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -110px;
 	}
 
+
+	// Bootstrap 拡張
 	.dialog_box {
 		width: 80%;
 		margin: 3em auto;

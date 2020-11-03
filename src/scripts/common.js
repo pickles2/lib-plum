@@ -94,11 +94,11 @@ window.Plum = function () {
 	function display_lock() {
 		var h = window.innerHeight;
 
-		var loader_bg = document.getElementById('loader-bg');
+		var loader_bg = document.getElementsByClassName('plum__loader')[0];
 		loader_bg.style.height = h + "px";
 		loader_bg.style.display = 'block';
 
-		var loading = document.getElementById('loading');
+		var loading = document.getElementsByClassName('plum__loader-inner')[0];
 		loading.style.height = h + "px";
 		loading.style.display = 'block';
 	}
