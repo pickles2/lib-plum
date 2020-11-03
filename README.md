@@ -169,9 +169,9 @@ echo $plum->run();
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-plum v0.1.3 (リリース日未定)
+### pickles2/lib-plum v0.1.3 (2020年11月3日)
 
-- 細かい不具合の修正。
+- 細かい不具合と内部コードの修正。
 
 ### pickles2/lib-plum v0.1.2 (2019年6月12日)
 
@@ -190,7 +190,11 @@ echo $plum->run();
 
 
 ## ライセンス - License
-MIT License
+
+Copyright (c)Kyota Hiyoshi, Tomoya Koyanagi, and Pickles Project<br />
+MIT License https://opensource.org/licenses/mit-license.php
 
 ## 作者 - Author
-- (C)Kyota Hiyoshi hiyoshi-kyota@imjp.co.jp
+
+- Kyota Hiyoshi <hiyoshi-kyota@imjp.co.jp>
+- Tomoya Koyanagi <tomk79@gmail.com>
