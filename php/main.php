@@ -701,4 +701,18 @@ class main
 		return '<div class="plum">'.$html_fin.'</div>';
 	}
 	
+	/**
+	 * GPI (General Purpose Interface)
+	 * @param array $data 入力データ
+	 * @return array JSON
+	 */
+	public function gpi( $data ) {
+		$data = (array) $data;
+		$rtn = array(
+			'result' => null,
+			'message' => null,
+		);
+		return $rtn;
+	}
+
 }

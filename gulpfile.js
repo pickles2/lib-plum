@@ -48,6 +48,9 @@ gulp.task("plum.js", function() {
 	return webpackStream({
 		mode: 'development',
 		entry: "./src/plum.js",
+		performance: {
+			hints: false,
+		},
 		output: {
 			filename: "plum.js"
 		},

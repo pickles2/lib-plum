@@ -1,25 +1,47 @@
 /**
  * main.js
  */
-module.exports = function($elm){
+module.exports = function($elm, options){
 	const $ = require('jquery');
 	const Px2style = require('px2style'),
 		px2style = new Px2style();
 	this.px2style = px2style;
 	this.px2style.setConfig('additionalClassName', 'plum');
 	const template = new (require('./template.js'));
+	const it79 = require('iterate79');
 
 	const $elms = {
-        'main': $( $elm ),
-    };
+		'main': $( $elm ),
+	};
+
+	options = options || {};
+	options.gpiBridge = options.gpiBridge || function(){};
+
+
 
 	/**
 	 * 画面を初期化する
 	 */
 	this.init = function(){
 
-        $elms.main.addClass('plum');
-        $elms.main.html( template.bind('mainframe', {}) );
+		it79.fnc({}, [
+			function(it1){
+				$elms.main.addClass('plum');
+				$elms.main.html( template.bind('mainframe', {}) );
+				it1.next();
+			},
+			function(it1){
+				options.gpiBridge({'command': 'initialize'}, function(result){
+					it1.next();
+				});
+			},
+			function(it1){
+				console.log('Standby');
+				it1.next();
+			}
+		]);
+
+
 
 
 		/**

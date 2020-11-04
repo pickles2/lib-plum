@@ -1,11 +1,9 @@
 <?php
-
 require_once('../../../vendor/autoload.php');
-$conf = array();
-$conf['git'] = array();
-$conf['git']['url'] = __DIR__.'/../remote/';
 
-// Plum
+/**
+ * Plum
+ */
 $plum = new hk\plum\main(
 	array(
 		// 一時データ保存ディレクトリ
@@ -47,13 +45,14 @@ $plum = new hk\plum\main(
 		),
 
 		// Git情報定義
-		'git' => $conf['git'],
+		'git' => array(
+			'url' => __DIR__.'/../remote/',
+		),
 	)
 );
 
 // JSON出力
-$json = $plum->gpi();
+$json = $plum->gpi( $_POST['data'] );
 
 header('Content-type: application/json');
 echo json_encode( $json );
-?>

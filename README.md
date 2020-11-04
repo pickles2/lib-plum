@@ -3,43 +3,50 @@ pickles2/lib-plum
 
 ウェブプロジェクトをプレビュー環境へデプロイする機能を提供するライブラリです。
 
-## 導入方法 - Setup
 
-### 1. composer の設定
+## インストール - Install
 
 ```
 $ composer require pickles2/lib-plum
 ```
 
-### 2. Resourceファイルの取込
 
-plumを動作させる上で必要となるResrouceファイルをプロジェクトに取込みます。
+## 導入方法 - Setup
 
-
-#### 2-1. Resourceファイル取込用スクリプトをプロジェクトへコピーする
-
-```
-$ cp yourProject/vendor/pickles2/lib-plum/res_install_script.php yourProject/
-```
-
-#### 2-2. スクリプトをコマンドラインで実行する
-
-```
-$ php res_install_script.php [resourceInstallPath(ex. ./res)]
-```
-
-#### 2-3. Resourceを読込む
+### クライアントサイド
 
 ```html
-<link rel="stylesheet" href="/[resourceInstallPath]/plum.css">
-<script src="/[resourceInstallPath]/plum.js"></script>
+<link rel="stylesheet" href="/vendor/pickles2/lib-plum/dist/plum.css" />
+<script src="/vendor/pickles2/lib-plum/dist/plum.js"></script>
+
+
+<div id="plum-area"></div>
+
+<script>
+var plum = new Plum(
+	document.getElementById('plum-area'),
+	{
+		'gpiBridge': function(data, callback){
+			$.ajax({
+				'url': '/api.php',
+				'method': 'POST',
+				'data': {
+					'data': data
+				},
+				'success': function(result){
+					callback(result);
+				}
+			});
+		}
+	}
+);
+plum.init();
+</script>
 ```
 
-### 3. plumの実行
 
-#### 3-1. 初期化する
+### サーバーサイド
 
-各種パラメータを設定し、`lib-plum` の `main` クラスを呼び出し初期化を行います。
 
 ```php
 <?php
@@ -48,12 +55,6 @@ require_once('./vendor/autoload.php');
 
 $plum = new hk\plum\main(
 	array(
-		// POSTパラメータ (省略時、`$_POST` を直接参照します)
-		'_POST' => $_POST,
-
-		// GETパラメータ (省略時、`$_GET` を直接参照します)
-		'_GET' => $_GET,
-
 		// Plumが内部で使用する一時データの保管用ディレクトリ (書き込みが許可されたディレクトリを指定)
 		'temporary_data_dir' => '/path/to/temporary_data_dir/',
 
@@ -97,6 +98,11 @@ $plum = new hk\plum\main(
 		)
 	)
 );
+
+$json = $plum->gpi( $_POST['data'] );
+
+header('Content-type: application/json');
+echo json_encode( $json );
 ```
 
 gitリポジトリの情報は、次のように1つの完全なURLの形式で設定することもできます。
@@ -112,7 +118,8 @@ gitリポジトリの情報は、次のように1つの完全なURLの形式で�
 
 
 
-#### 3-2. デプロイ先のディレクトリに書き込み権限の付与
+
+#### デプロイ先のディレクトリに書き込み権限の付与
 
 3-1.の手順で設定した以下のディレクトリに実行ユーザの書き込み権限が無い場合は、権限を付与します。
 
@@ -121,26 +128,7 @@ preview_server -> path ・・・ プレビューサーバ(デプロイ先)のパ
 temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
 ```
 
-#### 3-3. plumを実行する
 
-`run()` を実行します。
-
-```php
-// return: 結果表示用HTML
-echo $plum->run();
-?>
-```
-
-#### 3-4. 画面を初期化
-
-```html
-<script>
-window.onload = function(){
-	const plum = new window.Plum();
-	plum.init();
-};
-</script>
-```
 
 
 ## 更新履歴 - Change log
@@ -153,6 +141,7 @@ window.onload = function(){
 - クライアントサイドライブラリのファイル構成を変更した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。
 - JavaScript環境を明示的に呼び出すように変更した。
+- GPIを追加。
 - その他の細かい修正。
 
 ### pickles2/lib-plum v0.1.3 (2020年11月3日)
