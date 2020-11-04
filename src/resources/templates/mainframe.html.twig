@@ -1,0 +1,39 @@
+<table class="px2-table">
+<thead>
+<tr>
+<th>server</th><th>branch</th><th>反映</th><th>プレビュー</th>
+</tr>
+</thead>
+<tbody>
+
+{# 
+foreach ($this->options->preview_server as $key => $prev_row) {
+
+	// デプロイ先のディレクトリが存在する場合
+	if ( file_exists( $prev_row->path)) {
+
+
+	<tr>
+		<td scope="row">{{  $prev_row->name  }}</td>
+		<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="px2-input" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">
+
+		if( is_array($branch_list) ){
+			foreach ($branch_list as $branch) {
+				$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
+				<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>
+			}
+		}
+
+	</select>
+		</td>
+		<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>
+		<td class="px2-text-align-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
+		</tr>
+	}
+}
+
+{{ $row }}
+
+ #}
+
+</tbody></table>
