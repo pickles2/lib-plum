@@ -1,7 +1,13 @@
 <phpunit>
 	<testsuites>
+		<testsuite name="resetdata">
+			<file>./tests/resetdataTest.php</file>
+		</testsuite>
 		<testsuite name="default">
 			<file>./tests/mainTest.php</file>
+		</testsuite>
+		<testsuite name="cleaning">
+			<file>./tests/cleaningTest.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>
