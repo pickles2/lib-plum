@@ -2,6 +2,7 @@
 Thumbs.db
 /config/default.json
 /tests/testdata/repos/
+/tests/testdata/remote/
 /vendor/
 composer.lock
 /node_modules/
