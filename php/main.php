@@ -459,7 +459,7 @@ class main
 			$branch_list = $get_branch_ret['branch_list'];
 		}
 
-		$ret = '<table class="table table-bordered">'
+		$ret = '<table class="px2-table">'
 				. '<thead>'
 				. '<tr>'
 				. '<th>server</th><th>branch</th><th>反映</th><th>プレビュー</th>'
@@ -474,7 +474,7 @@ class main
 
 				$row .= '<tr>'
 						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="form-control" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
+						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="px2-input" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
 
 				if( is_array($branch_list) ){
 					foreach ($branch_list as $branch) {
@@ -485,8 +485,8 @@ class main
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="plum__p-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-						. '<td class="plum__p-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
+						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="px2-text-align-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}
 		}
@@ -497,39 +497,6 @@ class main
 		return $ret;
 	}
 
-	/**
-	 * 状態画面を表示する
-	 */
-	private function mk_html_status($status) {
-		$ret = "";
-		$list = "";
-		$list_group = "";
-
-		if ( $status->changes ) {
-			foreach ( $status->changes as $change ) {
-				$list .= '<li class="list-group-item">[' . $this->file_status_constants($change) . '] '. $change->file . '</li>';
-			}
-
-			$list_group = '<ul class="list-group">'.$list.'</ul>';
-		}
-		
-		$ret = '<div class="dialog" id="status_dialog"><div class="contents" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; z-index: 10000;">'
-			 . '<div style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; overflow: hidden; background: rgb(0, 0, 0); opacity: 0.5;"></div>'
-			 . '<div style="position: absolute; left: 0px; top: 0px; padding-top: 4em; overflow: auto; width: 100%; height: 100%;">'
-			 . '<div class="dialog_box">'
-			 . '<h1>状態</h1>'
-			 . '<div>'
-			 . $list_group
-			 . '</div>'
-			 . '<div class="dialog-buttons">'
-			 . '<button type="submit" id="close_btn" class="px2-btn px2-btn--primary">閉じる</button>'
-			 . '</div>'
-			 . '</div>'
-			 . '</div>'
-			 . '</div></div>';
-
-		return $ret;
-	}
 
 	/**
 	 * ファイルごとの状態の名称を得る
@@ -726,9 +693,6 @@ class main
 
 		}
 
-
-		// 画面ロック用
-		$html_fin .= '<div class="plum__loader"><div class="plum__loader-inner"></div></div>';
 
 		// エラーメッセージ
 		$html_fin .= $html_error_msg;

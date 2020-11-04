@@ -31,10 +31,7 @@ $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 #### 2-3. Resourceを読込む
 
 ```html
-<link rel="stylesheet" href="/[resourceInstallPath]/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/[resourceInstallPath]/plum.css">
-
-<script src="/[resourceInstallPath]/bootstrap/js/bootstrap.min.js"></script>
 <script src="/[resourceInstallPath]/plum.js"></script>
 ```
 

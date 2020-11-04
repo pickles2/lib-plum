@@ -12,8 +12,8 @@ window.Plum = function () {
 	this.init = function(){
 
 		/**
-		* initializeボタン
-		*/
+		 * initializeボタン
+		 */
 		var el_init_btn = document.getElementById("init_btn");
 		if (el_init_btn != null) {
 			el_init_btn.addEventListener("click", function() {
@@ -47,8 +47,8 @@ window.Plum = function () {
 
 
 		/**
-		* 反映ボタン
-		*/
+		 * 反映ボタン
+		 */
 		var el_reflect_btn = document.getElementsByClassName("reflect");
 		if (el_reflect_btn != null) {
 			for (var i = 0; i < el_reflect_btn.length; i++) {
@@ -61,8 +61,8 @@ window.Plum = function () {
 
 
 		/**
-		* 状態ダイアログ[閉じる]ボタン
-		*/
+		 * 状態ダイアログ[閉じる]ボタン
+		 */
 		var el_close_btn = document.getElementById("close_btn");
 		if (el_close_btn != null) {
 			el_close_btn.addEventListener("click", function() {
@@ -78,15 +78,7 @@ window.Plum = function () {
 	 * 画面ロック
 	 */
 	function display_lock() {
-		var h = window.innerHeight;
-
-		var loader_bg = document.getElementsByClassName('plum__loader')[0];
-		loader_bg.style.height = h + "px";
-		loader_bg.style.display = 'block';
-
-		var loading = document.getElementsByClassName('plum__loader-inner')[0];
-		loading.style.height = h + "px";
-		loading.style.display = 'block';
+		px2style.loading();
 	}
 
 };

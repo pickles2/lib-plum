@@ -8,13 +8,13 @@ $conf['git']['url'] = __DIR__.'/../remote/';
 <html>
 <head>
 <title>Plum - develop</title>
-<link rel="stylesheet" href="../../../dist/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="../../../dist/plum.css">
-
-<script src="../../../dist/bootstrap/js/bootstrap.min.js"></script>
 <script src="../../../dist/plum.js"></script>
 
 <style>
+:root{
+	--px2-main-color: #f96;
+}
 body {
 	background-color: #fff;
 	cursor: default;
