@@ -1,9 +1,5 @@
 {
   "devDependencies": {
-    "iterate79": "^1.0.0",
-    "jquery": "^3.5.1",
-    "px2style": "git+https://github.com/pickles2/px2style.git#develop",
-    "utils79": "0.0.4",
     "body-parser": "^1.17.1",
     "bootstrap": "^4.3.1",
     "gulp": "^4.0.2",
@@ -15,7 +11,12 @@
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^2.1.2",
     "html-loader": "^0.5.5",
+    "iterate79": "^1.0.0",
+    "jquery": "^3.5.1",
+    "px2style": "git+https://github.com/pickles2/px2style.git#develop",
     "twig": "^1.13.3",
+    "twig-loader": "^0.5.5",
+    "utils79": "0.0.4",
     "webpack": "^4.39.2",
     "webpack-stream": "^5.2.1"
   }

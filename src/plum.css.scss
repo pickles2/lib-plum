@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .plum {
-	@import "../../node_modules/px2style/dist/px2style";
+	@import "../node_modules/px2style/dist/px2style";
 
 	table th {
 		text-align: center;
@@ -24,7 +24,7 @@
 		opacity: 0.7;
 		background: #FFF;
 		z-index: 999;
-		background-image: url(../images/loader.gif);
+		background-image: url(./images/loader.gif);
 		background-repeat: no-repeat;
 		background-attachment: fixed;
 		background-position: center;

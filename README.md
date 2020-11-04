@@ -32,10 +32,10 @@ $ php res_install_script.php [resourceInstallPath(ex. ./res)]
 
 ```html
 <link rel="stylesheet" href="/[resourceInstallPath]/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="/[resourceInstallPath]/styles/common.css">
+<link rel="stylesheet" href="/[resourceInstallPath]/plum.css">
 
 <script src="/[resourceInstallPath]/bootstrap/js/bootstrap.min.js"></script>
-<script src="/[resourceInstallPath]/scripts/common.js"></script>
+<script src="/[resourceInstallPath]/plum.js"></script>
 ```
 
 ### 3. plumの実行
@@ -153,6 +153,7 @@ window.onload = function(){
 - リモートリポジトリがローカルディスクにある場合に対応した。
 - オプション `git->protocol`、 `git->host`、 `git->repository` を廃止した。
 - オプション `temporary_data_dir` を追加した。
+- クライアントサイドライブラリのファイル構成を変更した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。
 - JavaScript環境を明示的に呼び出すように変更した。
 - その他の細かい修正。

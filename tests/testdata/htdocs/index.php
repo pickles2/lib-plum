@@ -8,11 +8,11 @@ $conf['git']['url'] = __DIR__.'/../remote/';
 <html>
 <head>
 <title>Plum - develop</title>
-<link rel="stylesheet" href="../../../res/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="../../../res/styles/common.css">
+<link rel="stylesheet" href="../../../dist/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../../../dist/plum.css">
 
-<script src="../../../res/bootstrap/js/bootstrap.min.js"></script>
-<script src="../../../res/scripts/common.js"></script>
+<script src="../../../dist/bootstrap/js/bootstrap.min.js"></script>
+<script src="../../../dist/plum.js"></script>
 
 <style>
 body {

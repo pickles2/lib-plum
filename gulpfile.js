@@ -33,38 +33,42 @@ gulp.task('.css.scss', function(){
 		.pipe(rename({
 			extname: '.css'
 		}))
-		.pipe(gulp.dest( './res/' ))
+		.pipe(gulp.dest( './dist/' ))
 
 		.pipe(minifyCss({compatibility: 'ie8'}))
 		.pipe(rename({
 			extname: '.min.css'
 		}))
-		.pipe(gulp.dest( './res/' ))
+		.pipe(gulp.dest( './dist/' ))
 	;
 });
 
-// common.js (frontend) を処理
-gulp.task("common.js", function() {
+// plum.js (frontend) を処理
+gulp.task("plum.js", function() {
 	return webpackStream({
 		mode: 'development',
-		entry: "./src/scripts/common.js",
+		entry: "./src/plum.js",
 		output: {
-			filename: "common.js"
+			filename: "plum.js"
 		},
 		module:{
 			rules:[
 				{
 					test:/\.html$/,
 					use:['html-loader']
+				},
+				{
+					test:/\.html\.twig$/,
+					use:['twig-loader']
 				}
 			]
 		}
 	}, webpack)
 		.pipe(plumber())
-		.pipe(gulp.dest( './res/scripts/' ))
-		.pipe(concat('common.min.js'))
+		.pipe(gulp.dest( './dist/' ))
+		.pipe(concat('plum.min.js'))
 		.pipe(uglify())
-		.pipe(gulp.dest( './res/scripts/' ))
+		.pipe(gulp.dest( './dist/' ))
 	;
 });
 
@@ -78,7 +82,7 @@ gulp.task("preview", function(callback) {
 
 let _tasks = gulp.parallel(
 	'client-libs',
-	'common.js',
+	'plum.js',
 	'.css.scss'
 );
 
