@@ -136,7 +136,7 @@ temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
 ### pickles2/lib-plum v0.2.0 (リリース日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
-- オプション `git->protocol`、 `git->host`、 `git->repository` を廃止した。
+- オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST` を廃止した。
 - オプション `temporary_data_dir` を追加した。
 - クライアントサイドライブラリのファイル構成を変更した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。

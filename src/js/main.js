@@ -31,7 +31,8 @@ module.exports = function($elm, options){
 				it1.next();
 			},
 			function(it1){
-				options.gpiBridge({'command': 'initialize'}, function(result){
+				options.gpiBridge({'api': 'get_condition'}, function(result){
+					console.log(result);
 					it1.next();
 				});
 			},

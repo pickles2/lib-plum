@@ -4,15 +4,20 @@ namespace hk\plum;
 
 class plum_deploy
 {
-	/** hk\plum\mainのインスタンス */
+	/** hk\plum\main のインスタンス */
 	private $main;
+	
+	/** hk\plum\fncs のインスタンス */
+	private $fncs;
 	
 	/**
 	 * コンストラクタ
-	 * @param $main = mainのインスタンス
+	 * @param object $main mainのインスタンス
+	 * @param object $fncs fncsのインスタンス
 	 */
-	public function __construct($main) {
+	public function __construct($main, $fncs) {
 		$this->main = $main;
+		$this->fncs = $fncs;
 	}
 
 	/**
@@ -80,7 +85,7 @@ class plum_deploy
 							}
 						}
 
-						$url_git_remote = $this->main->get_url_git_remote(true);
+						$url_git_remote = $this->fncs->get_url_git_remote(true);
 
 						// set remote as origin
 						$git->git(array(
@@ -133,6 +138,12 @@ class plum_deploy
 							$to_branch_rep,
 						));
 
+						$git->git(array(
+							'remote',
+							'rm',
+							'origin',
+						));
+
 
 					} else {
 						// プレビューサーバのディレクトリが存在しない場合
@@ -145,13 +156,6 @@ class plum_deploy
 
 			} catch (\Exception $e) {
 				set_time_limit(30);
-
-				$git->git(array(
-					'remote',
-					'rm',
-					'origin',
-				));
-
 				$result['status'] = false;
 				$result['message'] = $e->getMessage();
 				return $result;
@@ -159,13 +163,6 @@ class plum_deploy
 
 		}
 		set_time_limit(30);
-
-		$git->git(array(
-			'remote',
-			'rm',
-			'origin',
-		));
-
 		$result['status'] = true;
 		return $result;
 		

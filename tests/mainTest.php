@@ -57,9 +57,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$options = $this->options;
 		$options['_POST'] = array('init' => 1);
 		$plum = new hk\plum\main( $options );
+		$fncs = new hk\plum\fncs( $plum, $plum->options );
 
-		$this->assertEquals( $plum->get_additional_params(), '<input type="hidden" name="test1" value="test1val" /><input type="hidden" name="test2" value="test2val" />' );
-		$this->assertEquals( $plum->get_additional_params('query_string'), 'test1=test1val&test2=test2val' );
+		$this->assertEquals( $fncs->get_additional_params(), '<input type="hidden" name="test1" value="test1val" /><input type="hidden" name="test2" value="test2val" />' );
+		$this->assertEquals( $fncs->get_additional_params('query_string'), 'test1=test1val&test2=test2val' );
 
 		$stdout = $plum->run();
 		// var_dump($stdout);
@@ -153,6 +154,22 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'branch_003' );
 
 	}
+
+	/**
+	 * GPI: get_condition
+	 */
+	public function testGpiGetCondition(){
+
+		// Plum
+		$options = $this->options;
+		$plum = new hk\plum\main( $options );
+		$result = $plum->gpi( array(
+			'api' => 'get_condition',
+		) );
+		// var_dump($result);
+
+	}
+
 
 
 	/**
