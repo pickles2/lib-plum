@@ -1,11 +1,13 @@
 /**
  * template.js
  */
-module.exports = function(main){
+module.exports = function(main, $elms){
+	const $ = main.jQuery;
 	const templates = {
-		"mainframe": require('../resources/templates/mainframe.html.twig'),
-		"before_initialize": require('../resources/templates/before_initialize.html.twig'),
+		"main": require('../resources/templates/main.html.twig'),
+		"setup": require('../resources/templates/setup.html.twig'),
 	};
+	this.elms = $elms;
 
 	this.bind = function(templateName, data){
 		var rtn = templates[templateName](data);

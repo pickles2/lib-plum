@@ -112,7 +112,7 @@ class main
 		if (isset($this->options->_POST->init)) {
 
 			// initialize処理
-			$init_ret = $this->fncs->init();
+			$init_ret = $this->fncs->init_all_staging_repos();
 
 			if ( !$init_ret['status'] ) {
 				// 初期化失敗
@@ -127,7 +127,7 @@ class main
 		} 
 
 		// マスタブランチの存在チェック
-		$exist_master_flg = $this->fncs->local_master_exists();
+		$exist_master_flg = $this->fncs->is_local_master_available();
 
 		if (!$exist_master_flg) {
 
@@ -180,7 +180,7 @@ class main
 	 * @return mixed 実行したAPIの返却値
 	 */
 	public function gpi($options){
-		$gpi = new gpi($this);
+		$gpi = new gpi($this, $this->fncs);
 		$rtn = $gpi->gpi( $options );
 		return $rtn;
 	}

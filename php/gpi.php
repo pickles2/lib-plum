@@ -13,11 +13,15 @@ class gpi{
 	/** $main */
 	private $main;
 
+	/** $fncs */
+	private $fncs;
+
 	/**
 	 * Constructor
 	 */
-	public function __construct($main){
+	public function __construct($main, $fncs){
 		$this->main = $main;
+		$this->fncs = $fncs;
 	}
 
 
@@ -42,6 +46,7 @@ class gpi{
 
 			case "get_condition":
 				$result = array();
+				$result['is_local_master_available'] = $this->fncs->is_local_master_available();
 				return $result;
 
 			default:

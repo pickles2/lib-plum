@@ -4,48 +4,7 @@ namespace hk\plum;
 
 class fncs
 {
-	/**
-	 * オプション
-	 * 
-	 * _GET,
-	 * _POST,
-	 * 		パラメータ。
-	 * 		省略時は、それぞれ `$_GET`, `$_POST` をデフォルトとして参照します。
-	 * 
-	 * preview_server = array(
-	 * 	// プレビューサーバの数だけ用意する
-	 * 	array(
-	 * 		string 'name':
-	 * 			- プレビューサーバ名(任意)
-	 * 		string 'path':
-	 * 			- プレビューサーバ(デプロイ先)のパス
-	 * 		string 'url':
-	 * 			- プレビューサーバのURL
-	 * 			  Webサーバのvirtual host等で設定したURL
-	 * 	)
-	 * ),
-	 * 
-	 * temporary_data_dir = '/path/to/temporary_data_dir/'
-	 * 
-	 * additional_params = array(
-	 * 	// フォーム送信時に付加する追加のパラメータ (省略可)
-	 * 	'hoge' => 'fuga', // (キーと値のセット)
-	 * ),
-	 * 
-	 * git = array(
-	 * 	string 'url':
-	 * 		- Gitリポジトリのurl
-	 * 		  例) github.com/hk-r/px2-sample-project.git
-	 * 		- または、完全なURLとしてまとめて設定ができます
-	 * 		  例) https://user:passwd@github.com/hk-r/px2-sample-project.git
-	 * 	string 'username':
-	 * 		- Gitリポジトリのユーザ名
-	 * 		  例) hoge
-	 * 	string 'password':
-	 * 		- Gitリポジトリのパスワード
-	 * 		  例) fuga
-	 * )
-	 */
+	/** オプション */
 	public $options;
 
 	/** hk\plum\plum_deployのインスタンス */
@@ -75,7 +34,7 @@ class fncs
 	 * - $result['status'] boolean 初期化に成功した場合に true
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	public function init() {
+	public function init_all_staging_repos() {
 
 		$result = array(
 			'status' => true,
@@ -490,22 +449,20 @@ class fncs
 	}
 
 	/**
-	 * マスタブランチの存在チェック
+	 * ローカルマスタブランチの状態チェック
 	 *	 
 	 * @return boolean
-	 *  存在する場合：true
-	 *  存在しない場合：false
+	 * - 利用可能な場合：true
+	 * - 利用可能ではない場合：false
 	 */
-	public function local_master_exists() {
-
-		$ret = true;
-
-		// デプロイ先のマスタブランチが無い場合はfalseを返す
-		if ( !file_exists( $this->options->temporary_data_dir.'/local_master/' ) ) {
-			$ret = false;
+	public function is_local_master_available() {
+		if ( !is_dir( $this->options->temporary_data_dir.'/local_master/' ) ) {
+			return false;
 		}
-
-		return $ret;
+		if ( !is_dir( $this->options->temporary_data_dir.'/local_master/.git/' ) ) {
+			return false;
+		}
+		return true;
 
 	}
 
