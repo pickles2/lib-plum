@@ -6,7 +6,13 @@ module.exports = function(main, template){
 	const px2style = main.px2style;
 
 	this.run = function( callback ){
-		let $html = $( template.bind('main', {}) );
+		let condition = main.getCondition();
+		let $html = $( template.bind(
+			'main',
+			{
+				'condition': condition,
+			}
+		) );
 		callback($html);
 	}
 }

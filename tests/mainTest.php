@@ -42,120 +42,6 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 
 	/**
-	 * Initialize
-	 */
-	public function testInitialize(){
-
-		// Plum
-		$options = $this->options;
-		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-
-		$this->assertTrue( strpos($stdout, 'Initializeを実行してください。') !== false );
-
-		$options = $this->options;
-		$options['_POST'] = array('init' => 1);
-		$plum = new hk\plum\main( $options );
-		$fncs = new hk\plum\fncs( $plum, $plum->options );
-
-		$this->assertEquals( $fncs->get_additional_params(), '<input type="hidden" name="test1" value="test1val" /><input type="hidden" name="test2" value="test2val" />' );
-		$this->assertEquals( $fncs->get_additional_params('query_string'), 'test1=test1val&test2=test2val' );
-
-		$stdout = $plum->run();
-		// var_dump($stdout);
-
-		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
-
-	}
-
-	/**
-	 * Change Branch
-	 */
-	public function testChangeBranch(){
-
-		// preview1 を tests/branch_001 に。
-		$options = $this->options;
-		$options['_POST'] = array(
-			'reflect' => 1,
-			'preview_server_name' => 'preview1',
-			'branch_form_list' => 'origin/tests/branch_001',
-		);
-		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
-
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview1/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview1/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
-
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview2/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview2/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'main' );
-
-		$this->assertTrue( is_dir( __DIR__.'/testdata/repos/preview3/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/repos/preview3/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'main' );
-
-
-
-		// preview2 を tests/branch_002 に。
-		$options = $this->options;
-		$options['_POST'] = array(
-			'reflect' => 1,
-			'preview_server_name' => 'preview2',
-			'branch_form_list' => 'origin/tests/branch_002',
-		);
-		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_002' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'main' );
-
-
-		// preview3 を tests/branch_003 に。
-		$options = $this->options;
-		$options['_POST'] = array(
-			'reflect' => 1,
-			'preview_server_name' => 'preview3',
-			'branch_form_list' => 'origin/tests/branch_003',
-		);
-		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_002' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'branch_003' );
-
-
-		// preview2 を tests/branch_001 に。
-		$options = $this->options;
-		$options['_POST'] = array(
-			'reflect' => 1,
-			'preview_server_name' => 'preview2',
-			'branch_form_list' => 'origin/tests/branch_001',
-		);
-		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview1/branchname.txt' )), 'branch_001' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview2/branchname.txt' )), 'branch_001' );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/repos/preview3/branchname.txt' )), 'branch_003' );
-
-	}
-
-	/**
 	 * GPI: get_condition
 	 */
 	public function testGpiGetCondition(){
@@ -167,27 +53,35 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			'api' => 'get_condition',
 		) );
 		// var_dump($result);
+		$this->assertFalse( $result['is_local_master_available'] );
+		$this->assertSame( count($result['preview_server']), 3 );
 
 	}
 
-
-
 	/**
-	 * OS Command Injection Countermeasure
+	 * GPI: init_staging_env
 	 */
-	public function testOsCommandInjectionCountermeasure(){
+	public function testGpiInitializeMasterDataDir(){
 
-		// 外部の攻撃者が任意のコマンドを実行してみるテスト
+		// Plum
 		$options = $this->options;
-		$options['_POST'] = array(
-			'reflect' => 1,
-			'preview_server_name' => 'preview3',
-			'branch_form_list' => 'origin/tests/branch_001; touch OsCommandInjectionCountermeasure.txt;',
-		);
 		$plum = new hk\plum\main( $options );
-		$stdout = $plum->run();
-		// var_dump($stdout);
-		$this->assertFalse( is_file( __DIR__.'/testdata/repos/preview3/OsCommandInjectionCountermeasure.txt' ) );
+		$result = $plum->gpi( array(
+			'api' => 'init_staging_env',
+			'index' => null,
+		) );
+		// var_dump($result);
+		$this->assertTrue( $result['status'] );
+		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
+		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
+		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
+
+		$result = $plum->gpi( array(
+			'api' => 'get_condition',
+		) );
+		$this->assertTrue( $result['is_local_master_available'] );
+		$this->assertSame( count($result['preview_server']), 3 );
 
 	}
 

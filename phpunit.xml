@@ -9,5 +9,10 @@
 		<testsuite name="cleaning">
 			<file>./tests/cleaningTest.php</file>
 		</testsuite>
+		<!-- <testsuite name="deprecated">
+			<file>./tests/resetdataTest.php</file>
+			<file>./tests/deprecatedTest.php</file>
+			<file>./tests/cleaningTest.php</file>
+		</testsuite> -->
 	</testsuites>
 </phpunit>

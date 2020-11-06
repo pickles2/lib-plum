@@ -24,122 +24,144 @@ class fncs
 	}
 
 	/**
-	 * initialize GIT Repository
+	 * initialize all GIT repositories
 	 * 
 	 * Gitリポジトリをクローンし、ローカル環境を整えます。
-	 * ツールのセットアップ時に1回実行してください。
-	 * GUIから、 "Initialize" ボタンを実行すると呼び出されます。
 	 * 
 	 * @return array result
 	 * - $result['status'] boolean 初期化に成功した場合に true
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	public function init_all_staging_repos() {
+	public function init_all_staging_envs() {
 
 		$result = array(
 			'status' => true,
 			'message' => '',
 		);
 
-		$server_list = $this->options->preview_server;
-		array_push($server_list, json_decode(json_encode(array(
-			'name'=>'master',
-			'path'=>$this->options->temporary_data_dir.'/local_master/',
-		))));
 
 		set_time_limit(0);
 
-		foreach ( $server_list as $preview_server ) {
+		$tmp_result = $this->init_staging_env(null);
+		if( !$tmp_result['status'] ){
+			$result['status'] = false;
+			return $result;
+		}
 
-			try {
-
-				if ( strlen($preview_server->path) ) {
-
-					// デプロイ先のディレクトリが無い場合は作成
-					if ( !file_exists( $preview_server->path) ) {
-						// 存在しない場合
-
-						// ディレクトリ作成
-						if ( !mkdir( $preview_server->path, 0777) ) {
-							// ディレクトリが作成できない場合
-
-							// エラー処理
-							throw new \Exception('Creation of preview server directory failed.');
-						}
-					}
-
-					// 「.git」フォルダが存在すれば初期化済みと判定
-					if ( !file_exists( $preview_server->path . "/.git") ) {
-						// 存在しない場合
-
-						// .git はないがディレクトリは存在する。
-						if ( is_dir( $preview_server->path ) ) {
-
-							$git = $this->main->git($preview_server->path);
-
-							// git セットアップ
-							$git->git(array('init'));
-
-							// git urlのセット
-							$url_git_remote = $this->get_url_git_remote(true);
-
-							// set remote as origin
-							$git->git(array(
-								'remote',
-								'add',
-								'origin',
-								$url_git_remote
-							));
-							$git->git(array(
-								'remote',
-								'set-url',
-								'origin',
-								$url_git_remote
-							));
-
-							// git fetch
-							$git->git(array(
-								'fetch',
-							));
-
-							// git pull
-							$git->git(array(
-								'pull',
-								'origin',
-								'master',
-							));
-
-						} else {
-							// プレビューサーバのディレクトリが存在しない場合
-
-							// エラー処理
-							throw new \Exception('Preview server directory not found.');
-						}
-					}
-				}
-
-			} catch (\Exception $e) {
-				set_time_limit(30);
-
-				$git->git(array(
-					'remote',
-					'rm',
-					'origin',
-				));
-
+		$server_list = $this->options->preview_server;
+		foreach ( $server_list as $idx=>$preview_server ) {
+			$tmp_result = $this->init_staging_env($idx);
+			if( !$tmp_result['status'] ){
 				$result['status'] = false;
-				$result['message'] = $e->getMessage();
 				return $result;
 			}
-
 		}
 		set_time_limit(30);
 
-		$git->git(array(
-			'remote',
-			'rm',
-			'origin',
-		));
+		$result['status'] = true;
+		return $result;
+	}
+
+	/**
+	 * Initialize GIT Repository
+	 * 
+	 * Gitリポジトリをクローンし、ローカル環境を整えます。
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean 初期化に成功した場合に true
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
+	 */
+	public function init_staging_env( $staging_server_index ) {
+		$result = array();
+
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index,  $this->options->preview_server ) ){
+			$preview_server = $this->options->preview_server[$staging_server_index];
+		}else{
+			$preview_server = json_decode(json_encode(array(
+				'name'=>'master',
+				'path'=>$this->options->temporary_data_dir.'/local_master/',
+			)));
+		}
+
+		try {
+
+			if ( strlen($preview_server->path) ) {
+
+				// デプロイ先のディレクトリが無い場合は作成
+				if ( !file_exists( $preview_server->path) ) {
+					// 存在しない場合
+
+					// ディレクトリ作成
+					if ( !mkdir( $preview_server->path, 0777) ) {
+						// ディレクトリが作成できない場合
+
+						// エラー処理
+						throw new \Exception('Creation of preview server directory failed.');
+					}
+				}
+
+				// 「.git」フォルダが存在すれば初期化済みと判定
+				if ( !file_exists( $preview_server->path . "/.git") ) {
+					// 存在しない場合
+
+					// .git はないがディレクトリは存在する。
+					if ( is_dir( $preview_server->path ) ) {
+
+						$git = $this->main->git($preview_server->path);
+
+						// git セットアップ
+						$git->git(array('init'));
+
+						// git urlのセット
+						$url_git_remote = $this->get_url_git_remote(true);
+
+						// set remote as origin
+						$git->git(array(
+							'remote',
+							'add',
+							'origin',
+							$url_git_remote
+						));
+						$git->git(array(
+							'remote',
+							'set-url',
+							'origin',
+							$url_git_remote
+						));
+
+						// git fetch
+						$git->git(array(
+							'fetch',
+						));
+
+						// git pull
+						$git->git(array(
+							'pull',
+							'origin',
+							'master',
+						));
+
+						$git->git(array(
+							'remote',
+							'rm',
+							'origin',
+						));
+
+					} else {
+						// プレビューサーバのディレクトリが存在しない場合
+
+						// エラー処理
+						throw new \Exception('Preview server directory not found.');
+					}
+				}
+			}
+
+		} catch (\Exception $e) {
+			set_time_limit(30);
+			$result['status'] = false;
+			$result['message'] = $e->getMessage();
+			return $result;
+		}
 
 		$result['status'] = true;
 		return $result;

@@ -30,17 +30,17 @@ $plum = new hk\plum\main(
 			array(
 				'name' => 'preview1',
 				'path' => __DIR__.'/../repos/preview1/',
-				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview1/tests/testdata/contents/',
+				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview1/',
 			),
 			array(
 				'name' => 'preview2',
 				'path' => __DIR__.'/../repos/preview2/',
-				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview2/tests/testdata/contents/',
+				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview2/',
 			),
 			array(
 				'name' => 'preview3',
 				'path' => __DIR__.'/../repos/preview3/',
-				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview3/tests/testdata/contents/',
+				'url' => 'http://'.$_SERVER['HTTP_HOST'].dirname(dirname($_SERVER['SCRIPT_NAME'])).'/repos/preview3/',
 			)
 		),
 

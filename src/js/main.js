@@ -40,7 +40,7 @@ module.exports = function($elm, options){
 			},
 			function(it1){
 				// 状態情報を更新
-				options.gpiBridge({'api': 'get_condition'}, function(result){
+				main.gpiBridge({'api': 'get_condition'}, function(result){
 					console.log(result);
 					condition = result;
 					it1.next();
@@ -132,6 +132,26 @@ module.exports = function($elm, options){
 		}
 	}
 
+	/**
+	 * 状態情報を取得する
+	 *
+	 * 最後に取得した状態情報のキャッシュを返します。
+	 * この関数では、状態情報の更新は行いません。
+	 */
+	this.getCondition = function(){
+		return condition;
+	}
+
+	/**
+	 * GPIを呼び出す
+	 */
+	this.gpiBridge = function( gpiOptions, callback ){
+		options.gpiBridge(gpiOptions, function(result){
+			// console.log(result);
+			callback(result);
+		});
+		return;
+	}
 
 	/**
 	 * ページをロードする

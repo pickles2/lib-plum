@@ -14,7 +14,10 @@ module.exports = function(main, template){
 				$html = $( template.bind('setup', {}) );
 				$html.find('button')
 					.on('click', function(){
-						alert('開発中です。');
+						main.gpiBridge({'api': 'init_staging_env'}, function(result){
+							console.log(result);
+							main.init();
+						});
 					});
 				it1.next();
 			},
