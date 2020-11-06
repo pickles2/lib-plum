@@ -1,33 +1,32 @@
 <div>
 
 <table class="px2-table">
-<thead>
-<tr>
-<th>server</th><th>branch</th><th>反映</th><th>プレビュー</th>
-</tr>
-</thead>
-<tbody>
-
+	<thead>
+		<tr>
+			<th>server</th>
+			<th>branch</th>
+			<th>反映</th>
+			<th>プレビュー</th>
+		</tr>
+	</thead>
+	<tbody>
 
 {% for server_info in condition.preview_server %}
-	<tr>
-		<td scope="row">{{ server_info.name }}</td>
-		<td>
-			<select id="branch_list_{{ server_info.index }}" class="px2-input" name="branch_form_list" form="reflect_submit_{{ server_info.index }}">
-				{% for branch_name in condition.remote_branch_list %}
-					<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch_name ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
-				{% endfor %}
-			</select>
-		</td>
-		<td class="px2-text-align-center"><form id="reflect_submit_{{ server_info.index }}" method="post"><input type="submit" id="reflect_{{ server_info.index }}" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="{{ server_info.index }}"></form></td>
-		<td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
-	</tr>
-
-
+		<tr>
+			<td scope="row">{{ server_info.name }}</td>
+			<td>
+				<select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
+					{% for branch_name in condition.remote_branch_list %}
+						<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+					{% endfor %}
+				</select>
+			</td>
+			<td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary px2-btn--block">反映する</button></td>
+			<td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
+		</tr>
 {% endfor %}
 
-
-
-</tbody></table>
+	</tbody>
+</table>
 
 </div>

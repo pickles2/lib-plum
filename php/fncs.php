@@ -67,11 +67,13 @@ class fncs
 	 * 
 	 * Gitリポジトリをクローンし、ローカル環境を整えます。
 	 * 
+	 * @param int $staging_server_index 操作対象のステージング環境のインデックス番号
+	 * @param string $branch_name 初期化するリモートブランチ名
 	 * @return array result
 	 * - $result['status'] boolean 初期化に成功した場合に true
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	public function init_staging_env( $staging_server_index ) {
+	public function init_staging_env( $staging_server_index, $branch_name = null ) {
 		$result = array();
 
 		if( strlen($staging_server_index) && array_key_exists( $staging_server_index,  $this->options->preview_server ) ){
@@ -135,11 +137,23 @@ class fncs
 						));
 
 						// git pull
-						$git->git(array(
-							'pull',
-							'origin',
-							'master',
-						));
+						if( !is_null($branch_name) ){
+							$git->git(array(
+								'pull',
+								'-f',
+								'origin',
+								'master',
+							));
+						}else{
+							$local_branch_name = preg_replace( '/^origin\//', '', $branch_name );
+							$git->git(array(
+								'checkout',
+								'-f',
+								'-b',
+								$local_branch_name,
+								$branch_name,
+							));
+						}
 
 						$git->git(array(
 							'remote',

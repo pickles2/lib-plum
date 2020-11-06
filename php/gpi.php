@@ -77,11 +77,15 @@ class gpi{
 				if( array_key_exists('index', $options) && strlen($options['index']) ){
 					$staging_index = $options['index'];
 				}
-				$result = $this->fncs->init_staging_env( $staging_index );
+				$staging_branch_name = null;
+				if( array_key_exists('branch_name', $options) && strlen($options['branch_name']) ){
+					$staging_branch_name = $options['branch_name'];
+				}
+				$result = $this->fncs->init_staging_env( $staging_index, $staging_branch_name );
 				return $result;
 
 			default:
-				return true;
+				return false;
 		}
 
 		return true;
