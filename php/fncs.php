@@ -4,14 +4,12 @@ namespace hk\plum;
 
 class fncs
 {
+
+	/** hk\plum\main のインスタンス */
+	private $main;
+
 	/** オプション */
 	public $options;
-
-	/** hk\plum\plum_deployのインスタンス */
-	private $deploy;
-
-	/** tomk79/filesystem */
-	private $fs;
 
 	/**
 	 * コンストラクタ
@@ -67,107 +65,140 @@ class fncs
 	 * 
 	 * Gitリポジトリをクローンし、ローカル環境を整えます。
 	 * 
-	 * @param int $staging_server_index 操作対象のステージング環境のインデックス番号
+	 * @param int $staging_server_index 操作対象のステージング環境のインデックス番号 (省略時: マスターデータを対象とする)
 	 * @param string $branch_name 初期化するリモートブランチ名
 	 * @return array result
 	 * - $result['status'] boolean 初期化に成功した場合に true
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	public function init_staging_env( $staging_server_index, $branch_name = null ) {
+	public function init_staging_env( $staging_server_index = null, $branch_name = null ) {
 		$result = array();
 
-		if( strlen($staging_server_index) && array_key_exists( $staging_server_index,  $this->options->preview_server ) ){
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->preview_server ) ){
 			$preview_server = $this->options->preview_server[$staging_server_index];
 		}else{
 			$preview_server = json_decode(json_encode(array(
 				'name'=>'master',
 				'path'=>$this->options->temporary_data_dir.'/local_master/',
 			)));
+			$staging_server_index = null;
+			$branch_name = null; // マスターデータはデフォルトブランチでのみチェックアウト可
 		}
+
+		if( !property_exists($preview_server, 'path') || !strlen($preview_server->path) ){
+			$result['status'] = false;
+			$result['message'] = 'Local directory path is not set.';
+			return $result;
+		}
+		if( !$this->main->fs()->is_dir( $preview_server->path ) ){
+			$this->main->fs()->mkdir_r( $preview_server->path );
+			clearstatcache();
+		}
+		if( !$this->main->fs()->is_dir( $preview_server->path ) ){
+			$result['status'] = false;
+			$result['message'] = 'Failed to make Local directory.';
+			return $result;
+		}
+
+		// 状態を確認する
+		$condition = $this->check_staging_env_condition( $staging_server_index );
 
 		try {
 
-			if ( strlen($preview_server->path) ) {
+			$git = $this->main->git($preview_server->path);
+			$url_git_remote = $this->get_url_git_remote(true);
+			$local_branch_name = preg_replace( '/^origin\//', '', $branch_name );
 
-				// デプロイ先のディレクトリが無い場合は作成
-				if ( !file_exists( $preview_server->path) ) {
-					// 存在しない場合
+			if ( $condition['is_dir'] && !$condition['is_git_dir'] ) {
+				// git 初期化
+				$git->git(array('init'));
 
-					// ディレクトリ作成
-					if ( !mkdir( $preview_server->path, 0777) ) {
-						// ディレクトリが作成できない場合
+				// set remote as origin
+				$git->git(array(
+					'remote',
+					'add',
+					'origin',
+					$url_git_remote
+				));
+				$git->git(array(
+					'remote',
+					'set-url',
+					'origin',
+					$url_git_remote
+				));
 
-						// エラー処理
-						throw new \Exception('Creation of preview server directory failed.');
-					}
+				// git fetch
+				$git->git(array(
+					'fetch',
+				));
+
+				// git pull
+				$git->git(array(
+					'pull',
+					'-f',
+					'origin',
+					'master',
+				));
+
+				$git->git(array(
+					'remote',
+					'rm',
+					'origin',
+				));
+
+				$condition = $this->check_staging_env_condition( $staging_server_index );
+			}
+
+
+			if ( $condition['is_dir'] && $condition['is_git_dir'] && strlen($condition['current_branch_name']) && strlen($branch_name) ) {
+
+				if( $condition['current_branch_name'] == $local_branch_name ){
+					// すでに同じブランチがチェックアウトされているので、
+					// 更新する
+				}else{
+					// 違うブランチがチェックアウトされているので、
+					// 切り替える
+
+					$git->git(array(
+						'checkout',
+						'-b',
+						$local_branch_name,
+					));
 				}
 
-				// 「.git」フォルダが存在すれば初期化済みと判定
-				if ( !file_exists( $preview_server->path . "/.git") ) {
-					// 存在しない場合
 
-					// .git はないがディレクトリは存在する。
-					if ( is_dir( $preview_server->path ) ) {
+				// set remote as origin
+				$git->git(array(
+					'remote',
+					'add',
+					'origin',
+					$url_git_remote
+				));
+				$git->git(array(
+					'remote',
+					'set-url',
+					'origin',
+					$url_git_remote
+				));
 
-						$git = $this->main->git($preview_server->path);
+				// git fetch
+				$git->git(array(
+					'fetch',
+				));
 
-						// git セットアップ
-						$git->git(array('init'));
+				// git pull
+				$git->git(array(
+					'pull',
+					'-f',
+					'origin',
+					$local_branch_name.':'.$local_branch_name,
+				));
 
-						// git urlのセット
-						$url_git_remote = $this->get_url_git_remote(true);
-
-						// set remote as origin
-						$git->git(array(
-							'remote',
-							'add',
-							'origin',
-							$url_git_remote
-						));
-						$git->git(array(
-							'remote',
-							'set-url',
-							'origin',
-							$url_git_remote
-						));
-
-						// git fetch
-						$git->git(array(
-							'fetch',
-						));
-
-						// git pull
-						if( !is_null($branch_name) ){
-							$git->git(array(
-								'pull',
-								'-f',
-								'origin',
-								'master',
-							));
-						}else{
-							$local_branch_name = preg_replace( '/^origin\//', '', $branch_name );
-							$git->git(array(
-								'checkout',
-								'-f',
-								'-b',
-								$local_branch_name,
-								$branch_name,
-							));
-						}
-
-						$git->git(array(
-							'remote',
-							'rm',
-							'origin',
-						));
-
-					} else {
-						// プレビューサーバのディレクトリが存在しない場合
-
-						// エラー処理
-						throw new \Exception('Preview server directory not found.');
-					}
-				}
+				$git->git(array(
+					'remote',
+					'rm',
+					'origin',
+				));
 			}
 
 		} catch (\Exception $e) {
@@ -182,51 +213,42 @@ class fncs
 	}
 
 	/**
-	 * initalizeの状態取得
+	 * 単環境の状態を調べる
 	 * 
 	 * @return array result
-	 * - $result['status'] boolean 状態確認に成功した場合に true
-	 * - $result['already_init'] boolean 初期化済みのとき true
-	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
+	 * - $result['is_dir'] boolean 作業ディレクトリが作成されているか
+	 * - $result['is_git_dir'] boolean .git ディレクトリが作成されているか
+	 * - $result['current_branch_name'] string 現在のブランチ名
 	 */
-	public function get_initialize_status() {
+	private function check_staging_env_condition( $staging_server_index = null ) {
 
-		$output = "";
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->preview_server ) ){
+			$preview_server = $this->options->preview_server[$staging_server_index];
+		}else{
+			$preview_server = json_decode(json_encode(array(
+				'name'=>'master',
+				'path'=>$this->options->temporary_data_dir.'/local_master/',
+			)));
+			$staging_server_index = null;
+		}
+
 		$result = array(
-			'status' => false,
-			'message' => '',
+			'is_dir' => false,
+			'is_git_dir' => false,
+			'current_branch_name' => null,
 		);
 
-		$server_list = $this->options->preview_server;
-		
-		// 初期値設定
-		$result['status'] = true;
-		$result['already_init'] = true;
-
-		foreach ( $server_list as $preview_server ) {
-
-			try {
-
-				if ( strlen($preview_server->path) ) {
-
-					// デプロイ先のディレクトリが存在しない、または「.git」フォルダが存在しない場合
-					if ( !file_exists( $preview_server->path) ||
-						 !file_exists( $preview_server->path . "/.git")) {
-						
-						$result['already_init'] = false;
-						break;
-					}
-				}
-
-			} catch (\Exception $e) {
-
-				$result['status'] = false;
-				$result['already_init'] = false;
-				$result['message'] = $e->getMessage();
-
-				return $result;
+		if( $this->main->fs()->is_dir( $preview_server->path ) ){
+			$result['is_dir'] = true;
+		}
+		if( $this->main->fs()->is_dir( $preview_server->path.'/.git' ) ){
+			$result['is_git_dir'] = true;
+		}
+		if( $result['is_git_dir'] ){
+			$tmp_current_branch = $this->get_current_branch( $preview_server->path );
+			if( $tmp_current_branch['status'] ){
+				$result['current_branch_name'] = $tmp_current_branch['current_branch'];
 			}
-
 		}
 
 		return $result;
