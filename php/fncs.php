@@ -227,12 +227,13 @@ class fncs
 	 * - $result['branch_list'] array 取得された一覧を格納
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	private function get_parent_branch_list() {
+	public function get_remote_branch_list() {
 
 		$output_array = array();
 		$result = array(
 			'status' => true,
 			'message' => '',
+			'branch_list' => array(),
 		);
 		$base_dir = $this->main->fs()->get_realpath( $this->options->temporary_data_dir.'/local_master/' );
 
@@ -286,6 +287,12 @@ class fncs
 
 				$result['branch_list'] = $output_array;
 
+				$git->git(array(
+					'remote',
+					'rm',
+					'origin',
+				));
+
 			} else {
 				// プレビューサーバのディレクトリが存在しない場合
 
@@ -294,23 +301,10 @@ class fncs
 			}
 
 		} catch (\Exception $e) {
-
-			$git->git(array(
-				'remote',
-				'rm',
-				'origin',
-			));
-
 			$result['status'] = false;
 			$result['message'] = $e->getMessage();
 			return $result;
 		}
-
-		$git->git(array(
-			'remote',
-			'rm',
-			'origin',
-		));
 
 		$result['status'] = true;
 		return $result;
@@ -404,7 +398,7 @@ class fncs
 
 		// 初期化後の画面表示
 		// Gitリポジトリ取得
-		$get_branch_ret = $this->get_parent_branch_list();
+		$get_branch_ret = $this->get_remote_branch_list();
 		$branch_list = null;
 		if( array_key_exists( 'branch_list', $get_branch_ret ) && is_array($get_branch_ret['branch_list']) ){
 			$branch_list = $get_branch_ret['branch_list'];
@@ -448,26 +442,6 @@ class fncs
 		return $ret;
 	}
 
-
-	/**
-	 * ファイルごとの状態の名称を得る
-	 */
-	private function file_status_constants($status) {
-
-		if($status->work_tree == '?' && $status->index == '?'){
-			return 'untracked';
-		}else if($status->work_tree == 'A' || $status->index == 'A'){
-			return 'added';
-		}else if($status->work_tree == 'M' || $status->index == 'M'){
-			return 'modified';
-		}else if($status->work_tree == 'D' || $status->index == 'D'){
-			return 'deleted';
-		}else if($status->work_tree == 'R' || $status->index == 'R'){
-			return 'renamed';
-		}
-		return 'unknown';
-
-	}
 
 	/**
 	 * ローカルマスタブランチの状態チェック

@@ -14,14 +14,9 @@
 		<td scope="row">{{ server_info.name }}</td>
 		<td>
 			<select id="branch_list_{{ server_info.index }}" class="px2-input" name="branch_form_list" form="reflect_submit_{{ server_info.index }}">
-
-		{# if( is_array($branch_list) ){
-			foreach ($branch_list as $branch) {
-				$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
-				<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>
-			}
-		} #}
-
+				{% for branch_name in condition.remote_branch_list %}
+					<option value="{{ branch_name }}" {{ (branch_name == server_info.current_branch_name ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+				{% endfor %}
 			</select>
 		</td>
 		<td class="px2-text-align-center"><form id="reflect_submit_{{ server_info.index }}" method="post"><input type="submit" id="reflect_{{ server_info.index }}" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="{{ server_info.index }}"></form></td>

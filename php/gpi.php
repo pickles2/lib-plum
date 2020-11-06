@@ -54,6 +54,11 @@ class gpi{
 						unset( $row->path ); // 不要な情報はフロントへ送らない
 					}
 				}
+				$branchlist = $this->fncs->get_remote_branch_list();
+				$result['remote_branch_list'] = null;
+				if( $branchlist['status'] ){
+					$result['remote_branch_list'] = $branchlist['branch_list'];
+				}
 				return $result;
 
 			case "init_staging_env":

@@ -76,8 +76,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$result = $plum->gpi( array(
 			'api' => 'get_condition',
 		) );
+		// var_dump($result);
 		$this->assertTrue( $result['is_local_master_available'] );
 		$this->assertSame( count($result['preview_server']), 3 );
+		$this->assertSame( count($result['remote_branch_list']), 5 );
 
 	}
 
