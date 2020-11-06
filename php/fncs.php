@@ -387,7 +387,6 @@ class fncs
 				. '<div class="panel-heading">'
 				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
 				. '<form method="post" style="margin-top:20px;">'
-				. $this->get_additional_params()
 				. '<input type="submit" id="init_btn" name="init" class="px2-btn px2-btn--primary px2-btn--block" value="Initialize" />'
 				. '</form>'
 				. '</div>'
@@ -437,7 +436,7 @@ class fncs
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post">'.$this->get_additional_params().'<input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td class="px2-text-align-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}
@@ -547,30 +546,6 @@ class fncs
 		}
 		return $url;
 
-	}
-
-	/**
-	 * 追加のパラメータを取得する
-	 * @param string $type `form` or `query_string`
-	 */
-	public function get_additional_params($type = 'form'){
-		if( !property_exists($this->options, 'additional_params') ){
-			return '';
-		}
-		$params = json_decode(json_encode($this->options->additional_params), true);
-		$rtn = '';
-		if( $type == 'query_string' ){
-			$tmp_params = array();
-			foreach($params as $key=>$value){
-				array_push($tmp_params, urlencode($key).'='.urlencode($value));
-			}
-			$rtn = implode('&', $tmp_params);
-		}else{
-			foreach($params as $key=>$value){
-				$rtn .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
-			}
-		}
-		return $rtn;
 	}
 
 }

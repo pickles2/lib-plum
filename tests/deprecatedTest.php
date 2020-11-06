@@ -33,10 +33,6 @@ class deprecatedTest extends PHPUnit_Framework_TestCase{
 			'git' => array(
 				'url' => __DIR__.'/testdata/remote',
 			),
-			'additional_params' => array(
-				'test1' => 'test1val',
-				'test2' => 'test2val',
-			),
 		);
 	}
 
@@ -58,9 +54,6 @@ class deprecatedTest extends PHPUnit_Framework_TestCase{
 		$options['_POST'] = array('init' => 1);
 		$plum = new hk\plum\main( $options );
 		$fncs = new hk\plum\fncs( $plum, $plum->options );
-
-		$this->assertEquals( $fncs->get_additional_params(), '<input type="hidden" name="test1" value="test1val" /><input type="hidden" name="test2" value="test2val" />' );
-		$this->assertEquals( $fncs->get_additional_params('query_string'), 'test1=test1val&test2=test2val' );
 
 		$stdout = $plum->run();
 		// var_dump($stdout);

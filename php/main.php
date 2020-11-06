@@ -22,11 +22,6 @@ class main
 	 * 
 	 * temporary_data_dir = '/path/to/temporary_data_dir/'
 	 * 
-	 * additional_params = array(
-	 * 	// フォーム送信時に付加する追加のパラメータ (省略可)
-	 * 	'hoge' => 'fuga', // (キーと値のセット)
-	 * ),
-	 * 
 	 * git = array(
 	 * 	string 'url':
 	 * 		- Gitリポジトリのurl

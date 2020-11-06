@@ -58,11 +58,6 @@ $plum = new hk\plum\main(
 		// Plumが内部で使用する一時データの保管用ディレクトリ (書き込みが許可されたディレクトリを指定)
 		'temporary_data_dir' => '/path/to/temporary_data_dir/',
 
-		// フォーム送信時に付加する追加のパラメータ (省略可)
-		'additional_params' => array(
-			'hoge' => 'fuga',
-		),
-
 		// プレビューサーバ定義
 		'preview_server' => array(
 
@@ -136,7 +131,7 @@ temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
 ### pickles2/lib-plum v0.2.0 (リリース日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
-- オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST` を廃止した。
+- オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST`、 `additional_params` を廃止した。
 - オプション `temporary_data_dir` を追加した。
 - クライアントサイドライブラリのファイル構成を変更した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。

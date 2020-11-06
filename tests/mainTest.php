@@ -33,10 +33,6 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			'git' => array(
 				'url' => __DIR__.'/testdata/remote',
 			),
-			'additional_params' => array(
-				'test1' => 'test1val',
-				'test2' => 'test2val',
-			),
 		);
 	}
 

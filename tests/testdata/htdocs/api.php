@@ -9,11 +9,6 @@ $plum = new hk\plum\main(
 		// 一時データ保存ディレクトリ
 		'temporary_data_dir' => __DIR__.'/../temporary_data_dir/',
 
-		// 追加パラメータ
-		'additional_params' => array(
-			'hoge' => 'fuga',
-		),
-
 		// プレビューサーバ定義
 		'preview_server' => array(
 
