@@ -319,7 +319,7 @@ class fncs
 	 * - $result['current_branch'] string ブランチ名を格納
 	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
 	 */
-	private function get_child_current_branch($path) {
+	public function get_current_branch( $path ) {
 
 		$output = "";
 		$result = array(
@@ -423,7 +423,7 @@ class fncs
 
 				if( is_array($branch_list) ){
 					foreach ($branch_list as $branch) {
-						$tmp_current_buranch_info = $this->get_child_current_branch( $prev_row->path );
+						$tmp_current_buranch_info = $this->get_current_branch( $prev_row->path );
 						$row .= '<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>';
 					}
 				}

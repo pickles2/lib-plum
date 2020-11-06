@@ -15,7 +15,7 @@
 		<td>
 			<select id="branch_list_{{ server_info.index }}" class="px2-input" name="branch_form_list" form="reflect_submit_{{ server_info.index }}">
 				{% for branch_name in condition.remote_branch_list %}
-					<option value="{{ branch_name }}" {{ (branch_name == server_info.current_branch_name ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+					<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch_name ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
 				{% endfor %}
 			</select>
 		</td>

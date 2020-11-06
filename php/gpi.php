@@ -49,10 +49,21 @@ class gpi{
 				$result['is_local_master_available'] = $this->fncs->is_local_master_available();
 				$result['preview_server'] = $this->main->options->preview_server;
 				foreach( $result['preview_server'] as $idx=>$row ){
-					$row->index = $idx;
-					if( property_exists($row, 'path') ){
-						unset( $row->path ); // 不要な情報はフロントへ送らない
+					$row = (array) $row;
+					$row['index'] = $idx;
+
+					$row['current_branch'] = null;
+					$tmp_current_branch = $this->fncs->get_current_branch($row['path']);
+					if( $tmp_current_branch['status'] ){
+						$row['current_branch'] = $tmp_current_branch['current_branch'];
 					}
+
+					if( array_key_exists('path', $row) ){
+						// 不要な情報はフロントへ送らない
+						unset( $row['path'] );
+					}
+
+					$result['preview_server'][$idx] = $row;
 				}
 				$branchlist = $this->fncs->get_remote_branch_list();
 				$result['remote_branch_list'] = null;
