@@ -46,8 +46,8 @@ class fncs
 			return $result;
 		}
 
-		$server_list = $this->options->preview_server;
-		foreach ( $server_list as $idx=>$preview_server ) {
+		$server_list = $this->options->staging_server;
+		foreach ( $server_list as $idx=>$staging_server ) {
 			$tmp_result = $this->init_staging_env($idx);
 			if( !$tmp_result['status'] ){
 				$result['status'] = false;
@@ -74,10 +74,10 @@ class fncs
 	public function init_staging_env( $staging_server_index = null, $branch_name = null ) {
 		$result = array();
 
-		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->preview_server ) ){
-			$preview_server = $this->options->preview_server[$staging_server_index];
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->staging_server ) ){
+			$staging_server = $this->options->staging_server[$staging_server_index];
 		}else{
-			$preview_server = json_decode(json_encode(array(
+			$staging_server = json_decode(json_encode(array(
 				'name'=>'master',
 				'path'=>$this->options->temporary_data_dir.'/local_master/',
 			)));
@@ -85,16 +85,16 @@ class fncs
 			$branch_name = null; // マスターデータはデフォルトブランチでのみチェックアウト可
 		}
 
-		if( !property_exists($preview_server, 'path') || !strlen($preview_server->path) ){
+		if( !property_exists($staging_server, 'path') || !strlen($staging_server->path) ){
 			$result['status'] = false;
 			$result['message'] = 'Local directory path is not set.';
 			return $result;
 		}
-		if( !$this->main->fs()->is_dir( $preview_server->path ) ){
-			$this->main->fs()->mkdir_r( $preview_server->path );
+		if( !$this->main->fs()->is_dir( $staging_server->path ) ){
+			$this->main->fs()->mkdir_r( $staging_server->path );
 			clearstatcache();
 		}
-		if( !$this->main->fs()->is_dir( $preview_server->path ) ){
+		if( !$this->main->fs()->is_dir( $staging_server->path ) ){
 			$result['status'] = false;
 			$result['message'] = 'Failed to make Local directory.';
 			return $result;
@@ -105,7 +105,7 @@ class fncs
 
 		try {
 
-			$git = $this->main->git($preview_server->path);
+			$git = $this->main->git($staging_server->path);
 			$url_git_remote = $this->get_url_git_remote(true);
 			$local_branch_name = preg_replace( '/^origin\//', '', $branch_name );
 
@@ -222,10 +222,10 @@ class fncs
 	 */
 	private function check_staging_env_condition( $staging_server_index = null ) {
 
-		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->preview_server ) ){
-			$preview_server = $this->options->preview_server[$staging_server_index];
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->staging_server ) ){
+			$staging_server = $this->options->staging_server[$staging_server_index];
 		}else{
-			$preview_server = json_decode(json_encode(array(
+			$staging_server = json_decode(json_encode(array(
 				'name'=>'master',
 				'path'=>$this->options->temporary_data_dir.'/local_master/',
 			)));
@@ -238,14 +238,14 @@ class fncs
 			'current_branch_name' => null,
 		);
 
-		if( $this->main->fs()->is_dir( $preview_server->path ) ){
+		if( $this->main->fs()->is_dir( $staging_server->path ) ){
 			$result['is_dir'] = true;
 		}
-		if( $this->main->fs()->is_dir( $preview_server->path.'/.git' ) ){
+		if( $this->main->fs()->is_dir( $staging_server->path.'/.git' ) ){
 			$result['is_git_dir'] = true;
 		}
 		if( $result['is_git_dir'] ){
-			$tmp_current_branch = $this->get_current_branch( $preview_server->path );
+			$tmp_current_branch = $this->get_current_branch( $staging_server->path );
 			if( $tmp_current_branch['status'] ){
 				$result['current_branch_name'] = $tmp_current_branch['current_branch'];
 			}
@@ -448,7 +448,7 @@ class fncs
 				. '</thead>'
 				. '<tbody>';
 
-		foreach ($this->options->preview_server as $key => $prev_row) {
+		foreach ($this->options->staging_server as $key => $prev_row) {
 		
 			// デプロイ先のディレクトリが存在する場合
 			if ( file_exists( $prev_row->path)) {
@@ -466,7 +466,7 @@ class fncs
 
 				$row .= '</select>'
 						. '</td>'
-						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="preview_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
+						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="staging_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
 						. '<td class="px2-text-align-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
 						. '</tr>';
 			}

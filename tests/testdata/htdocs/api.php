@@ -10,7 +10,7 @@ $plum = new hk\plum\main(
 		'temporary_data_dir' => __DIR__.'/../temporary_data_dir/',
 
 		// プレビューサーバ定義
-		'preview_server' => array(
+		'staging_server' => array(
 
 			// プレビューサーバの数だけ設定する
 			//

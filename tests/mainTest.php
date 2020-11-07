@@ -10,10 +10,8 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		mb_internal_encoding('UTF-8');
 		$this->fs = new tomk79\filesystem();
 		$this->options = array(
-			'_POST' => array(),
-			'_GET' => array(),
 			'temporary_data_dir' => __DIR__.'/testdata/temporary_data_dir/',
-			'preview_server' => array(
+			'staging_server' => array(
 				array(
 					'name' => 'preview1',
 					'path' => __DIR__.'/testdata/repos/preview1/',
@@ -50,7 +48,7 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		) );
 		// var_dump($result);
 		$this->assertFalse( $result['is_local_master_available'] );
-		$this->assertSame( count($result['preview_server']), 3 );
+		$this->assertSame( count($result['staging_server']), 3 );
 		$this->assertTrue( is_null($result['remote_branch_list']) );
 
 	}
@@ -79,8 +77,8 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		) );
 		// var_dump($result);
 		$this->assertTrue( $result['is_local_master_available'] );
-		$this->assertSame( count($result['preview_server']), 3 );
-		$this->assertTrue( is_null($result['preview_server'][0]['current_branch']) );
+		$this->assertSame( count($result['staging_server']), 3 );
+		$this->assertTrue( is_null($result['staging_server'][0]['current_branch']) );
 		$this->assertSame( count($result['remote_branch_list']), 5 );
 
 	}

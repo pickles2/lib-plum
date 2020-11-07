@@ -7,7 +7,7 @@ class main
 	/**
 	 * オプション
 	 * 
-	 * preview_server = array(
+	 * staging_server = array(
 	 * 	// プレビューサーバの数だけ用意する
 	 * 	array(
 	 * 		string 'name':
@@ -37,9 +37,6 @@ class main
 	 * )
 	 */
 	public $options;
-
-	/** hk\plum\plum_deploy のインスタンス */
-	private $deploy;
 
 	/** hk\plum\fncs のインスタンス */
 	private $fncs;
@@ -75,7 +72,6 @@ class main
 			$this->fs->mkdir($this->options->temporary_data_dir.'/local_master/');
 		}
 		$this->fncs = new fncs($this, $this->options);
-		$this->deploy = new plum_deploy($this, $this->fncs);
 	}
 
 	/**

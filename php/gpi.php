@@ -47,8 +47,8 @@ class gpi{
 			case "get_condition":
 				$result = array();
 				$result['is_local_master_available'] = $this->fncs->is_local_master_available();
-				$result['preview_server'] = $this->main->options->preview_server;
-				foreach( $result['preview_server'] as $idx=>$row ){
+				$result['staging_server'] = $this->main->options->staging_server;
+				foreach( $result['staging_server'] as $idx=>$row ){
 					$row = (array) $row;
 					$row['index'] = $idx;
 
@@ -63,7 +63,7 @@ class gpi{
 						unset( $row['path'] );
 					}
 
-					$result['preview_server'][$idx] = $row;
+					$result['staging_server'][$idx] = $row;
 				}
 				$branchlist = $this->fncs->get_remote_branch_list();
 				$result['remote_branch_list'] = null;

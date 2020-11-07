@@ -1,7 +1,7 @@
 pickles2/lib-plum
 ======================
 
-ウェブプロジェクトをプレビュー環境へデプロイする機能を提供するライブラリです。
+ウェブプロジェクトをステージング環境へデプロイする機能を提供するライブラリです。
 
 
 ## インストール - Install
@@ -58,23 +58,23 @@ $plum = new hk\plum\main(
 		// Plumが内部で使用する一時データの保管用ディレクトリ (書き込みが許可されたディレクトリを指定)
 		'temporary_data_dir' => '/path/to/temporary_data_dir/',
 
-		// プレビューサーバ定義
-		'preview_server' => array(
+		// ステージングサーバ定義
+		'staging_server' => array(
 
-			// プレビューサーバの数だけ設定する
+			// ステージングサーバの数だけ設定する
 			//
 			//   string 'name':
-			//     - プレビューサーバ名(任意)
+			//     - ステージングサーバ名(任意)
 			//   string 'path':
-			//     - プレビューサーバ(デプロイ先)のパス
+			//     - ステージングサーバ(デプロイ先)のパス
 			//   string 'url':
-			//     - プレビューサーバのURL
+			//     - ステージングサーバのURL
 			//       Webサーバのvirtual host等で設定したURL
 			//
 			array(
-				'name' => 'preview1',
-				'path' => './../repos/preview1/',
-				'url' => 'http://preview1.localhost/'
+				'name' => 'Staging 1',
+				'path' => './../repos/stg1/',
+				'url' => 'http://stg1.localhost/'
 			)
 		),
 
@@ -100,28 +100,14 @@ header('Content-type: application/json');
 echo json_encode( $json );
 ```
 
-gitリポジトリの情報は、次のように1つの完全なURLの形式で設定することもできます。
-このとき、 `username`、 `password` が設定されているとき、これらが優先されます。それぞれ空白に設定するようにしてください。
-
-```php
-// Git情報定義
-'git' => array(
-	// Gitリポジトリの完全なURL
-	'url' => 'https://user:pass@host.com/path/to.git',
-)
-```
-
-
 
 
 #### デプロイ先のディレクトリに書き込み権限の付与
 
-3-1.の手順で設定した以下のディレクトリに実行ユーザの書き込み権限が無い場合は、権限を付与します。
+以下のディレクトリに実行ユーザの書き込み権限が無い場合は、権限を付与します。
 
-```
-preview_server -> path ・・・ プレビューサーバ(デプロイ先)のパス
-temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
-```
+- `staging_server -> path` ・・・ ステージングサーバ(デプロイ先)のパス
+- `temporary_data_dir` ・・・ ウェブプロジェクトのリポジトリパス
 
 
 
@@ -131,7 +117,7 @@ temporary_data_dir ・・・ ウェブプロジェクトのリポジトリパス
 ### pickles2/lib-plum v0.2.0 (リリース日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
-- オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST`、 `additional_params` を廃止した。
+- オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST`、 `additional_params` を廃止、 `preview_server` を `staging_server` に改名した。
 - オプション `temporary_data_dir` を追加した。
 - クライアントサイドライブラリのファイル構成を変更した。
 - CSS、JSの影響が外部に及ばないように隠蔽させた。
