@@ -40,8 +40,7 @@
             "php/main.php",
             "php/fncs.php",
             "php/git.php",
-            "php/gpi.php",
-            "php/plum_deploy.php"
+            "php/gpi.php"
         ]
     },
     "extra": {

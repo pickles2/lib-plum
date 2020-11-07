@@ -14,8 +14,11 @@ module.exports = function(main, template){
 				$html = $( template.bind('setup', {}) );
 				$html.find('button')
 					.on('click', function(){
+						px2style.loading();
+						$html.find('button,input,select,textarea,a').attr({'disabled': 'disabled'});
 						main.gpiBridge({'api': 'init_staging_env'}, function(result){
-							console.log(result);
+							// console.log(result);
+							px2style.closeLoading();
 							main.init();
 						});
 					});
