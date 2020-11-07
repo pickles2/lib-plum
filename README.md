@@ -114,7 +114,7 @@ echo json_encode( $json );
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-plum v0.2.0 (リリース日)
+### pickles2/lib-plum v0.2.0 (2020年11月7日)
 
 - リモートリポジトリがローカルディスクにある場合に対応した。
 - オプション `git->protocol`、 `git->host`、 `git->repository`、 `_GET`、 `_POST`、 `additional_params` を廃止、 `preview_server` を `staging_server` に改名した。
