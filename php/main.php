@@ -52,15 +52,6 @@ class main
 		$this->fs = new \tomk79\filesystem();
 		$this->options = json_decode(json_encode($options));
 
-		// TODO: 削除する
-		if( !property_exists($this->options, '_POST') ){
-			$this->options->_POST = json_decode(json_encode($_POST));
-		}
-		// TODO: 削除する
-		if( !property_exists($this->options, '_GET') ){
-			$this->options->_GET = json_decode(json_encode($_GET));
-		}
-
 		if( !property_exists($this->options, 'temporary_data_dir') || !strlen($this->options->temporary_data_dir) ){
 			trigger_error('Option `temporary_data_dir` is required.');
 			return;
