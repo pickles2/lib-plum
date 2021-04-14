@@ -20,7 +20,7 @@ class main
 	 * 	)
 	 * ),
 	 * 
-	 * temporary_data_dir = '/path/to/temporary_data_dir/'
+	 * data_dir = '/path/to/data_dir/'
 	 * 
 	 * git = array(
 	 * 	string 'url':
@@ -52,15 +52,22 @@ class main
 		$this->fs = new \tomk79\filesystem();
 		$this->options = json_decode(json_encode($options));
 
-		if( !property_exists($this->options, 'temporary_data_dir') || !strlen($this->options->temporary_data_dir) ){
-			trigger_error('Option `temporary_data_dir` is required.');
+		if(
+			(!property_exists($this->options, 'data_dir')
+			|| !strlen($this->options->data_dir))
+			&& property_exists($this->options, 'temporary_data_dir')
+		){
+			$this->options->data_dir = $this->options->temporary_data_dir;
+		}
+		if( !property_exists($this->options, 'data_dir') || !strlen($this->options->data_dir) ){
+			trigger_error('Option `data_dir` is required.');
 			return;
-		}elseif( !is_dir($this->options->temporary_data_dir) || !is_writable($this->options->temporary_data_dir) ){
-			trigger_error('Option `temporary_data_dir` has to be a writable directory path.');
+		}elseif( !is_dir($this->options->data_dir) || !is_writable($this->options->data_dir) ){
+			trigger_error('Option `data_dir` has to be a writable directory path.');
 			return;
 		}
-		if( !is_dir($this->options->temporary_data_dir.'/local_master/') ){
-			$this->fs->mkdir($this->options->temporary_data_dir.'/local_master/');
+		if( !is_dir($this->options->data_dir.'/local_master/') ){
+			$this->fs->mkdir($this->options->data_dir.'/local_master/');
 		}
 		$this->fncs = new fncs($this, $this->options);
 	}

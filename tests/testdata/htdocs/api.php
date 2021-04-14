@@ -6,8 +6,8 @@ require_once('../../../vendor/autoload.php');
  */
 $plum = new hk\plum\main(
 	array(
-		// 一時データ保存ディレクトリ
-		'temporary_data_dir' => __DIR__.'/../temporary_data_dir/',
+		// データディレクトリ
+		'data_dir' => __DIR__.'/../temporary_data_dir/',
 
 		// プレビューサーバ定義
 		'staging_server' => array(

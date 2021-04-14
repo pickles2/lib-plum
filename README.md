@@ -55,8 +55,9 @@ require_once('./vendor/autoload.php');
 
 $plum = new hk\plum\main(
 	array(
-		// Plumが内部で使用する一時データの保管用ディレクトリ (書き込みが許可されたディレクトリを指定)
-		'temporary_data_dir' => '/path/to/temporary_data_dir/',
+		// Plumが内部で使用するデータ保管用ディレクトリ
+		// (書き込みが許可されたディレクトリを指定)
+		'data_dir' => '/path/to/data_dir/',
 
 		// ステージングサーバ定義
 		'staging_server' => array(
@@ -106,13 +107,17 @@ echo json_encode( $json );
 
 以下のディレクトリに実行ユーザの書き込み権限が無い場合は、権限を付与します。
 
-- `staging_server -> path` ・・・ ステージングサーバ(デプロイ先)のパス
-- `temporary_data_dir` ・・・ ウェブプロジェクトのリポジトリパス
+- `staging_server->path` ・・・ ステージングサーバ(デプロイ先)のパス
+- `data_dir` ・・・ データディレクトリのパス
 
 
 
 
 ## 更新履歴 - Change log
+
+### pickles2/lib-plum v0.2.0 (リリース日未定)
+
+- オプション `temporary_data_dir` を `data_dir` に改名した。
 
 ### pickles2/lib-plum v0.2.0 (2020年11月7日)
 

@@ -79,7 +79,7 @@ class fncs
 		}else{
 			$staging_server = json_decode(json_encode(array(
 				'name'=>'master',
-				'path'=>$this->options->temporary_data_dir.'/local_master/',
+				'path'=>$this->options->data_dir.'/local_master/',
 			)));
 			$staging_server_index = null;
 			$branch_name = null; // マスターデータはデフォルトブランチでのみチェックアウト可
@@ -227,7 +227,7 @@ class fncs
 		}else{
 			$staging_server = json_decode(json_encode(array(
 				'name'=>'master',
-				'path'=>$this->options->temporary_data_dir.'/local_master/',
+				'path'=>$this->options->data_dir.'/local_master/',
 			)));
 			$staging_server_index = null;
 		}
@@ -271,7 +271,7 @@ class fncs
 			'message' => '',
 			'branch_list' => array(),
 		);
-		$base_dir = $this->main->fs()->get_realpath( $this->options->temporary_data_dir.'/local_master/' );
+		$base_dir = $this->main->fs()->get_realpath( $this->options->data_dir.'/local_master/' );
 
 		if ( !is_dir( $base_dir ) || !is_dir( $base_dir.'.git/' ) ) {
 			$result['status'] = false;
@@ -487,10 +487,10 @@ class fncs
 	 * - 利用可能ではない場合：false
 	 */
 	public function is_local_master_available() {
-		if ( !is_dir( $this->options->temporary_data_dir.'/local_master/' ) ) {
+		if ( !is_dir( $this->options->data_dir.'/local_master/' ) ) {
 			return false;
 		}
-		if ( !is_dir( $this->options->temporary_data_dir.'/local_master/.git/' ) ) {
+		if ( !is_dir( $this->options->data_dir.'/local_master/.git/' ) ) {
 			return false;
 		}
 		return true;
