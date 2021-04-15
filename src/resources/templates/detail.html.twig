@@ -21,7 +21,10 @@
 		</div>
 	</div>
 
-	<p class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary">更新する</button></p>
+	<p class="px2-text-align-center">
+		<button type="button" data-plum-method="update-htpasswd" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn">パスワードを設定</button>
+		<button type="button" data-plum-method="update-staging" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary">更新する</button>
+	</p>
 
 
 	<hr />

@@ -107,9 +107,11 @@ module.exports = function($elm, options){
 	 */
 	this.loadPage = function(pageName, options, callback){
 		const page = new pages[pageName](this, template);
-		$elms.main.html('');
+		px2style.loading();
 		page.run(options, function($dom){
+			$elms.main.html('');
 			$elms.main.append( $dom );
+			px2style.closeLoading();
 			callback();
 		});
 		return;

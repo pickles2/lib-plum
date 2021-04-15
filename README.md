@@ -120,6 +120,7 @@ echo json_encode( $json );
 - オプション `temporary_data_dir` を `data_dir` に改名した。
 - ローカルマスターリポジトリでは `git fetch` まで実行し、 `git pull` しないようにした。ディスク容量の節約のため。
 - UIの改善。各ステージング毎に詳細画面を追加した。
+- 各ステージング毎にパスワードを設定できる機能を追加した。
 
 ### pickles2/lib-plum v0.2.0 (2020年11月7日)
 

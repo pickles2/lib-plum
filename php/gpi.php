@@ -84,6 +84,15 @@ class gpi{
 				$result = $this->fncs->init_staging_env( $staging_index, $staging_branch_name );
 				return $result;
 
+			case "update_htpassword":
+				$result = array();
+				$result['status'] = true;
+				$result['message'] = '開発中の機能です。';
+
+				/* TODO: 開発中の機能 */
+
+				return $result;
+
 			default:
 				return false;
 		}
