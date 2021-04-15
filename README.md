@@ -115,10 +115,11 @@ echo json_encode( $json );
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-plum v0.2.0 (リリース日未定)
+### pickles2/lib-plum v0.2.1 (リリース日未定)
 
 - オプション `temporary_data_dir` を `data_dir` に改名した。
 - ローカルマスターリポジトリでは `git fetch` まで実行し、 `git pull` しないようにした。ディスク容量の節約のため。
+- UIの改善。各ステージング毎に詳細画面を追加した。
 
 ### pickles2/lib-plum v0.2.0 (2020年11月7日)
 

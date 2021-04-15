@@ -155,21 +155,6 @@ class fncs
 
 			if ( $condition['is_dir'] && $condition['is_git_dir'] && strlen($condition['current_branch_name']) && strlen($branch_name) ) {
 
-				if( $condition['current_branch_name'] == $local_branch_name ){
-					// すでに同じブランチがチェックアウトされているので、
-					// 更新する
-				}else{
-					// 違うブランチがチェックアウトされているので、
-					// 切り替える
-
-					$git->git(array(
-						'checkout',
-						'-b',
-						$local_branch_name,
-					));
-				}
-
-
 				// set remote as origin
 				$git->git(array(
 					'remote',
@@ -189,15 +174,51 @@ class fncs
 					'fetch',
 				));
 
+
+
 				// git pull
 				if( !is_null($staging_server_index) ){
 					// マスターデータでは pull する必要はない。
+
+					$git->git(array(
+						'reset',
+						'--hard',
+						'ORIG_HEAD',
+					));
+
+					if( $condition['current_branch_name'] == $local_branch_name ){
+						// すでに同じブランチがチェックアウトされているので、
+						// 更新だけする
+					}else{
+						// 違うブランチがチェックアウトされているので、
+						// 切り替える
+
+						$git->git(array(
+							'checkout',
+							'-b',
+							$local_branch_name,
+						));
+					}
+
 					$git->git(array(
 						'pull',
 						'-f',
+						'--no-commit',
 						'origin',
 						$local_branch_name.':'.$local_branch_name,
 					));
+
+					$localBranches = $this->get_branch_list( $staging_server_index );
+					foreach( $localBranches['branch_list'] as $localBranche ){
+						if( $localBranche ==  $localBranches['current_branch_name']){
+							continue;
+						}
+						$git->git(array(
+							'branch',
+							'-D',
+							$localBranche,
+						));
+					}
 				}
 
 				$git->git(array(
@@ -262,7 +283,87 @@ class fncs
 	}
 
 	/**
-	 * ブランチリストを取得
+	 * ブランチリストを取得する
+	 * 
+	 * @return array result
+	 * - $result['status'] boolean リスト取得に成功した場合に true
+	 * - $result['current_branch_name'] string カレントブランチ名
+	 * - $result['branch_list'] array 取得された一覧を格納
+	 * - $result['message'] string エラー発生時にエラーメッセージが格納される
+	 */
+	public function get_branch_list( $staging_server_index = null ) {
+
+		if( strlen($staging_server_index) && array_key_exists( $staging_server_index, $this->options->staging_server ) ){
+			$staging_server = $this->options->staging_server[$staging_server_index];
+		}else{
+			$staging_server = json_decode(json_encode(array(
+				'name'=>'master',
+				'path'=>$this->options->data_dir.'/local_master/',
+			)));
+			$staging_server_index = null;
+		}
+
+		$output_array = array();
+		$result = array(
+			'status' => true,
+			'message' => '',
+			'current_branch_name' => null,
+			'branch_list' => array(),
+		);
+		$base_dir = $this->main->fs()->get_realpath( $staging_server->path );
+
+		if ( !is_dir( $base_dir ) || !is_dir( $base_dir.'.git/' ) ) {
+			$result['status'] = false;
+			$result['message'] = 'Preview server directory not found.';
+			return $result;
+		}
+
+		try {
+
+			if ( is_dir( $base_dir ) && is_dir( $base_dir.'.git/' ) ) {
+
+				$git = $this->main->git($base_dir);
+
+				// ブランチの一覧取得
+				$cmdresult = $git->git(array(
+					'branch',
+				));
+				$output = preg_split( '/\r\n|\r|\n/', trim($cmdresult['stdout']) );
+
+				foreach ($output as $key => $value) {
+					if( strpos($value, '/HEAD') !== false ){
+						continue;
+					}
+					$tmp_branchname = trim($value);
+					if( preg_match( '/^\* /si', $tmp_branchname ) ){
+						$tmp_branchname = preg_replace('/^\* /si', '', $tmp_branchname);
+						$result['current_branch_name'] = $tmp_branchname;
+					}
+					$output_array[] = $tmp_branchname;
+				}
+
+				$result['branch_list'] = $output_array;
+
+			} else {
+				// プレビューサーバのディレクトリが存在しない場合
+
+				// エラー処理
+				throw new \Exception('Preview server directory not found.');
+			}
+
+		} catch (\Exception $e) {
+			$result['status'] = false;
+			$result['message'] = $e->getMessage();
+			return $result;
+		}
+
+		$result['status'] = true;
+		return $result;
+
+	}
+
+	/**
+	 * リモートからブランチリストを取得する
 	 * 
 	 * @return array result
 	 * - $result['status'] boolean リスト取得に成功した場合に true

@@ -16,8 +16,9 @@ module.exports = function($elm, options){
 		'main': $( $elm ),
 	};
 	const pages = {
-		main: require('./pages/main.js'),
+		home: require('./pages/home.js'),
 		setup: require('./pages/setup.js'),
+		detail: require('./pages/detail.js'),
 	};
 	const template = new (require('./template.js'))(this, $elms);
 
@@ -40,19 +41,18 @@ module.exports = function($elm, options){
 			},
 			function(it1){
 				// 状態情報を更新
-				main.gpiBridge({'api': 'get_condition'}, function(result){
-					console.log(result);
-					condition = result;
+				main.updateCondition(function(result){
+					// console.log(result);
 					it1.next();
 				});
 			},
 			function(it1){
 				if( !condition.is_local_master_available ){
-					main.loadPage('setup', function(){
+					main.loadPage('setup', {}, function(){
 						it1.next();
 					});
 				}else{
-					main.loadPage('main', function(){
+					main.loadPage('home', {}, function(){
 						it1.next();
 					});
 				}
@@ -66,70 +66,6 @@ module.exports = function($elm, options){
 			}
 		]);
 
-
-
-
-		/**
-		 * initializeボタン
-		 */
-		var el_init_btn = document.getElementById("init_btn");
-		if (el_init_btn != null) {
-			el_init_btn.addEventListener("click", function() {
-
-				// 画面ロック
-				px2style.loading();
-
-				// form作成
-				var form = document.createElement('form');
-				form.setAttribute('action', '');
-				form.setAttribute('method', 'post');
-
-				// formをbodyに追加
-				var body = document.getElementsByTagName('body');
-				body.appendChild(form);
-
-				// inputを作成
-				var input = document.createElement('input');
-				input.setAttribute('type', 'hidden');
-				input.setAttribute('name', 'initialize');
-				input.setAttribute('value', 'value');
-
-				// inputをformに追加
-				form.appendChild(input);		
-				
-				// formをsubmit
-				form.submit();
-
-			} , false);
-		}
-
-
-		/**
-		 * 反映ボタン
-		 */
-		var el_reflect_btn = document.getElementsByClassName("reflect");
-		if (el_reflect_btn != null) {
-			for (var i = 0; i < el_reflect_btn.length; i++) {
-				el_reflect_btn[i].addEventListener("click", function() {
-					// 画面ロック
-					px2style.loading();
-				} , false);	
-			}
-		}
-
-
-		/**
-		 * 状態ダイアログ[閉じる]ボタン
-		 */
-		var el_close_btn = document.getElementById("close_btn");
-		if (el_close_btn != null) {
-			el_close_btn.addEventListener("click", function() {
-
-				var dialog = document.getElementById('status_dialog');
-				dialog.remove();
-
-			} , false);
-		}
 	}
 
 	/**
@@ -140,6 +76,19 @@ module.exports = function($elm, options){
 	 */
 	this.getCondition = function(){
 		return condition;
+	}
+
+	/**
+	 * 状態情報を更新する
+	 */
+	this.updateCondition = function( callback ){
+		callback = callback || function(){};
+		main.gpiBridge({'api': 'get_condition'}, function(result){
+			// console.log(result);
+			condition = result;
+			callback( condition );
+		});
+		return;
 	}
 
 	/**
@@ -156,10 +105,10 @@ module.exports = function($elm, options){
 	/**
 	 * ページをロードする
 	 */
-	this.loadPage = function(pageName, callback){
+	this.loadPage = function(pageName, options, callback){
 		const page = new pages[pageName](this, template);
 		$elms.main.html('');
-		page.run(function($dom){
+		page.run(options, function($dom){
 			$elms.main.append( $dom );
 			callback();
 		});

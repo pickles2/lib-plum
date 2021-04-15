@@ -6,20 +6,20 @@ module.exports = function(main, template){
 	const px2style = main.px2style;
 	const it79 = require('iterate79');
 
-	this.run = function( callback ){
+	this.run = function( options, callback ){
 		let $html;
 		let condition = main.getCondition();
 
 		it79.fnc({}, [
 			function(it1){
 				$html = $( template.bind(
-					'main',
+					'home',
 					{
 						'condition': condition,
 					}
 				) );
 
-				$html.find('button[data-plum-target-staging-index]')
+				$html.find('button[data-plum-target-staging-index][data-plum-method=deploy]')
 					.on('click', function(){
 						let index = $(this).attr('data-plum-target-staging-index');
 						let selected_branch_name = $html.find('select[id=plum__branch-list-'+index+'] option:selected').val();
@@ -37,6 +37,13 @@ module.exports = function(main, template){
 								main.init();
 							}
 						);
+					});
+				$html.find('button[data-plum-target-staging-index][data-plum-method=detail]')
+					.on('click', function(){
+						let index = $(this).attr('data-plum-target-staging-index');
+						main.loadPage('detail', {
+							'serverIndex': index,
+						}, function(){});
 					});
 				it1.next();
 			},

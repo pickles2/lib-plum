@@ -4,8 +4,9 @@
 module.exports = function(main, $elms){
 	const $ = main.jQuery;
 	const templates = {
-		"main": require('../resources/templates/main.html.twig'),
+		"home": require('../resources/templates/home.html.twig'),
 		"setup": require('../resources/templates/setup.html.twig'),
+		"detail": require('../resources/templates/detail.html.twig'),
 	};
 	this.elms = $elms;
 

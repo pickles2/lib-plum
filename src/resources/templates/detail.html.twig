@@ -1,0 +1,34 @@
+<div>
+
+<h2>{{ server_info.name }}</h2>
+
+<table class="px2-table">
+	<thead>
+		<tr>
+			<th>server</th>
+			<th>branch</th>
+			<th>反映</th>
+			<th>プレビュー</th>
+		</tr>
+	</thead>
+	<tbody>
+
+        <tr>
+            <td scope="row">{{ server_info.name }}</td>
+            <td>
+                <select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
+                    {% for branch_name in condition.remote_branch_list %}
+                        <option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary px2-btn--block">反映する</button></td>
+            <td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
+        </tr>
+
+	</tbody>
+</table>
+
+<p><button type="button" data-plum-method="goto-home" class="px2-btn">戻る</button></p>
+
+</div>

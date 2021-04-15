@@ -7,6 +7,7 @@
 			<th>branch</th>
 			<th>反映</th>
 			<th>プレビュー</th>
+			<th>詳細</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,8 +22,9 @@
 					{% endfor %}
 				</select>
 			</td>
-			<td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary px2-btn--block">反映する</button></td>
+			<td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" data-plum-method="deploy" class="px2-btn px2-btn--primary px2-btn--block">反映する</button></td>
 			<td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
+			<td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" data-plum-method="detail" class="px2-btn px2-btn--block">詳細</a></td>
 		</tr>
 {% endfor %}
 

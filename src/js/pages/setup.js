@@ -6,7 +6,7 @@ module.exports = function(main, template){
 	const px2style = main.px2style;
 	const it79 = require('iterate79');
 
-	this.run = function( callback ){
+	this.run = function( options, callback ){
 		let $html;
 
 		it79.fnc({}, [
