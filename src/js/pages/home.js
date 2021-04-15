@@ -19,25 +19,6 @@ module.exports = function(main, template){
 					}
 				) );
 
-				$html.find('button[data-plum-target-staging-index][data-plum-method=deploy]')
-					.on('click', function(){
-						let index = $(this).attr('data-plum-target-staging-index');
-						let selected_branch_name = $html.find('select[id=plum__branch-list-'+index+'] option:selected').val();
-						px2style.loading();
-						$html.find('button,input,select,textarea,a').attr({'disabled': 'disabled'});
-						main.gpiBridge(
-							{
-								'api': 'init_staging_env',
-								'index': index,
-								'branch_name': selected_branch_name
-							},
-							function(result){
-								// console.log(result);
-								px2style.closeLoading();
-								main.init();
-							}
-						);
-					});
 				$html.find('button[data-plum-target-staging-index][data-plum-method=detail]')
 					.on('click', function(){
 						let index = $(this).attr('data-plum-target-staging-index');

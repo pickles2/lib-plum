@@ -1,34 +1,47 @@
 <div>
 
-<h2>{{ server_info.name }}</h2>
+	<h2>{{ server_info.name }}</h2>
 
-<table class="px2-table">
-	<thead>
-		<tr>
-			<th>server</th>
-			<th>branch</th>
-			<th>反映</th>
-			<th>プレビュー</th>
-		</tr>
-	</thead>
-	<tbody>
+	<div class="px2-p">
+		<div class="px2-form-input-list">
+			<ul class="px2-form-input-list__ul">
+				<li class="px2-form-input-list__li">
+					<div class="px2-form-input-list__label">サーバー</div>
+					<div class="px2-form-input-list__input">{{ server_info.name }}</div>
+				</li>
+				<li class="px2-form-input-list__li">
+					<div class="px2-form-input-list__label">ブランチ</div>
+					<div class="px2-form-input-list__input">{{ server_info.current_branch }}</div>
+				</li>
+				<li class="px2-form-input-list__li">
+					<div class="px2-form-input-list__label">プレビュー</div>
+					<div class="px2-form-input-list__input"><a href="{{ server_info.url }}" class="px2-btn" target="_blank">プレビュー</a></div>
+				</li>
+			</ul>
+		</div>
+	</div>
 
-        <tr>
-            <td scope="row">{{ server_info.name }}</td>
-            <td>
-                <select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
-                    {% for branch_name in condition.remote_branch_list %}
-                        <option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-            <td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary px2-btn--block">反映する</button></td>
-            <td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
-        </tr>
+	<h3>ステージングを更新する</h3>
+	<div class="px2-p">
+		<div class="px2-form-input-list">
+			<ul class="px2-form-input-list__ul">
+				<li class="px2-form-input-list__li">
+					<div class="px2-form-input-list__label"><label for="plum__branch-list-{{ server_info.index }}">ブランチ</label></div>
+					<div class="px2-form-input-list__input"><select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
+						{% for branch_name in condition.remote_branch_list %}
+							<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+						{% endfor %}
+					</select></div>
+				</li>
+			</ul>
+		</div>
+	</div>
 
-	</tbody>
-</table>
+	<p class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary">更新する</button></p>
 
-<p><button type="button" data-plum-method="goto-home" class="px2-btn">戻る</button></p>
+
+	<hr />
+
+	<p><button type="button" data-plum-method="goto-home" class="px2-btn">戻る</button></p>
 
 </div>
