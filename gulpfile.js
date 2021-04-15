@@ -46,7 +46,7 @@ gulp.task('.css.scss', function(){
 // plum.js (frontend) を処理
 gulp.task("plum.js", function() {
 	return webpackStream({
-		mode: 'development',
+		mode: 'production',
 		entry: "./src/plum.js",
 		performance: {
 			hints: false,

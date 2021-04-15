@@ -1294,17 +1294,32 @@
   -ms-flex-pack: justify;
   justify-content: space-between; }
 
-.plum .px2-form-submit-area__btns {
+.plum .px2-form-submit-area__btns, .plum .px2-form-submit-area__backward-btns {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-direction: row-reverse;
-  flex-direction: row-reverse; }
+  flex-direction: row-reverse;
+  margin: 0;
+  padding: 0; }
 
-.plum .px2-form-submit-area__backward-btns {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: row-reverse;
-  flex-direction: row-reverse; }
+.plum .px2-form-submit-area__btns > li, .plum .px2-form-submit-area__backward-btns > li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none; }
+
+@media all and (max-width: 544px) {
+  .plum .px2-form-submit-area {
+    -ms-flex-direction: column;
+    flex-direction: column; }
+  .plum .px2-form-submit-area__btns, .plum .px2-form-submit-area__backward-btns {
+    -ms-flex-direction: column;
+    flex-direction: column; }
+  .plum .px2-form-submit-area__btns > li, .plum .px2-form-submit-area__backward-btns > li {
+    margin: 0.2em auto; }
+  .plum .px2-form-submit-area__backward-btns {
+    margin-top: 1em; }
+  .plum .px2-form-submit-area__backward-btns > li {
+    margin: 0.2em auto 0.2em 0; } }
 
 .plum .px2-grid {
   display: -ms-flexbox;

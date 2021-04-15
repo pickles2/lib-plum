@@ -133,12 +133,15 @@ class fncs
 				));
 
 				// git pull
-				$git->git(array(
-					'pull',
-					'-f',
-					'origin',
-					'master',
-				));
+				if( !is_null($staging_server_index) ){
+					// マスターデータでは pull する必要はない。
+					$git->git(array(
+						'pull',
+						'-f',
+						'origin',
+						'master',
+					));
+				}
 
 				$git->git(array(
 					'remote',
@@ -187,12 +190,15 @@ class fncs
 				));
 
 				// git pull
-				$git->git(array(
-					'pull',
-					'-f',
-					'origin',
-					$local_branch_name.':'.$local_branch_name,
-				));
+				if( !is_null($staging_server_index) ){
+					// マスターデータでは pull する必要はない。
+					$git->git(array(
+						'pull',
+						'-f',
+						'origin',
+						$local_branch_name.':'.$local_branch_name,
+					));
+				}
 
 				$git->git(array(
 					'remote',
@@ -404,78 +410,6 @@ class fncs
 
 		$result['status'] = true;
 		return $result;
-	}
-
-	/**
-	 * 初期化前の画面を表示する
-	 */
-	public function mk_html_before_initialize() {
-		$ret = "";
-
-		// 初期化前の画面表示
-		$ret = '<div class="panel panel-warning" style="margin-top:20px;">'
-				. '<div class="panel-heading">'
-				. '<p class="panel-title">Initializeが実行されていないプレビューが存在します。<br>Initializeを実行してください。</p>'
-				. '<form method="post" style="margin-top:20px;">'
-				. '<input type="submit" id="init_btn" name="init" class="px2-btn px2-btn--primary px2-btn--block" value="Initialize" />'
-				. '</form>'
-				. '</div>'
-				. '</div>';
-
-		return $ret;
-	}
-
-	/**
-	 * 初期化後の画面を表示する
-	 */
-	public function mk_html_after_initialize() {
-		$ret = "";
-		$row = "";
-
-		// 初期化後の画面表示
-		// Gitリポジトリ取得
-		$get_branch_ret = $this->get_remote_branch_list();
-		$branch_list = null;
-		if( array_key_exists( 'branch_list', $get_branch_ret ) && is_array($get_branch_ret['branch_list']) ){
-			$branch_list = $get_branch_ret['branch_list'];
-		}
-
-		$ret = '<table class="px2-table">'
-				. '<thead>'
-				. '<tr>'
-				. '<th>server</th><th>branch</th><th>反映</th><th>プレビュー</th>'
-				. '</tr>'
-				. '</thead>'
-				. '<tbody>';
-
-		foreach ($this->options->staging_server as $key => $prev_row) {
-		
-			// デプロイ先のディレクトリが存在する場合
-			if ( file_exists( $prev_row->path)) {
-
-				$row .= '<tr>'
-						. '<td scope="row">' . htmlspecialchars($prev_row->name) . '</td>'
-						. '<td><select id="branch_list_' . htmlspecialchars($prev_row->name) . '" class="px2-input" name="branch_form_list" form="reflect_submit_' . htmlspecialchars($prev_row->name) . '">';
-
-				if( is_array($branch_list) ){
-					foreach ($branch_list as $branch) {
-						$tmp_current_buranch_info = $this->get_current_branch( $prev_row->path );
-						$row .= '<option value="' . htmlspecialchars($branch) . '" ' . ($branch == "origin/".$tmp_current_buranch_info['current_branch'] ? 'selected' : '') . '>' . htmlspecialchars($branch) . '</option>';
-					}
-				}
-
-				$row .= '</select>'
-						. '</td>'
-						. '<td class="px2-text-align-center"><form id="reflect_submit_' . htmlspecialchars($prev_row->name) . '" method="post"><input type="submit" id="reflect_' . htmlspecialchars($prev_row->name) . '" class="reflect px2-btn px2-btn--primary px2-btn--block" value="反映" name="reflect"><input type="hidden" name="staging_server_name" value="' . htmlspecialchars($prev_row->name) . '"></form></td>'
-						. '<td class="px2-text-align-center"><a href="' . htmlspecialchars($prev_row->url) . '" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>'
-						. '</tr>';
-			}
-		}
-
-		$ret .= $row;
-		$ret .= '</tbody></table>';
-
-		return $ret;
 	}
 
 

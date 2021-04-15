@@ -68,9 +68,10 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		// var_dump($result);
 		$this->assertTrue( $result['status'] );
 		$this->assertTrue( is_dir( __DIR__.'/testdata/temporary_data_dir/local_master/.git/' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
-		$this->assertTrue( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
-		$this->assertSame( trim(file_get_contents( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' )), 'main' );
+
+		// ↓(2021-04-15) マスターデータは `git init` だけして、 `git pull` はしないようにした。なので、これらのファイルは存在しないのが正しい。
+		$this->assertFalse( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/test_data.html' ) );
+		$this->assertFalse( is_file( __DIR__.'/testdata/temporary_data_dir/local_master/branchname.txt' ) );
 
 		$result = $plum->gpi( array(
 			'api' => 'get_condition',
