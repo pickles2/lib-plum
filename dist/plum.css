@@ -1033,6 +1033,7 @@
 .plum input[type=week].px2-input,
 .plum input[type=time].px2-input,
 .plum input[type=color].px2-input,
+.plum input[type=file].px2-input,
 .plum input[type=datetime-local].px2-input,
 .plum textarea.px2-input,
 .plum select.px2-input {
@@ -1065,6 +1066,7 @@
 .plum input[type=week].px2-input:focus,
 .plum input[type=time].px2-input:focus,
 .plum input[type=color].px2-input:focus,
+.plum input[type=file].px2-input:focus,
 .plum input[type=datetime-local].px2-input:focus,
 .plum textarea.px2-input:focus,
 .plum select.px2-input:focus {
@@ -1087,6 +1089,7 @@
 .plum input[type=week].px2-input[readonly],
 .plum input[type=time].px2-input[readonly],
 .plum input[type=color].px2-input[readonly],
+.plum input[type=file].px2-input[readonly],
 .plum input[type=datetime-local].px2-input[readonly],
 .plum textarea.px2-input[readonly],
 .plum select.px2-input[readonly] {
@@ -1105,6 +1108,7 @@
 .plum input[type=week].px2-input[readonly]:focus,
 .plum input[type=time].px2-input[readonly]:focus,
 .plum input[type=color].px2-input[readonly]:focus,
+.plum input[type=file].px2-input[readonly]:focus,
 .plum input[type=datetime-local].px2-input[readonly]:focus,
 .plum textarea.px2-input[readonly]:focus,
 .plum select.px2-input[readonly]:focus {
@@ -1124,6 +1128,7 @@
 .plum input[type=week].px2-input[disabled],
 .plum input[type=time].px2-input[disabled],
 .plum input[type=color].px2-input[disabled],
+.plum input[type=file].px2-input[disabled],
 .plum input[type=datetime-local].px2-input[disabled],
 .plum textarea.px2-input[disabled],
 .plum select.px2-input[disabled] {
@@ -1143,6 +1148,7 @@
 .plum input[type=week].px2-input--block,
 .plum input[type=time].px2-input--block,
 .plum input[type=color].px2-input--block,
+.plum input[type=file].px2-input--block,
 .plum input[type=datetime-local].px2-input--block,
 .plum textarea.px2-input--block,
 .plum select.px2-input--block {
@@ -1162,6 +1168,7 @@
 .plum input[type=week].px2-input--error,
 .plum input[type=time].px2-input--error,
 .plum input[type=color].px2-input--error,
+.plum input[type=file].px2-input--error,
 .plum input[type=datetime-local].px2-input--error,
 .plum textarea.px2-input--error,
 .plum select.px2-input--error {
@@ -1237,7 +1244,7 @@
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__label {
   display: table-cell;
-  background-color: #f9f9f9;
+  background-color: #e7e7e7;
   font-weight: bold;
   padding: 0.4em 1em;
   width: 30%;
@@ -1245,6 +1252,7 @@
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__input {
   display: table-cell;
+  background-color: #f9f9f9;
   padding: 0.4em 1em;
   width: 70%;
   border: 1px solid #dee2e6; }
@@ -1742,6 +1750,7 @@
 .plum .px2-darkmode input[type=week].px2-input,
 .plum .px2-darkmode input[type=time].px2-input,
 .plum .px2-darkmode input[type=color].px2-input,
+.plum .px2-darkmode input[type=file].px2-input,
 .plum .px2-darkmode input[type=datetime-local].px2-input,
 .plum .px2-darkmode textarea.px2-input,
 .plum .px2-darkmode select.px2-input {
@@ -1762,6 +1771,7 @@
 .plum .px2-darkmode input[type=week].px2-input:focus,
 .plum .px2-darkmode input[type=time].px2-input:focus,
 .plum .px2-darkmode input[type=color].px2-input:focus,
+.plum .px2-darkmode input[type=file].px2-input:focus,
 .plum .px2-darkmode input[type=datetime-local].px2-input:focus,
 .plum .px2-darkmode textarea.px2-input:focus,
 .plum .px2-darkmode select.px2-input:focus {
@@ -1783,6 +1793,7 @@
 .plum .px2-darkmode input[type=week].px2-input[readonly],
 .plum .px2-darkmode input[type=time].px2-input[readonly],
 .plum .px2-darkmode input[type=color].px2-input[readonly],
+.plum .px2-darkmode input[type=file].px2-input[readonly],
 .plum .px2-darkmode input[type=datetime-local].px2-input[readonly],
 .plum .px2-darkmode textarea.px2-input[readonly],
 .plum .px2-darkmode select.px2-input[readonly] {
@@ -1802,6 +1813,7 @@
 .plum .px2-darkmode input[type=week].px2-input[readonly]:focus,
 .plum .px2-darkmode input[type=time].px2-input[readonly]:focus,
 .plum .px2-darkmode input[type=color].px2-input[readonly]:focus,
+.plum .px2-darkmode input[type=file].px2-input[readonly]:focus,
 .plum .px2-darkmode input[type=datetime-local].px2-input[readonly]:focus,
 .plum .px2-darkmode textarea.px2-input[readonly]:focus,
 .plum .px2-darkmode select.px2-input[readonly]:focus {
@@ -1821,6 +1833,7 @@
 .plum .px2-darkmode input[type=week].px2-input[disabled],
 .plum .px2-darkmode input[type=time].px2-input[disabled],
 .plum .px2-darkmode input[type=color].px2-input[disabled],
+.plum .px2-darkmode input[type=file].px2-input[disabled],
 .plum .px2-darkmode input[type=datetime-local].px2-input[disabled],
 .plum .px2-darkmode textarea.px2-input[disabled],
 .plum .px2-darkmode select.px2-input[disabled] {
@@ -1840,6 +1853,7 @@
 .plum .px2-darkmode input[type=week].px2-input--error,
 .plum .px2-darkmode input[type=time].px2-input--error,
 .plum .px2-darkmode input[type=color].px2-input--error,
+.plum .px2-darkmode input[type=file].px2-input--error,
 .plum .px2-darkmode input[type=datetime-local].px2-input--error,
 .plum .px2-darkmode textarea.px2-input--error,
 .plum .px2-darkmode select.px2-input--error {
@@ -1851,3 +1865,12 @@
   color: #ccc;
   background-color: #333;
   border: 1px solid #555; }
+
+.plum .px2-darkmode .px2-form-input-list {
+  color: #ccc; }
+
+.plum .px2-darkmode .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__label {
+  background-color: #191919; }
+
+.plum .px2-darkmode .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__input {
+  background-color: #242424; }

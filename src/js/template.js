@@ -7,6 +7,7 @@ module.exports = function(main, $elms){
 		"home": require('../resources/templates/home.html.twig'),
 		"setup": require('../resources/templates/setup.html.twig'),
 		"detail": require('../resources/templates/detail.html.twig'),
+		"detail-update-modal": require('../resources/templates/detail-update-modal.html.twig'),
 	};
 	this.elms = $elms;
 
