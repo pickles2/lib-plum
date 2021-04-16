@@ -5,6 +5,7 @@
 		<tr>
 			<th>サーバー</th>
 			<th>ブランチ</th>
+			<th>認証</th>
 			<th>プレビュー</th>
 			<th>詳細</th>
 		</tr>
@@ -15,6 +16,7 @@
 		<tr>
 			<td scope="row">{{ server_info.name }}</td>
 			<td>{{ server_info.current_branch }}</td>
+			<td>{% if server_info.htpasswd.auth_required %}<code>{{ server_info.htpasswd.user_name }}</code>{% else %}---{% endif %}</td>
 			<td class="px2-text-align-center"><a href="{{ server_info.url }}" class="px2-btn px2-btn--block" target="_blank">プレビュー</a></td>
 			<td class="px2-text-align-center"><button type="button" data-plum-target-staging-index="{{ server_info.index }}" data-plum-method="detail" class="px2-btn px2-btn--block">詳細</a></td>
 		</tr>
