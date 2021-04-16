@@ -51,6 +51,7 @@ class gpi{
 			case "get_condition":
 				$result['is_local_master_available'] = $this->fncs->is_local_master_available();
 				$result['staging_server'] = $this->main->get_options()->staging_server;
+				$htpasswd = new htpassword($this->main, $this->fncs);
 				foreach( $result['staging_server'] as $idx=>$row ){
 					$row = (array) $row;
 					$row['index'] = $idx;
@@ -65,6 +66,8 @@ class gpi{
 						// 不要な情報はフロントへ送らない
 						unset( $row['path'] );
 					}
+
+					$row['htpasswd'] = $htpasswd->get($idx);
 
 					$result['staging_server'][$idx] = $row;
 				}

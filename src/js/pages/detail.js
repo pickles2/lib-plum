@@ -84,14 +84,22 @@ module.exports = function(main, template){
 								'branch_name': selected_branch_name
 							},
 							function(result){
-								console.log(result);
-								modalObj.closable(true);
-								modalObj.unlock();
-								px2style.closeLoading();
+								// console.log(result);
+								if( !result.status ){
+									console.error( result );
+									alert( result.message );
+									modalObj.unlock();
+									modalObj.closable(true);
+									px2style.closeLoading();
+									return;
+								}
+
 								main.loadPage('detail', {
 									'serverIndex': index,
 								}, function(){
 									px2style.flashMessage('ステージング '+(server_info.name)+' を更新しました。');
+									modalObj.closable(true);
+									px2style.closeLoading();
 									px2style.closeModal();
 								});
 							}
@@ -146,14 +154,22 @@ module.exports = function(main, template){
 								'user_password': userPassWord
 							},
 							function(result){
-								console.log(result);
-								modalObj.closable(true);
-								modalObj.unlock();
-								px2style.closeLoading();
+								// console.log(result);
+								if( !result.status ){
+									console.error( result );
+									alert( result.message );
+									modalObj.closable(true);
+									modalObj.unlock();
+									px2style.closeLoading();
+									return;
+								}
+
 								main.loadPage('detail', {
 									'serverIndex': index,
 								}, function(){
 									px2style.flashMessage('ステージング '+(server_info.name)+' のパスワードを設定しました。');
+									modalObj.closable(true);
+									px2style.closeLoading();
 									px2style.closeModal();
 								});
 							}

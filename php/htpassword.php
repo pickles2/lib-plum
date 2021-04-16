@@ -25,7 +25,40 @@ class htpassword{
 	}
 
 	/**
+	 * htpasswd の情報を取得する
+	 *
+	 * @param int $staging_index ステージングのインデックス番号
+	 * @return array 実行結果
+	 */
+	public function get($staging_index){
+		$result = array();
+		$options = $this->main->get_options();
+		if( !$this->main->fs()->is_dir($options->data_dir) ){
+			return false;
+		}
+
+		$realpath_dir_htpasswds = $this->main->fs()->get_realpath($options->data_dir.'/htpasswds/');
+		$filename = 'stg'.urlencode($staging_index).'.htpasswd';
+
+		$result['auth_required'] = false;
+		$result['user_name'] = null;
+		if( $this->main->fs()->is_file($realpath_dir_htpasswds.$filename) ){
+			$result['auth_required'] = true;
+			$bin = $this->main->fs()->read_file($realpath_dir_htpasswds.$filename);
+			$htpasswd_ary = explode(':', $bin, 2);
+			$result['user_name'] = $htpasswd_ary[0];
+		}
+
+		return $result;
+	}
+
+	/**
 	 * htpasswd ファイルを更新する
+	 *
+	 * @param int $staging_index ステージングのインデックス番号
+	 * @param string $username 基本認証のID
+	 * @param string $password 基本認証のパスワード
+	 * @return array 実行結果
 	 */
 	public function update($staging_index, $username, $password){
 		$result = array();
@@ -54,7 +87,7 @@ class htpassword{
 			$hashed_passwd = md5($password);
 
 			$src = '';
-			$src .= $username.':'.$hashed_passwd."\n";
+			$src .= trim($username).':'.$hashed_passwd."\n";
 			if( !$this->main->fs()->save_file($realpath_dir_htpasswds.$filename, $src) ){
 				$result['status'] = false;
 				$result['message'] = '[ERROR] Failed to save .htpasswd';

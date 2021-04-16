@@ -14,6 +14,19 @@
 					<div class="px2-form-input-list__input">{{ server_info.current_branch }}</div>
 				</li>
 				<li class="px2-form-input-list__li">
+					<div class="px2-form-input-list__label">認証</div>
+					<div class="px2-form-input-list__input">
+						{% if server_info.htpasswd.auth_required %}
+						ユーザー名: <code>{{ server_info.htpasswd.user_name }}</code>
+						{% else %}
+						(認証不要)
+						{% endif %}
+						<div>
+							<button type="button" data-plum-method="update-htpasswd" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn">認証設定</button>
+						</div>
+					</div>
+				</li>
+				<li class="px2-form-input-list__li">
 					<div class="px2-form-input-list__label">プレビュー</div>
 					<div class="px2-form-input-list__input"><a href="{{ server_info.url }}" class="px2-btn" target="_blank">プレビュー</a></div>
 				</li>
@@ -22,7 +35,6 @@
 	</div>
 
 	<p class="px2-text-align-center">
-		<button type="button" data-plum-method="update-htpasswd" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn">パスワードを設定</button>
 		<button type="button" data-plum-method="update-staging" data-plum-target-staging-index="{{ server_info.index }}" class="px2-btn px2-btn--primary">更新する</button>
 	</p>
 
