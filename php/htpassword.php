@@ -84,7 +84,7 @@ class htpassword{
 		if( strlen($username) ){
 			// --------------------------------------
 			// パスワードを保存する
-			$hashed_passwd = md5($password);
+			$hashed_passwd = password_hash($password, PASSWORD_BCRYPT);
 
 			$src = '';
 			$src .= trim($username).':'.$hashed_passwd."\n";
