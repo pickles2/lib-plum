@@ -14,11 +14,10 @@ class fncs
 	/**
 	 * コンストラクタ
 	 * @param object $main Plumメインオブジェクト
-	 * @param array $options オプション
 	 */
-	public function __construct($main, $options) {
+	public function __construct($main) {
 		$this->main = $main;
-		$this->options = $options;
+		$this->options = $this->main->get_options();
 	}
 
 	/**

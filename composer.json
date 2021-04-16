@@ -1,7 +1,7 @@
 {
     "name": "pickles2/lib-plum",
     "description": "",
-    "keywords": ["plum"],
+    "keywords": [],
     "license": "MIT",
     "authors": [
         {
@@ -36,12 +36,9 @@
         "phpunit/phpunit": "^4.1.0"
     },
     "autoload": {
-        "files": [
-            "php/main.php",
-            "php/fncs.php",
-            "php/git.php",
-            "php/gpi.php"
-        ]
+        "psr-4": {
+            "hk\\plum\\" : "php/"
+        }
     },
     "extra": {
         "px2package": {

@@ -28,26 +28,29 @@ class gpi{
 	/**
 	 * General Purpose Interface
 	 */
-	public function gpi($options){
-		$options = (array) $options;
-		if( !array_key_exists('api', $options) ){
-			$options['api'] = null;
+	public function gpi($params){
+		$params = (array) $params;
+		if( !array_key_exists('api', $params) ){
+			$params['api'] = null;
 		}
-		if( !array_key_exists('lang', $options) ){
-			$options['lang'] = null;
+		if( !array_key_exists('lang', $params) ){
+			$params['lang'] = null;
 		}
-		if( !strlen($options['lang']) ){
-			$options['lang'] = 'en';
+		if( !strlen($params['lang']) ){
+			$params['lang'] = 'en';
 		}
 
-		// $this->main->lb()->setLang( $options['lang'] );
+		// $this->main->lb()->setLang( $params['lang'] );
 
-		switch($options['api']){
+		$result = array();
+		$result['status'] = true;
+		$result['message'] = 'OK';
+
+		switch($params['api']){
 
 			case "get_condition":
-				$result = array();
 				$result['is_local_master_available'] = $this->fncs->is_local_master_available();
-				$result['staging_server'] = $this->main->options->staging_server;
+				$result['staging_server'] = $this->main->get_options()->staging_server;
 				foreach( $result['staging_server'] as $idx=>$row ){
 					$row = (array) $row;
 					$row['index'] = $idx;
@@ -74,30 +77,40 @@ class gpi{
 
 			case "init_staging_env":
 				$staging_index = null;
-				if( array_key_exists('index', $options) && strlen($options['index']) ){
-					$staging_index = $options['index'];
+				if( array_key_exists('index', $params) && strlen($params['index']) ){
+					$staging_index = $params['index'];
 				}
 				$staging_branch_name = null;
-				if( array_key_exists('branch_name', $options) && strlen($options['branch_name']) ){
-					$staging_branch_name = $options['branch_name'];
+				if( array_key_exists('branch_name', $params) && strlen($params['branch_name']) ){
+					$staging_branch_name = $params['branch_name'];
 				}
-				$result = $this->fncs->init_staging_env( $staging_index, $staging_branch_name );
+				$result = array_merge($result, $this->fncs->init_staging_env( $staging_index, $staging_branch_name ));
 				return $result;
 
 			case "update_htpassword":
-				$result = array();
-				$result['status'] = true;
-				$result['message'] = '開発中の機能です。';
+				$staging_index = null;
+				if( array_key_exists('index', $params) && strlen($params['index']) ){
+					$staging_index = $params['index'];
+				}
+				$username = null;
+				if( array_key_exists('user_name', $params) && strlen($params['user_name']) ){
+					$username = $params['user_name'];
+				}
+				$password = null;
+				if( array_key_exists('user_password', $params) && strlen($params['user_password']) ){
+					$password = $params['user_password'];
+				}
 
-				/* TODO: 開発中の機能 */
+				$htpasswd = new htpassword($this->main, $this->fncs);
+				$result = array_merge($result, $htpasswd->update($staging_index, $username, $password));
 
 				return $result;
 
-			default:
-				return false;
 		}
 
-		return true;
+		$result['status'] = false;
+		$result['message'] = 'Unknown API.';
+		return $result;
 	}
 
 }

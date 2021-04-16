@@ -1232,7 +1232,7 @@
   border-collapse: collapse;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #dee2e6;
+  border: 1px solid #999999;
   margin: 0;
   padding: 0; }
 
@@ -1248,14 +1248,14 @@
   font-weight: bold;
   padding: 0.4em 1em;
   width: 30%;
-  border: 1px solid #dee2e6; }
+  border: 1px solid #999999; }
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__input {
   display: table-cell;
   background-color: #f9f9f9;
   padding: 0.4em 1em;
   width: 70%;
-  border: 1px solid #dee2e6; }
+  border: 1px solid #999999; }
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li--required .px2-form-input-list__label::after {
   content: "*";
@@ -1869,8 +1869,13 @@
 .plum .px2-darkmode .px2-form-input-list {
   color: #ccc; }
 
+.plum .px2-darkmode .px2-form-input-list ul.px2-form-input-list__ul {
+  border: 1px solid #666; }
+
 .plum .px2-darkmode .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__label {
-  background-color: #191919; }
+  background-color: #191919;
+  border: 1px solid #666; }
 
 .plum .px2-darkmode .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__input {
-  background-color: #242424; }
+  background-color: #242424;
+  border: 1px solid #666; }

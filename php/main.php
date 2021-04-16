@@ -36,7 +36,7 @@ class main
 	 * 		  例) fuga
 	 * )
 	 */
-	public $options;
+	private $options;
 
 	/** hk\plum\fncs のインスタンス */
 	private $fncs;
@@ -57,8 +57,11 @@ class main
 			|| !strlen($this->options->data_dir))
 			&& property_exists($this->options, 'temporary_data_dir')
 		){
+			// `temporary_data_dir` は、`v0.2.0` までの古い名前。
+			// 互換性のために残してある。
 			$this->options->data_dir = $this->options->temporary_data_dir;
 		}
+
 		if( !property_exists($this->options, 'data_dir') || !strlen($this->options->data_dir) ){
 			trigger_error('Option `data_dir` is required.');
 			return;
@@ -69,7 +72,7 @@ class main
 		if( !is_dir($this->options->data_dir.'/local_master/') ){
 			$this->fs->mkdir($this->options->data_dir.'/local_master/');
 		}
-		$this->fncs = new fncs($this, $this->options);
+		$this->fncs = new fncs($this);
 	}
 
 	/**
@@ -88,14 +91,21 @@ class main
 	}
 
 	/**
+	 * Options
+	 */
+	public function get_options(){
+		return $this->options;
+	}
+
+	/**
 	 * 汎用API
 	 *
-	 * @param  array|object $options GPI実行オプション
+	 * @param  array|object $params GPI実行オプション
 	 * @return mixed 実行したAPIの返却値
 	 */
-	public function gpi($options){
+	public function gpi($params){
 		$gpi = new gpi($this, $this->fncs);
-		$rtn = $gpi->gpi( $options );
+		$rtn = $gpi->gpi( $params );
 		return $rtn;
 	}
 
