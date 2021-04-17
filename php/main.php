@@ -35,6 +35,10 @@ class main
 	 * 		- Gitリポジトリのパスワード
 	 * 		  例) fuga
 	 * )
+	 *
+	 * async = function( $params ){}
+	 *
+	 * broadcast = function( $message ){}
 	 */
 	private $options;
 
@@ -50,7 +54,7 @@ class main
 	 */
 	public function __construct($options) {
 		$this->fs = new \tomk79\filesystem();
-		$this->options = json_decode(json_encode($options));
+		$this->options = (object) $options;
 
 		if(
 			(!property_exists($this->options, 'data_dir')
@@ -72,6 +76,25 @@ class main
 		if( !is_dir($this->options->data_dir.'/local_master/') ){
 			$this->fs->mkdir($this->options->data_dir.'/local_master/');
 		}
+
+		if( property_exists($this->options, 'git') && (is_object($this->options->git) || is_array($this->options->git)) ){
+			$this->options->git = (object) $this->options->git;
+		}else{
+			$this->options->git = null;
+		}
+
+		if( !property_exists($this->options, 'async') || !is_callable($this->options->async) ){
+			$this->options->async = null;
+		}
+		if( !property_exists($this->options, 'broadcast') || !is_callable($this->options->broadcast) ){
+			$this->options->broadcast = null;
+		}
+		if( !is_callable($this->options->async) || !is_callable($this->options->broadcast) ){
+			// async() と broadcast() の両方が利用可能である必要がある。
+			$this->options->async = null;
+			$this->options->broadcast = null;
+		}
+
 		$this->fncs = new fncs($this);
 	}
 
@@ -100,7 +123,7 @@ class main
 	/**
 	 * 汎用API
 	 *
-	 * @param  array|object $params GPI実行オプション
+	 * @param  array|object $params GPI実行パラメータ
 	 * @return mixed 実行したAPIの返却値
 	 */
 	public function gpi($params){
@@ -109,4 +132,15 @@ class main
 		return $rtn;
 	}
 
+	/**
+	 * Async API
+	 *
+	 * @param  array|object $params 非同期実行パラメータ
+	 * @return mixed 実行したAPIの返却値
+	 */
+	public function async( $params ){
+		$async = new async($this, $this->fncs);
+		$rtn = $async->async( $params );
+		return $rtn;
+	}
 }

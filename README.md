@@ -41,12 +41,15 @@ var plum = new Plum(
 	}
 );
 plum.init();
+
+window.addEventListener('message', function(e){
+	plum.broadcastMessage(e.message);
+});
 </script>
 ```
 
 
 ### サーバーサイド
-
 
 ```php
 <?php
@@ -91,7 +94,29 @@ $plum = new hk\plum\main(
 			// パスワード
 			// Gitリポジトリのパスワードを設定。
 			'password' => 'pass'
-		)
+		),
+
+		// 非同期で実行する処理を仲介する
+		'async' => function( $params ){
+
+			/*
+			非同期で実行するコールバック関数を拡張します。
+			ここで受け取った `$message` を、
+			非同期に `$plum->async($params);` へ転送してください。
+			*/
+
+		},
+
+		// ブロードキャストメッセージを仲介する
+		'broadcast' => function( $message ){
+
+			/*
+			メッセージをブラウザに送るコールバック関数を拡張します。
+			ここで受け取った `$message` を、
+			フロントエンドの `plum.broadcastMessage($message);` へ転送してください。
+			*/
+
+		},
 	)
 );
 
@@ -99,6 +124,21 @@ $json = $plum->gpi( $_POST['data'] );
 
 header('Content-type: application/json');
 echo json_encode( $json );
+```
+
+非同期の再呼び出し
+
+```php
+<?php
+require_once('./vendor/autoload.php');
+
+$plum = new hk\plum\main(
+
+	/* 中略 */
+
+);
+
+$json = $plum->async( $params );
 ```
 
 
@@ -121,6 +161,7 @@ echo json_encode( $json );
 - ローカルマスターリポジトリでは `git fetch` まで実行し、 `git pull` しないようにした。ディスク容量の節約のため。
 - UIの改善。各ステージング毎に詳細画面を追加した。
 - 各ステージング毎にパスワードを設定できる機能を追加した。
+- 時間がかかる処理を非同期に実行できるようになった。
 
 ### pickles2/lib-plum v0.2.0 (2020年11月7日)
 
