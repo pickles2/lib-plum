@@ -1,6 +1,10 @@
 <?php
 require_once('../../../vendor/autoload.php');
 
+$rtn = array();
+$rtn['broadcast'] = array();
+
+
 /**
  * Plum
  */
@@ -46,8 +50,19 @@ $plum = new hk\plum\main(
 	)
 );
 
+$plum->set_async_callbacks(array(
+	'async' => function( $params ) use ($rtn, $plum){
+		// var_dump($params, $plum);
+		$plum->async($params);
+		return;
+	},
+	'broadcast' => function( $message ) use ($rtn){
+		array_push($rtn['broadcast'], $message);
+	}
+));
+
 // JSON出力
-$json = $plum->gpi( $_POST['data'] );
+$rtn['gpiResult'] = $plum->gpi( $_POST['data'] );
 
 header('Content-type: application/json');
-echo json_encode( $json );
+echo json_encode( $rtn );

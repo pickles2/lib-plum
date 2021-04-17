@@ -35,10 +35,6 @@ class main
 	 * 		- Gitリポジトリのパスワード
 	 * 		  例) fuga
 	 * )
-	 *
-	 * async = function( $params ){}
-	 *
-	 * broadcast = function( $message ){}
 	 */
 	private $options;
 
@@ -47,6 +43,11 @@ class main
 
 	/** tomk79/filesystem */
 	private $fs;
+
+	/** 非同期コールバック関数 */
+	private $callback_async;
+	private $callback_broadcast;
+
 
 	/**
 	 * コンストラクタ
@@ -77,22 +78,12 @@ class main
 			$this->fs->mkdir($this->options->data_dir.'/local_master/');
 		}
 
+		$this->options->staging_server = json_decode( json_encode( $this->options->staging_server ) );
+
 		if( property_exists($this->options, 'git') && (is_object($this->options->git) || is_array($this->options->git)) ){
 			$this->options->git = (object) $this->options->git;
 		}else{
 			$this->options->git = null;
-		}
-
-		if( !property_exists($this->options, 'async') || !is_callable($this->options->async) ){
-			$this->options->async = null;
-		}
-		if( !property_exists($this->options, 'broadcast') || !is_callable($this->options->broadcast) ){
-			$this->options->broadcast = null;
-		}
-		if( !is_callable($this->options->async) || !is_callable($this->options->broadcast) ){
-			// async() と broadcast() の両方が利用可能である必要がある。
-			$this->options->async = null;
-			$this->options->broadcast = null;
 		}
 
 		$this->fncs = new fncs($this);
@@ -121,6 +112,29 @@ class main
 	}
 
 	/**
+	 * 非同期関数を登録する
+	 */
+	public function set_async_callbacks( $fncs ){
+		$fncs = (object) $fncs;
+
+		if( !property_exists($fncs, 'async') || !is_callable($fncs->async) ){
+			$fncs->async = null;
+		}
+		if( !property_exists($fncs, 'broadcast') || !is_callable($fncs->broadcast) ){
+			$fncs->broadcast = null;
+		}
+		if( !is_callable($fncs->async) || !is_callable($fncs->broadcast) ){
+			// async() と broadcast() の両方が利用可能である必要がある。
+			$fncs->async = null;
+			$fncs->broadcast = null;
+		}
+
+		$this->callback_async = $fncs->async;
+		$this->callback_broadcast = $fncs->broadcast;
+		return;
+	}
+
+	/**
 	 * 汎用API
 	 *
 	 * @param  array|object $params GPI実行パラメータ
@@ -143,4 +157,40 @@ class main
 		$rtn = $async->async( $params );
 		return $rtn;
 	}
+
+	/**
+	 * Async API が利用可能か調べる
+	 */
+	public function is_async_available(){
+		if( !is_callable($this->callback_async) ){
+			return false;
+		}
+		if( !is_callable($this->callback_broadcast) ){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 非同期コールバックを呼び出す
+	 */
+	public function call_async_callback( $params ){
+		if( !$this->is_async_available() ){
+			return false;
+		}
+		call_user_func($this->callback_async, $params );
+		return true;
+	}
+
+	/**
+	 * ブロードキャストコールバックを呼び出す
+	 */
+	public function call_broadcast_callback( $params ){
+		if( !$this->is_async_available() ){
+			return false;
+		}
+		call_user_func($this->callback_broadcast, $params );
+		return true;
+	}
+
 }

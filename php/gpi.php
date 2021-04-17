@@ -76,6 +76,7 @@ class gpi{
 				if( $branchlist['status'] ){
 					$result['remote_branch_list'] = $branchlist['branch_list'];
 				}
+				$result['is_async_available'] = $this->main->is_async_available();
 				return $result;
 
 			case "init_staging_env":
@@ -87,7 +88,13 @@ class gpi{
 				if( array_key_exists('branch_name', $params) && strlen($params['branch_name']) ){
 					$staging_branch_name = $params['branch_name'];
 				}
-				$result = array_merge($result, $this->fncs->init_staging_env( $staging_index, $staging_branch_name ));
+				if( $this->main->is_async_available() ){
+					$this->main->call_async_callback( $params );
+					$result['status'] = true;
+					$result['message'] = 'OK';
+				}else{
+					$result = array_merge($result, $this->fncs->init_staging_env( $staging_index, $staging_branch_name ));
+				}
 				return $result;
 
 			case "update_htpassword":

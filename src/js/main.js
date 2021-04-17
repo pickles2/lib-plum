@@ -103,6 +103,13 @@ module.exports = function($elm, options){
 	}
 
 	/**
+	 * ブロードキャストメッセージを受信する
+	 */
+	this.broadcastMessage = function( message ){
+		console.info('--- broadcast message:', message);
+	}
+
+	/**
 	 * ページをロードする
 	 */
 	this.loadPage = function(pageName, options, callback){

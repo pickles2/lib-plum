@@ -95,30 +95,25 @@ $plum = new hk\plum\main(
 			// Gitリポジトリのパスワードを設定。
 			'password' => 'pass'
 		),
-
-		// 非同期で実行する処理を仲介する
-		'async' => function( $params ){
-
-			/*
-			非同期で実行するコールバック関数を拡張します。
-			ここで受け取った `$message` を、
-			非同期に `$plum->async($params);` へ転送してください。
-			*/
-
-		},
-
-		// ブロードキャストメッセージを仲介する
-		'broadcast' => function( $message ){
-
-			/*
-			メッセージをブラウザに送るコールバック関数を拡張します。
-			ここで受け取った `$message` を、
-			フロントエンドの `plum.broadcastMessage($message);` へ転送してください。
-			*/
-
-		},
 	)
 );
+$plum->set_async_callbacks(array(
+	'async' => function( $params ){
+		/*
+		async
+		非同期で実行するコールバック関数を拡張します。
+		ここで受け取った `$message` を、
+		非同期に `$plum->async($params);` へ転送してください。
+		*/
+	},
+	'broadcast' => function( $message ){
+		/*
+		メッセージをブラウザに送るコールバック関数を拡張します。
+		ここで受け取った `$message` を、
+		フロントエンドの `plum.broadcastMessage($message);` へ転送してください。
+		*/
+	}
+));
 
 $json = $plum->gpi( $_POST['data'] );
 

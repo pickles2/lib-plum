@@ -36,6 +36,7 @@ window.onload = function(){
 		document.getElementById('cont-plum-test'),
 		{
 			'gpiBridge': function(data, callback){
+				console.log('------------ req:', data);
 				$.ajax({
 					'url': './api.php',
 					'method': 'POST',
@@ -43,8 +44,13 @@ window.onload = function(){
 						'data': data
 					},
 					'success': function(result){
-						console.log('------------', result);
-						callback(result);
+						console.log('------------ res:', result);
+						callback(result.gpiResult);
+
+						for(var idx in result.boradcast){
+							plum.broadcastMessage(result.boradcast[idx]);
+						}
+
 					}
 				});
 			}
