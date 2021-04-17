@@ -155,6 +155,7 @@ class main
 	public function async( $params ){
 		$async = new async($this, $this->fncs);
 		$rtn = $async->async( $params );
+		$this->call_broadcast_callback($rtn);
 		return $rtn;
 	}
 

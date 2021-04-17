@@ -47,8 +47,8 @@ window.onload = function(){
 						console.log('------------ res:', result);
 						callback(result.gpiResult);
 
-						for(var idx in result.boradcast){
-							plum.broadcastMessage(result.boradcast[idx]);
+						for(var idx in result.broadcast){
+							plum.broadcastMessage(result.broadcast[idx]);
 						}
 
 					}

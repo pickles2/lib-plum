@@ -51,12 +51,12 @@ $plum = new hk\plum\main(
 );
 
 $plum->set_async_callbacks(array(
-	'async' => function( $params ) use ($rtn, $plum){
+	'async' => function( $params ) use (&$plum){
 		// var_dump($params, $plum);
 		$plum->async($params);
 		return;
 	},
-	'broadcast' => function( $message ) use ($rtn){
+	'broadcast' => function( $message ) use (&$rtn){
 		array_push($rtn['broadcast'], $message);
 	}
 ));
