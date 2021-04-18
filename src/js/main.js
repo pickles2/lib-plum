@@ -22,6 +22,7 @@ module.exports = function($elm, options){
 	};
 	const template = new (require('./template.js'))(this, $elms);
 
+	let broadcastCallback = {};
 	let condition = {};
 
 	options = options || {};
@@ -107,6 +108,16 @@ module.exports = function($elm, options){
 	 */
 	this.broadcastMessage = function( message ){
 		console.info('--- broadcast message:', message);
+		if( message.broadcast_callback_id ){
+			broadcastCallback['callback-'+message.broadcast_callback_id](message);
+		}
+	}
+	this.registerBroadcastCallback = function( broadcast_callback_id, callbackFnc ){
+		broadcastCallback['callback-'+broadcast_callback_id] = callbackFnc;
+	}
+	this.removeBroadcastCallback = function( broadcast_callback_id ){
+		broadcastCallback['callback-'+broadcast_callback_id] = undefined;
+		delete(broadcastCallback['callback-'+broadcast_callback_id]);
 	}
 
 	/**

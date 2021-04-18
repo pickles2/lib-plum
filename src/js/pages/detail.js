@@ -73,6 +73,35 @@ module.exports = function(main, template){
 					.addClass('px2-btn--primary')
 					.on('click', function(){
 						let selected_branch_name = $body.find('select[id=plum__branch-list-'+index+'] option:selected').val();
+						let broadcast_callback_id = 'update_staging_'+index;
+
+						function finish(result){
+							if( !result.status ){
+								console.error( result );
+								alert( result.message );
+								modalObj.unlock();
+								modalObj.closable(true);
+								px2style.closeLoading();
+								return;
+							}
+
+							main.loadPage('detail', {
+								'serverIndex': index,
+							}, function(){
+								px2style.flashMessage('ステージング '+(server_info.name)+' を更新しました。');
+								modalObj.closable(true);
+								px2style.closeLoading();
+								px2style.closeModal();
+							});
+						}
+
+						if( condition.is_async_available ){
+							main.registerBroadcastCallback(broadcast_callback_id, function(message){
+								result = message;
+								main.removeBroadcastCallback(broadcast_callback_id);
+								finish(result);
+							});
+						}
 
 						px2style.loading();
 						modalObj.lock();
@@ -81,27 +110,15 @@ module.exports = function(main, template){
 							{
 								'api': 'init_staging_env',
 								'index': index,
-								'branch_name': selected_branch_name
+								'branch_name': selected_branch_name,
+								'broadcast_callback_id': broadcast_callback_id,
 							},
 							function(result){
 								// console.log(result);
-								if( !result.status ){
-									console.error( result );
-									alert( result.message );
-									modalObj.unlock();
-									modalObj.closable(true);
-									px2style.closeLoading();
+								if( !condition.is_async_available ){
+									finish(result);
 									return;
 								}
-
-								main.loadPage('detail', {
-									'serverIndex': index,
-								}, function(){
-									px2style.flashMessage('ステージング '+(server_info.name)+' を更新しました。');
-									modalObj.closable(true);
-									px2style.closeLoading();
-									px2style.closeModal();
-								});
 							}
 						);
 					})

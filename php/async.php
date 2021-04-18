@@ -39,10 +39,15 @@ class async{
 		if( !strlen($params['lang']) ){
 			$params['lang'] = 'en';
 		}
+		if( !array_key_exists('broadcast_callback_id', $params) ){
+			$params['broadcast_callback_id'] = null;
+		}
 
 		// $this->main->lb()->setLang( $params['lang'] );
 
 		$result = array();
+		$result['api'] = $params['api'];
+		$result['broadcast_callback_id'] = $params['broadcast_callback_id'];
 		$result['status'] = true;
 		$result['message'] = 'OK';
 
@@ -58,6 +63,7 @@ class async{
 					$staging_branch_name = $params['branch_name'];
 				}
 				$result = array_merge($result, $this->fncs->init_staging_env( $staging_index, $staging_branch_name ));
+				$this->main->call_broadcast_callback($result);
 				return $result;
 
 		}
