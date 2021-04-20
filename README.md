@@ -16,8 +16,8 @@ $ composer require pickles2/lib-plum
 ### クライアントサイド
 
 ```html
-<link rel="stylesheet" href="/vendor/pickles2/lib-plum/dist/plum.css" />
-<script src="/vendor/pickles2/lib-plum/dist/plum.js"></script>
+<link rel="stylesheet" href="/path/to/vendor/pickles2/lib-plum/dist/plum.css" />
+<script src="/path/to/vendor/pickles2/lib-plum/dist/plum.js"></script>
 
 
 <div id="plum-area"></div>
