@@ -150,7 +150,7 @@ $json = $plum->async( $params );
 
 ## 更新履歴 - Change log
 
-### pickles2/lib-plum v0.2.1 (リリース日未定)
+### pickles2/lib-plum v0.3.0 (2021年4月28日)
 
 - オプション `temporary_data_dir` を `data_dir` に改名した。
 - ローカルマスターリポジトリでは `git fetch` まで実行し、 `git pull` しないようにした。ディスク容量の節約のため。
