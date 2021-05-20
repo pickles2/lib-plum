@@ -35,6 +35,8 @@ class main
 	 * 		- Gitリポジトリのパスワード
 	 * 		  例) fuga
 	 * )
+	 *
+	 * htpasswd_hash_algorithm = 'bcrypt'|'md5'|'sha1'|'crypt'|'plain'
 	 */
 	private $options;
 
@@ -84,6 +86,12 @@ class main
 			$this->options->git = (object) $this->options->git;
 		}else{
 			$this->options->git = null;
+		}
+
+		if( property_exists($this->options, 'htpasswd_hash_algorithm') && (is_object($this->options->htpasswd_hash_algorithm) || is_array($this->options->htpasswd_hash_algorithm)) ){
+			$this->options->htpasswd_hash_algorithm = (object) $this->options->htpasswd_hash_algorithm;
+		}else{
+			$this->options->htpasswd_hash_algorithm = null;
 		}
 
 		$this->fncs = new fncs($this);

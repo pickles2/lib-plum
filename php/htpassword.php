@@ -84,7 +84,32 @@ class htpassword{
 		if( strlen($username) ){
 			// --------------------------------------
 			// パスワードを保存する
-			$hashed_passwd = password_hash($password, PASSWORD_BCRYPT);
+
+			// パスワードハッシュを生成する
+			$hashed_passwd = $password;
+			$hash_algorithm = $this->main->get_options()->htpasswd_hash_algorithm;
+			switch( $hash_algorithm ){
+				case 'bcrypt':
+					$hashed_passwd = password_hash($password, PASSWORD_BCRYPT);
+					break;
+
+				case 'md5':
+					$hashed_passwd = md5($password);
+					break;
+
+				case 'sha1':
+					$hashed_passwd = sha1($password);
+					break;
+
+				case 'plain':
+					$hashed_passwd = $password;
+					break;
+
+				case 'crypt':
+				default:
+					$hashed_passwd = crypt($password, substr(crypt( trim($username) ), -2));
+					break;
+			}
 
 			$src = '';
 			$src .= trim($username).':'.$hashed_passwd."\n";
