@@ -107,7 +107,7 @@ class htpassword{
 
 				case 'crypt':
 				default:
-					$hashed_passwd = crypt($password, substr(crypt( trim($username) ), -2));
+					$hashed_passwd = crypt($password, substr(trim($username), -2));
 					break;
 			}
 
