@@ -108,7 +108,7 @@ class fncs
 			$url_git_remote = $this->get_url_git_remote(true);
 			$local_branch_name = preg_replace( '/^origin\//', '', $branch_name );
 
-			if ( $condition['is_dir'] && !$condition['is_git_dir'] ) {
+			if ( $condition['is_dir'] && (!$condition['is_git_dir'] || !strlen($condition['current_branch_name'])) ) {
 				// git 初期化
 				$git->git(array('init'));
 
@@ -138,7 +138,6 @@ class fncs
 						'pull',
 						'-f',
 						'origin',
-						'master',
 					));
 				}
 
