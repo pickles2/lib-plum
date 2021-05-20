@@ -138,6 +138,7 @@ class fncs
 						'pull',
 						'-f',
 						'origin',
+						$local_branch_name.":".$local_branch_name,
 					));
 				}
 
@@ -176,8 +177,9 @@ class fncs
 
 				// git pull
 				if( !is_null($staging_server_index) ){
-					// マスターデータでは pull する必要はない。
+					// ※マスターデータでは pull する必要はない。
 
+					// Uncommited changes をリセットする
 					$git->git(array(
 						'reset',
 						'--hard',
@@ -193,11 +195,12 @@ class fncs
 
 						$git->git(array(
 							'checkout',
-							'-b',
+							'-B',
 							$local_branch_name,
 						));
 					}
 
+					// ブランチのコンテンツを配置する
 					$git->git(array(
 						'pull',
 						'-f',
@@ -206,6 +209,7 @@ class fncs
 						$local_branch_name.':'.$local_branch_name,
 					));
 
+					// チェックアウトした対象以外のブランチを削除する
 					$localBranches = $this->get_branch_list( $staging_server_index );
 					foreach( $localBranches['branch_list'] as $localBranche ){
 						if( $localBranche ==  $localBranches['current_branch_name']){
