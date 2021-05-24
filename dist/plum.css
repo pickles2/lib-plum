@@ -254,6 +254,7 @@
 
 .plum .px2-table th,
 .plum .px2-table td {
+  vertical-align: top;
   border: 1px solid #999999;
   background: #f9f9f9;
   padding: 10px; }
@@ -1244,6 +1245,7 @@
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__label {
   display: table-cell;
+  vertical-align: top;
   background-color: #e7e7e7;
   font-weight: bold;
   padding: 0.4em 1em;
@@ -1252,6 +1254,7 @@
 
 .plum .px2-form-input-list ul.px2-form-input-list__ul li.px2-form-input-list__li .px2-form-input-list__input {
   display: table-cell;
+  vertical-align: top;
   background-color: #f9f9f9;
   padding: 0.4em 1em;
   width: 70%;

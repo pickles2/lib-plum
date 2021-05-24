@@ -154,6 +154,7 @@ $json = $plum->async( $params );
 
 - Gitリモートにブランチ `master` がない場合に、チェックアウトが失敗する問題を修正。
 - オプション `htpasswd_hash_algorithm` を追加。
+- その他の細かい修正。
 
 ### pickles2/lib-plum v0.3.0 (2021年4月28日)
 
