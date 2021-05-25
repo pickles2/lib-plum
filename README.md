@@ -95,6 +95,10 @@ $plum = new hk\plum\main(
 			// Gitリポジトリのパスワードを設定。
 			'password' => 'pass'
 		),
+
+		// 基本認証パスワードのハッシュ生成アルゴリズム名
+		// 'bcrypt'|'md5'|'sha1'|'crypt'|'plain'
+		'htpasswd_hash_algorithm' => 'crypt',
 	)
 );
 $plum->set_async_callbacks(array(

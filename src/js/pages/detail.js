@@ -75,6 +75,11 @@ module.exports = function(main, template){
 						let selected_branch_name = $body.find('select[id=plum__branch-list-'+index+'] option:selected').val();
 						let broadcast_callback_id = 'update_staging_'+index;
 
+						if( !selected_branch_name ){
+							alert('ブランチ名を取得できません。');
+							return;
+						}
+
 						function finish(result){
 							if( !result.status ){
 								console.error( result );

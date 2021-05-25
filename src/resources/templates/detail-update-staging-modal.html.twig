@@ -3,11 +3,17 @@
 		<ul class="px2-form-input-list__ul">
 			<li class="px2-form-input-list__li">
 				<div class="px2-form-input-list__label"><label for="plum__branch-list-{{ server_info.index }}">ブランチ</label></div>
-				<div class="px2-form-input-list__input"><select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
-					{% for branch_name in condition.remote_branch_list %}
-						<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
-					{% endfor %}
-				</select></div>
+				<div class="px2-form-input-list__input">
+					{% if condition.remote_branch_list|length > 0 %}
+					<select id="plum__branch-list-{{ server_info.index }}" class="px2-input" name="plum__branch-form-list">
+						{% for branch_name in condition.remote_branch_list %}
+							<option value="{{ branch_name }}" {{ (branch_name == 'origin/'~server_info.current_branch ? ' selected="selected"' : '') }}>{{ branch_name }}</option>
+						{% endfor %}
+					</select>
+					{% else %}
+					<p>ブランチの一覧を取得できません。</p>
+					{% endif %}
+				</div>
 			</li>
 		</ul>
 	</div>
